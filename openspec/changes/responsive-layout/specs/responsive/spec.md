@@ -25,6 +25,18 @@ O header SHALL manter navegação compacta no mobile (sem overlay pesado) e expa
 - **WHEN** o site é usado em tela mobile
 - **THEN** todos os links/CTAs têm área de toque ≥ 44px
 
+#### Scenario: Menu hambúrguer no mobile
+- **WHEN** a viewport é < 768px
+- **THEN** o header exibe um botão hambúrguer na área de ações; ao ativá-lo, a toolbox cresce em altura e a navegação aparece empilhada dentro dela, com `aria-expanded` refletindo o estado
+
+#### Scenario: Fechamento do menu mobile
+- **WHEN** o menu mobile está aberto
+- **THEN** ele fecha ao clicar no hambúrguer, pressionar `Escape`, clicar fora do header, clicar num link da nav ou trocar de idioma
+
+#### Scenario: Redução de movimento no menu
+- **WHEN** o sistema indica `prefers-reduced-motion: reduce` e o usuário abre o menu mobile
+- **THEN** o menu abre sem animação, aplicando o estado diretamente
+
 ### Requirement: Tipografia fluida sem saltos
 O site SHALL usar `clamp()` para todos os tamanhos de display/headline, evitando múltiplos breakpoints de font-size.
 

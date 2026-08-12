@@ -28,7 +28,11 @@ export const ui = {
     navBlog: "Blog",
     navProjects: "Projetos",
     navContact: "Contato",
+    logoLabel: "Início",
+    navLabel: "Navegação principal",
+    jobTitle: "Desenvolvedor de software",
     menuLabel: "Abrir menu",
+    menuCloseLabel: "Fechar menu",
     menuName: "Menu",
     skipLink: "Pular para o conteúdo",
     themeToggle: {
@@ -40,6 +44,7 @@ export const ui = {
     heroSubtitle:
       "Desenvolvedor de software que acredita em interfaces rápidas, legíveis e com personalidade — a tecnologia a serviço da clareza.",
     figCaption: "AndersonLimaCRV",
+    ogImageAlt: "Anderson Carvalho — Desenvolvedor",
     meta: {
       homeTitle: "Anderson Carvalho — Desenvolvedor",
       homeDescription:
@@ -91,7 +96,11 @@ export const ui = {
     navBlog: "Blog",
     navProjects: "Proyectos",
     navContact: "Contacto",
+    logoLabel: "Inicio",
+    navLabel: "Navegación principal",
+    jobTitle: "Desarrollador de software",
     menuLabel: "Abrir menú",
+    menuCloseLabel: "Cerrar menú",
     menuName: "Menú",
     skipLink: "Saltar al contenido",
     themeToggle: {
@@ -103,6 +112,7 @@ export const ui = {
     heroSubtitle:
       "Desarrollador de software que cree en interfaces rápidas, legibles y con personalidad: la tecnología al servicio de la claridad.",
     figCaption: "AndersonLimaCRV",
+    ogImageAlt: "Anderson Carvalho — Desarrollador",
     meta: {
       homeTitle: "Anderson Carvalho — Desarrollador",
       homeDescription:
@@ -154,7 +164,11 @@ export const ui = {
     navBlog: "Blog",
     navProjects: "Projects",
     navContact: "Contact",
+    logoLabel: "Home",
+    navLabel: "Primary navigation",
+    jobTitle: "Software developer",
     menuLabel: "Open menu",
+    menuCloseLabel: "Close menu",
     menuName: "Menu",
     skipLink: "Skip to content",
     themeToggle: {
@@ -166,6 +180,7 @@ export const ui = {
     heroSubtitle:
       "Software developer who believes in fast, legible interfaces with personality — technology at the service of clarity.",
     figCaption: "AndersonLimaCRV",
+    ogImageAlt: "Anderson Carvalho — Developer",
     meta: {
       homeTitle: "Anderson Carvalho — Developer",
       homeDescription:

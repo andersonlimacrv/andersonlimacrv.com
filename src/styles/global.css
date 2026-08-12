@@ -1,7 +1,58 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/manrope';
-@import '@fontsource-variable/jetbrains-mono';
-@import '@fontsource-variable/fraunces';
+
+/* Fontes — apenas subsets latin/latin-ext (conteúdo pt/es/en).
+   Os imports genéricos do fontsource emitem 13 woff2 (inclui cyrillic,
+   greek, vietnamese, cyrillic-ext) que não são usados. @font-face explícitos
+   reduzem para 6 arquivos. Peso/unicode-range extraídos de
+   node_modules/@fontsource-variable/[pacote]/index.css */
+@font-face {
+  font-family: 'Manrope Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url('@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url('@fontsource-variable/manrope/files/manrope-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url('@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url('@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/fraunces/files/fraunces-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -242,11 +293,16 @@ html {
 
 .site-toolbar {
   pointer-events: auto;
-  display: flex;
+  width: 100%;
+  margin: 0 auto;
+  min-height: 60px;
+  max-width: 64rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: calc(0.5rem - 0.25rem * var(--header-progress));
+  gap: 1rem;
   padding: 0.25rem;
-  padding-inline: 0.5rem;
+  padding-inline: clamp(0.75rem, 1.75vw, 1.5rem);
   /* Borda/fundo/raio seguem o esquema do site; no topo ficam invisíveis
      (alpha 0) — só aparecem quando a toolbox flutua */
   border: 1px solid
@@ -262,8 +318,124 @@ html {
     transparent
   );
   backdrop-filter: blur(var(--blur)) saturate(1.05);
-  box-shadow: 0 30px 70px -32px
-    color-mix(in oklab, var(--foreground) calc(40% * var(--header-progress)), transparent);
+  box-shadow: 0 60px 60px -60px
+    color-mix(in oklab, var(--muted) calc(40% * var(--header-progress)), transparent);
+}
+
+/* Logo à esquerda, nav centralizada, ações alinhadas à direita.
+   Espaçamento lateral (gap entre colunas) domina sobre o vertical. */
+.site-toolbar > a {
+  justify-self: start;
+}
+
+.site-nav {
+  justify-self: center;
+  display: none;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .site-nav {
+    display: flex;
+  }
+}
+
+.site-actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Botão hambúrguer — visível apenas no mobile (<768px) */
+.site-menu-toggle {
+  display: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: color-mix(in oklab, var(--background) 60%, transparent);
+  color: var(--foreground);
+  transition: border-color 0.18s ease-out;
+}
+
+.site-menu-toggle:hover {
+  border-color: color-mix(in oklab, var(--primary) 50%, transparent);
+}
+
+.site-menu-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.site-menu-icon .site-menu-bar {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  transition: transform 0.35s var(--ease-expo-out);
+}
+
+.site-header.is-open .site-menu-bar-top {
+  transform: rotate(45deg) translateY(5px);
+}
+
+.site-header.is-open .site-menu-bar-bottom {
+  transform: rotate(-45deg) translateY(-5px);
+}
+
+/* Nav mobile — bloco separado dentro da toolbox, colapsado por padrão */
+.site-menu {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .site-toolbar {
+    grid-template-columns: 1fr auto;
+    row-gap: 0;
+  }
+
+  .site-menu-toggle {
+    display: inline-flex;
+  }
+
+  .site-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    grid-column: 1 / -1;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    margin-top: calc(0.5rem * var(--menu-open, 0));
+    border-top: calc(1px * var(--menu-open, 0)) solid
+      color-mix(in oklab, var(--border) calc(0% + 60% * var(--menu-open, 0)), transparent);
+    transition:
+      max-height 0.4s var(--ease-expo-out),
+      opacity 0.25s ease-out;
+  }
+
+  .site-header.is-open .site-menu {
+    --menu-open: 1;
+    max-height: var(--menu-h, 300px);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .site-menu a {
+    justify-content: center;
+    padding-inline: 0.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-menu,
+  .site-menu-icon .site-menu-bar {
+    transition: none;
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -289,7 +461,7 @@ html {
 .site-locale-select {
   appearance: none;
   -webkit-appearance: none;
-  min-height: 40px;
+  min-height: 44px;
   width: 64px;
   min-width: 44px;
   padding-inline: 0.75rem 2rem;

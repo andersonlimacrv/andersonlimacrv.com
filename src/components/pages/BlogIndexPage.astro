@@ -41,7 +41,7 @@ const breadcrumbJsonLd = {
   description={t.meta.blogDescription}
   locale={locale}
 >
-  <JsonLd schema={breadcrumbJsonLd} />
+  <JsonLd slot="head" schema={breadcrumbJsonLd} />
 
   <div class="container-site pb-16 pt-12 sm:pt-16">
     <p class="mb-6 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">

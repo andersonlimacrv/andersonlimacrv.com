@@ -6,8 +6,8 @@
 
 ## 2. Header e navegação mobile
 
-- [ ] 2.1 Implementar nav mobile com `<details>` nativo (botão "Menu" com `summary`, sem overlay pesado, sem JS), desktop com nav inline (`sm:` ou `md:`)
-- [ ] 2.2 Garantir touch targets ≥ 44px (`min-h-11`, padding adequado) em links/CTAs do header, hero, projetos e footer
+- [x] 2.1 Implementar nav mobile com botão hambúrguer (`.site-menu-toggle`, touch ≥44px) + bloco `.site-menu` dentro da toolbox; abertura/fechamento com CSS transitions + Web Animations API (stagger); fecha por hambúrguer, `Escape`, clique fora, link e troca de idioma; desktop com nav inline (`≥768px`)
+- [x] 2.2 Garantir touch targets ≥ 44px (`min-h-11`, padding adequado) em links/CTAs do header, hero, projetos e footer (hambúrguer `min-h-11 min-w-11`)
 
 ## 3. Grades e hero
 

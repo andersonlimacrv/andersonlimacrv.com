@@ -11,7 +11,7 @@ const t = ui[locale].themeToggle;
 
 <button
   type="button"
-  class="theme-toggle flex h-10 w-10 items-center justify-center rounded-full bg-foreground/50 text-background transition-all duration-300 my-auto"
+  class="theme-toggle cursor-pointer flex min-h-11 min-w-11 items-center justify-center rounded-full bg-foreground/30 text-background transition-all duration-200"
   data-label-dark={t.toDark}
   data-label-light={t.toLight}
   aria-label={t.toDark}
@@ -19,8 +19,8 @@ const t = ui[locale].themeToggle;
   title={t.title}
 >
   <svg
-    width="46"
-    height="46"
+    width="36"
+    height="36"
     viewBox="0 0 240 240"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -30,12 +30,12 @@ const t = ui[locale].themeToggle;
         <path
           d="M120 67.5C149.25 67.5 172.5 90.75 172.5 120C172.5 149.25 149.25 172.5 120 172.5"
           fill="currentColor"
-            opacity="0.8"
+            opacity="0.9"
         />
         <path
           d="M120 67.5C90.75 67.5 67.5 90.75 67.5 120C67.5 149.25 90.75 172.5 120 172.5"
           fill="var(--foreground)"
-          opacity="0.8"
+          opacity="0.9"
         />
       </g>
       <path

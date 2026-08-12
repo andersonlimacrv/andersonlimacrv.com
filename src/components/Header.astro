@@ -12,34 +12,34 @@ const t = ui[locale];
 const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
 const pathname = Astro.url.pathname;
 
+const homeHref = `${baseUrl}/`;
+const logoHref = locale === defaultLocale ? '/' : homeHref;
+
 const navLinks = [
   { href: `${baseUrl}/#sobre`, label: t.navAbout },
   { href: `${baseUrl}/#blog`, label: t.navBlog },
   { href: `${baseUrl}/#projetos`, label: t.navProjects },
   { href: `${baseUrl}/#contato`, label: t.navContact },
-].map((link) => ({
-  ...link,
-  current: link.href === pathname || pathname.startsWith(`${link.href}/`),
-}));
+];
 ---
 
 <header class="site-header" data-astro-transition-persist="header">
   <div class="site-toolbar">
     <a
-      href={baseUrl ? `/${locale}` : '/'}
-      class="transition-micro flex min-h-14 shrink-0 items-center px-3 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-foreground hover:text-primary"
+      href={logoHref}
+      aria-label={t.logoLabel}
+      class="transition-micro flex min-h-11 shrink-0 items-center px-2 font-mono text-lg font-bold uppercase tracking-[0.15em] text-foreground hover:text-primary"
     >
       AC<span class="text-primary">.</span>
     </a>
 
-    <nav class="hidden min-h-14 items-center gap-2 sm:flex">
+    <nav class="site-nav" aria-label={t.navLabel}>
       {navLinks.map((link) => (
         <a
           href={link.href}
-          aria-current={link.current ? 'page' : undefined}
           class={`transition-micro flex min-h-11 w-24 items-center justify-center whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] ${
-            link.current
-              ? 'text-foreground underline underline-offset-4'
+            pathname === homeHref
+              ? 'text-foreground hover:text-primary'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
@@ -48,9 +48,58 @@ const navLinks = [
       ))}
     </nav>
 
-    <div class="flex items-center lg:gap-x-8 gap-x-4">
-        <ThemeToggle locale={locale} />
+    <div class="site-actions">
+      <ThemeToggle locale={locale} />
       <LanguageSwitcher locale={locale} />
+      <button
+        type="button"
+        class="site-menu-toggle"
+        aria-expanded="false"
+        aria-controls="site-menu"
+        aria-label={t.menuLabel}
+        data-label-open={t.menuLabel}
+        data-label-close={t.menuCloseLabel}
+        title={t.menuName}
+      >
+        <svg
+          class="site-menu-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            class="site-menu-bar site-menu-bar-top"
+            d="M4 7h16"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            class="site-menu-bar site-menu-bar-bottom"
+            d="M4 17h16"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <div id="site-menu" class="site-menu" aria-label={t.navLabel}>
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class={`transition-micro flex min-h-11 items-center whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] ${
+            pathname === homeHref
+              ? 'text-foreground hover:text-primary'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          {link.label}
+        </a>
+      ))}
     </div>
   </div>
 
@@ -58,3 +107,4 @@ const navLinks = [
     import './site-header';
   </script>
 </header>
+</content>

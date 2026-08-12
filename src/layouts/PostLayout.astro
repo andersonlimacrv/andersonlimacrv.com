@@ -25,10 +25,16 @@ const blogPostingJsonLd = {
   headline: title,
   description,
   url: pageUrl,
+  mainEntityOfPage: pageUrl,
   datePublished: pubDate.toISOString(),
   dateModified: (updatedDate ?? pubDate).toISOString(),
   inLanguage: locale,
   author: {
+    '@type': 'Person',
+    name: authorName,
+    url: siteUrl,
+  },
+  publisher: {
     '@type': 'Person',
     name: authorName,
     url: siteUrl,
@@ -57,8 +63,8 @@ const shareText = encodeURIComponent(title);
   image={data.cover ?? undefined}
   locale={locale}
 >
-  <JsonLd schema={blogPostingJsonLd} />
-  <JsonLd schema={breadcrumbJsonLd} />
+  <JsonLd slot="head" schema={blogPostingJsonLd} />
+  <JsonLd slot="head" schema={breadcrumbJsonLd} />
 
   <article class="container-site pb-16 pt-12 sm:pt-16">
     <header class="mx-auto mb-10 max-w-[70ch]">

@@ -1,0 +1,94 @@
+{
+  "seo": {
+    "jsonldErrors": [],
+    "noCanonical": [],
+    "jsonld": 27,
+    "pages": 15,
+    "noDescription": []
+  },
+  "total": {
+    "raw": 656282,
+    "gzip": 420966
+  },
+  "discovery": {
+    "robotsExists": true,
+    "llmsExists": true,
+    "sitemapExists": true
+  },
+  "date": "2026-08-12T00:00:00.000Z",
+  "byCategory": {
+    "other": 8602,
+    "image": 92672,
+    "js": 29696,
+    "css": 40141,
+    "font": 238387,
+    "html": 246682
+  },
+  "js": [
+    {
+      "size": 16282,
+      "name": "ClientRouter.js",
+      "gzip": 5530
+    },
+    {
+      "size": 13414,
+      "name": "ThemeToggle.js",
+      "gzip": 2356
+    }
+  ],
+  "files": 42,
+  "fonts": [
+    {
+      "size": 18337,
+      "name": "woff2-1"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-2"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-3"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-4"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-5"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-6"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-7"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-8"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-9"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-10"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-11"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-12"
+    },
+    {
+      "size": 18337,
+      "name": "woff2-13"
+    }
+  ]
+}

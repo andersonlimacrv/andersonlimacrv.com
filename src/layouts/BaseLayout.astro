@@ -4,7 +4,7 @@ import { getImage } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { siteUrl } from '../lib/site';
+import { siteUrl, siteName } from '../lib/site';
 import { defaultLocale, languages, localeNames, ogLocales, translatePath, ui, type Locale } from '../i18n/ui';
 import portrait from '../assets/me.png';
 
@@ -14,20 +14,24 @@ interface Props {
   locale?: Locale;
   image?: string;
   type?: 'website' | 'article';
+  robots?: string;
 }
 
-const portraitMeta = await getImage({
+const portraitOg = await getImage({
   src: portrait,
   format: 'webp',
-  width: 1122,
+  width: 1200,
+  height: 630,
+  fit: 'cover',
 });
 
 const {
   title,
   description,
   locale = defaultLocale,
-  image = portraitMeta.src,
+  image = portraitOg.src,
   type = 'website',
+  robots = 'index, follow',
 } = Astro.props;
 
 const lang = localeNames[locale];
@@ -41,11 +45,19 @@ const getAlternatePath = (target: Locale): string =>
   translatePath(Astro.url.pathname, target);
 
 const localesList = Object.keys(languages) as Locale[];
+const ogAlternateLocales = localesList
+  .filter((target) => target !== locale)
+  .map((target) => ogLocales[target]);
+
 const hreflangLinks = localesList.map(
   (target) => new URL(getAlternatePath(target), siteUrl).toString(),
 );
 const hreflangCodes = localesList.map((target) => localeNames[target]);
+
 const ogImage = new URL(image, siteUrl).toString();
+const ogImageMeta = image === portraitOg.src
+  ? { width: 1200, height: 630, alt: t.ogImageAlt }
+  : { width: undefined, height: undefined, alt: undefined };
 ---
 
 <!doctype html>
@@ -54,22 +66,33 @@ const ogImage = new URL(image, siteUrl).toString();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content={robots} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
 
     <!-- Hreflang / i18n -->
     {localesList.map((_, i) => (
       <link rel="alternate" hreflang={hreflangCodes[i]} href={hreflangLinks[i]} />
     ))}
+    <link rel="alternate" hreflang="x-default" href={new URL('/', siteUrl).toString()} />
 
     <!-- Open Graph -->
     <meta property="og:type" content={type} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:site_name" content="Anderson Carvalho" />
+    {ogImageMeta.width && <meta property="og:image:width" content={String(ogImageMeta.width)} />}
+    {ogImageMeta.height && <meta property="og:image:height" content={String(ogImageMeta.height)} />}
+    {ogImageMeta.alt && <meta property="og:image:alt" content={ogImageMeta.alt} />}
+    <meta property="og:site_name" content={siteName} />
     <meta property="og:locale" content={ogLocale} />
+    {ogAlternateLocales.map((alt) => (
+      <meta property="og:locale:alternate" content={alt} />
+    ))}
     <meta property="og:url" content={canonical} />
 
     <!-- Twitter Card -->
@@ -80,12 +103,7 @@ const ogImage = new URL(image, siteUrl).toString();
 
     <ClientRouter />
 
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="/favicon.svg"
-    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <script is:inline>
       // Apply theme before first paint to avoid FOUC.

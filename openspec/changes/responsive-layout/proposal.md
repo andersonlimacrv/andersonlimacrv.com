@@ -6,7 +6,7 @@ O prompt exige design mobile-first com breakpoints bem definidos e tipografia fl
 
 - Layout mobile-first em todas as páginas/componentes (Tailwind `sm/md/lg/xl`), projetado primeiro para mobile.
 - Tipografia fluida via `clamp()` (já nos tokens) — sem múltiplos breakpoints de font-size.
-- Header: menu compacto no mobile (sem overlay pesado — reaproveita o header com links âncora e, se necessário, disclosure simples), full nav no desktop.
+- Header: menu hambúrguer animado no mobile (nav empilhada na toolbox, sem overlay pesado), nav inline no desktop.
 - Grade de posts do blog: 1 coluna mobile → 2 tablet → 2–3 desktop.
 - Hero: empilhado no mobile (retrato abaixo do texto), lado a lado no desktop.
 - Grid das seções numeradas com rail/divisor responsivo (esconder rail no mobile).
