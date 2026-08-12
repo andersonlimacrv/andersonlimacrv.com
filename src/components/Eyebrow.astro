@@ -7,4 +7,7 @@ interface Props {
 const { label, class: className = '' } = Astro.props;
 ---
 
-<span class:list={['eyebrow', className]}><slot name="icon" />{label}</span>
+<span class:list={[
+    'inline-flex items-center gap-1.5 border border-border rounded bg-background/60 px-2 py-[0.3125rem] font-mono text-xs font-semibold leading-none uppercase tracking-[0.18em] text-muted-foreground',
+    className,
+  ]}><slot name="icon" />{label}</span>

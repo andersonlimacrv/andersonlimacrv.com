@@ -16,6 +16,9 @@ const { delay = 0, as: Tag = 'div', class: className = '' } = Astro.props;
 <script>
   const root = document.documentElement;
   root.classList.add('theme-applied');
+  // Sinaliza que o JS rodou — só então os [data-reveal] são escondidos e
+  // animados (progressive enhancement: sem JS, tudo visível desde o HTML).
+  root.classList.add('reveal-present');
 
   const reduced =
     window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
