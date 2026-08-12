@@ -148,6 +148,59 @@ function sign(n) {
   return n > 0 ? `+${n}` : `${n}`;
 }
 
+function shortCommit() {
+  let rev;
+  try {
+    rev = execSync('git rev-parse --short HEAD', { cwd: ROOT, encoding: 'utf8' })
+      .trim();
+  } catch {
+    return '(sem git)';
+  }
+  try {
+    const status = execSync('git status --porcelain', {
+      cwd: ROOT,
+      encoding: 'utf8',
+    }).trim();
+    return status ? `${rev}+` : rev;
+  } catch {
+    return rev;
+  }
+}
+
+function formatPct(cur, base) {
+  if (!base) return '—';
+  const delta = ((cur - base) / base) * 100;
+  return `${sign(delta.toFixed(1))}%`;
+}
+
+function appendHistory(a, baseline) {
+  const historyPath = join(DOCS, 'audit-history.md');
+  const commit = shortCommit();
+  const ts = new Date().toISOString();
+  const total = a.total;
+  const prev = baseline;
+
+  const row = [
+    `| ${ts} | \`${commit}\` | ${a.seo.pages} | ${a.files} | ${formatBytes(total.raw)} | ${formatBytes(total.gzip)} | ${a.fonts.length} | ${formatPct(total.gzip, prev?.total.gzip)} |`,
+  ].join('\n');
+
+  const header =
+    `# Histórico de auditoria\n\n` +
+    `Registra cada execução de \`node scripts/audit.mjs\`: pesos totais (raw/gzip), ` +
+    `commit em que a auditoria rodou e variação de gzip em relação à auditoria anterior.\n\n` +
+    `| Timestamp (UTC) | Commit | Páginas | Arquivos | Raw | Gzip | Fontes | Δ gzip vs anterior |\n` +
+    `| --- | --- | --- | --- | --- | --- | --- | --- |\n`;
+
+  if (!existsSync(historyPath)) {
+    writeFileSync(historyPath, header + row + '\n', 'utf8');
+  } else {
+    const current = readFileSync(historyPath, 'utf8');
+    if (current.includes(`| ${ts}`)) return; // mesma execução já registrada
+    writeFileSync(historyPath, current + row + '\n', 'utf8');
+  }
+  return historyPath;
+}
+
 function compare(cur, base) {
   const lines = [];
   lines.push('== Comparação vs baseline ==');
@@ -186,9 +239,11 @@ if (baseline) {
   console.log('');
   console.log(compare(auditResult, baseline));
   console.log(`\nRelatório gravado em docs/audit.md`);
+  console.log(`Histórico atualizado em ${appendHistory(auditResult, baseline)}`);
 } else {
   writeFileSync(baselinePath, JSON.stringify(auditResult, null, 2), 'utf8');
   writeFileSync(reportPath, render(auditResult), 'utf8');
   console.log(render(auditResult));
   console.log(`\nBaseline gravado em docs/audit-baseline.json`);
+  console.log(`Histórico atualizado em ${appendHistory(auditResult, null)}`);
 }
