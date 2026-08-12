@@ -7,12 +7,7 @@
  * matching the anti-FOUC inline script in BaseLayout.astro.
  */
 
-import {
-  createAnimation,
-  type Animation,
-  type AnimationStart,
-  type AnimationVariant,
-} from './theme-transition';
+import { createAnimation, type Animation } from './theme-transition';
 
 export type Theme = 'light' | 'dark';
 
@@ -134,65 +129,11 @@ function setThemeAnimated(next: Theme, animation?: Animation) {
   }
 }
 
-export function setTheme(theme: Theme, animation?: Animation) {
-  setThemeAnimated(theme, animation);
-}
-
-export function toggleTheme(
-  animation?: Animation,
-  variant: AnimationVariant = 'circle',
-  start: AnimationStart = 'top-right',
-  blur = false,
-  gifUrl?: string,
-): Theme {
-  const effect = animation ?? createAnimation(variant, start, blur, gifUrl);
+export function toggleTheme(animation?: Animation): Theme {
+  const effect = animation ?? createAnimation();
   const next = getTheme() === 'dark' ? 'light' : 'dark';
   setThemeAnimated(next, effect);
   return next;
-}
-
-export function setCrazyLightTheme(
-  animation?: Animation,
-  variant: AnimationVariant = "circle",
-  start: AnimationStart = "top-right",
-  blur = true,
-  gifUrl?: string,
-) {
-  setThemeAnimated(
-    "light",
-    animation ?? createAnimation(variant, start, blur, gifUrl),
-  );
-}
-
-export function setCrazyDarkTheme(
-  animation?: Animation,
-  variant: AnimationVariant = "circle",
-  start: AnimationStart = "top-right",
-  blur = true,
-  gifUrl?: string,
-) {
-  setThemeAnimated(
-    "dark",
-    animation ?? createAnimation(variant, start, blur, gifUrl),
-  );
-}
-
-export function setCrazySystemTheme(
-  animation?: Animation,
-  variant: AnimationVariant = 'circle',
-  start: AnimationStart = 'top-right',
-  blur = true,
-  gifUrl?: string,
-) {
-  try {
-    localStorage.removeItem(THEME_KEY);
-  } catch {
-    // sem storage
-  }
-  setThemeAnimated(
-    systemPrefersDark() ? 'dark' : 'light',
-    animation ?? createAnimation(variant, start, blur, gifUrl),
-  );
 }
 
 export { readStored };

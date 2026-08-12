@@ -11,7 +11,7 @@ function bindToggle() {
   if (!rootEl || rootEl.dataset.bound === 'true') return;
   rootEl.dataset.bound = 'true';
   rootEl.addEventListener('click', () => {
-    toggleTheme(createAnimation('circle', 'center', false));
+    toggleTheme(createAnimation());
   });
 }
 

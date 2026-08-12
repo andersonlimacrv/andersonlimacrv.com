@@ -14,6 +14,17 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
+  // HTML minificado no build (default true no Astro 7 — declarado explicitamente
+  // para documentar intenção e evitar surpresas em bumps futuros).
+  compressHTML: true,
+  build: {
+    // Inline automático de CSS pequeno (≤4kB) — reduz uma round-trip no first paint.
+    inlineStylesheets: 'auto',
+  },
+  // Prefetch experimental: pré-carrega links internos no hover.
+  prefetch: {
+    defaultStrategy: 'hover',
+  },
   vite: {
     plugins: [tailwindcss()],
   },

@@ -7,6 +7,8 @@ import Footer from '../components/Footer.astro';
 import { siteUrl, siteName } from '../lib/site';
 import { defaultLocale, languages, localeNames, ogLocales, translatePath, ui, type Locale } from '../i18n/ui';
 import portrait from '../assets/me.png';
+import manropeLatinUrl from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
+import frauncesLatinUrl from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -104,6 +106,13 @@ const ogImageMeta = image === portraitOg.src
     <ClientRouter />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    {/* Preload das woff2 críticas: manrope-latin (corpo) e fraunces-latin
+        (serif para blockquote/hero-display). As URLs com hash casam com os
+        @font-face em global.css (ambos apontam para o mesmo chunk em
+        dist/_astro/). */}
+    <link rel="preload" as="font" type="font/woff2" crossorigin href={manropeLatinUrl} />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href={frauncesLatinUrl} />
 
     <script is:inline>
       // Apply theme before first paint to avoid FOUC.
