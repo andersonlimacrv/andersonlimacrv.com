@@ -1,0 +1,235 @@
+import { postMap } from './postMap';
+
+export const languages = {
+  pt: 'Português',
+  es: 'Español',
+  en: 'English',
+} as const;
+
+export type Locale = keyof typeof languages;
+
+export const defaultLocale: Locale = 'pt';
+
+export const localeNames: Record<Locale, string> = {
+  pt: 'pt-BR',
+  es: 'es-ES',
+  en: 'en-US',
+};
+
+export const ogLocales: Record<Locale, string> = {
+  pt: 'pt_BR',
+  es: 'es_ES',
+  en: 'en_US',
+};
+
+export const ui = {
+  pt: {
+    navAbout: "Sobre",
+    navBlog: "Blog",
+    navProjects: "Projetos",
+    navContact: "Contato",
+    menuLabel: "Abrir menu",
+    menuName: "Menu",
+    skipLink: "Pular para o conteúdo",
+    themeToggle: {
+      toDark: "Ativar tema escuro",
+      toLight: "Ativar tema claro",
+      title: "Alternar tema",
+    },
+    heroEyebrow: "Perfil / 2026",
+    heroSubtitle:
+      "Desenvolvedor de software que acredita em interfaces rápidas, legíveis e com personalidade — a tecnologia a serviço da clareza.",
+    figCaption: "AndersonLimaCRV",
+    meta: {
+      homeTitle: "Anderson Carvalho — Desenvolvedor",
+      homeDescription:
+        "Desenvolvedor de software. Este é o meu espaço na web: projetos, pensamentos e um mini-blog sobre tecnologia e design.",
+      blogTitle: "Blog — Anderson Carvalho",
+      blogDescription:
+        "Mini-blog sobre desenvolvimento, tecnologia e design editorial para a web.",
+    },
+    sections: {
+      about: { number: "01", title: "Sobre", eyebrow: "Sobre" },
+      projects: { number: "02", title: "Projetos", eyebrow: "Trabalho" },
+      blog: { number: "03", title: "Blog", eyebrow: "Escritos" },
+      contact: { number: "04", title: "Contato", eyebrow: "Fale comigo" },
+    },
+    aboutParagraph:
+      "Sou Anderson Carvalho, desenvolvedor com foco em frontend e engenharia web. Gosto de produtos digitais bem construídos: código limpo, design editorial e performance como requisito, não como privilégio.",
+    projects: [
+      {
+        title: "andersonlimacrv.com",
+        description: "Este site — portfólio e mini-blog em Astro.",
+      },
+      {
+        title: "GitHub",
+        description: "Código aberto, experimentos e projetos pessoais.",
+      },
+      {
+        title: "LinkedIn",
+        description: "Trajetória profissional e rede de contatos.",
+      },
+    ],
+    blogComingSoon: "Em breve, os primeiros posts.",
+    viewAllPosts: "Ver todos os posts",
+    contactParagraph:
+      "Se você quer conversar sobre projetos, tecnologia ou apenas trocar uma ideia, meu e-mail está sempre aberto.",
+    blogLabel: "Blog",
+    blogTitle: "Escritos",
+    noPosts: "Nenhum post publicado ainda.",
+    backToBlog: "Blog",
+    readingTime: "{count} min de leitura",
+    updatedLabel: "Atualizado",
+    share: "Compartilhar",
+    shareX: "X / Twitter",
+    shareEmail: "Email",
+    homeLink: "Início",
+    backToTop: "Voltar ao topo",
+  },
+  es: {
+    navAbout: "Sobre mí",
+    navBlog: "Blog",
+    navProjects: "Proyectos",
+    navContact: "Contacto",
+    menuLabel: "Abrir menú",
+    menuName: "Menú",
+    skipLink: "Saltar al contenido",
+    themeToggle: {
+      toDark: "Activar tema oscuro",
+      toLight: "Activar tema claro",
+      title: "Cambiar tema",
+    },
+    heroEyebrow: "Perfil / 2026",
+    heroSubtitle:
+      "Desarrollador de software que cree en interfaces rápidas, legibles y con personalidad: la tecnología al servicio de la claridad.",
+    figCaption: "AndersonLimaCRV",
+    meta: {
+      homeTitle: "Anderson Carvalho — Desarrollador",
+      homeDescription:
+        "Desarrollador de software. Este es mi espacio en la web: proyectos, pensamientos y un mini-blog sobre tecnología y diseño.",
+      blogTitle: "Blog — Anderson Carvalho",
+      blogDescription:
+        "Mini-blog sobre desarrollo, tecnología y diseño editorial para la web.",
+    },
+    sections: {
+      about: { number: "01", title: "Sobre mí", eyebrow: "Sobre mí" },
+      projects: { number: "02", title: "Proyectos", eyebrow: "Trabajo" },
+      blog: { number: "03", title: "Blog", eyebrow: "Escritos" },
+      contact: { number: "04", title: "Contacto", eyebrow: "Hablemos" },
+    },
+    aboutParagraph:
+      "Soy Anderson Carvalho, desarrollador enfocado en frontend e ingeniería web. Me gustan los productos digitales bien construidos: código limpio, diseño editorial y rendimiento como requisito, no como privilegio.",
+    projects: [
+      {
+        title: "andersonlimacrv.com",
+        description: "Este sitio: portafolio y mini-blog en Astro.",
+      },
+      {
+        title: "GitHub",
+        description: "Código abierto, experimentos y proyectos personales.",
+      },
+      {
+        title: "LinkedIn",
+        description: "Trayectoria profesional y red de contactos.",
+      },
+    ],
+    blogComingSoon: "Pronto llegará el primer post.",
+    viewAllPosts: "Ver todos los posts",
+    contactParagraph:
+      "Si quieres hablar de proyectos, tecnología o simplemente intercambiar una idea, mi correo siempre está abierto.",
+    blogLabel: "Blog",
+    blogTitle: "Escritos",
+    noPosts: "Aún no hay posts publicados.",
+    backToBlog: "Blog",
+    readingTime: "{count} min de lectura",
+    updatedLabel: "Actualizado",
+    share: "Compartir",
+    shareX: "X / Twitter",
+    shareEmail: "Correo",
+    homeLink: "Inicio",
+    backToTop: "Volver arriba",
+  },
+  en: {
+    navAbout: "About",
+    navBlog: "Blog",
+    navProjects: "Projects",
+    navContact: "Contact",
+    menuLabel: "Open menu",
+    menuName: "Menu",
+    skipLink: "Skip to content",
+    themeToggle: {
+      toDark: "Switch to dark theme",
+      toLight: "Switch to light theme",
+      title: "Toggle theme",
+    },
+    heroEyebrow: "Profile / 2026",
+    heroSubtitle:
+      "Software developer who believes in fast, legible interfaces with personality — technology at the service of clarity.",
+    figCaption: "AndersonLimaCRV",
+    meta: {
+      homeTitle: "Anderson Carvalho — Developer",
+      homeDescription:
+        "Software developer. This is my corner of the web: projects, thoughts and a mini-blog about technology and design.",
+      blogTitle: "Blog — Anderson Carvalho",
+      blogDescription:
+        "Mini-blog about development, technology and editorial design for the web.",
+    },
+    sections: {
+      about: { number: "01", title: "About", eyebrow: "About" },
+      projects: { number: "02", title: "Projects", eyebrow: "Work" },
+      blog: { number: "03", title: "Blog", eyebrow: "Writings" },
+      contact: { number: "04", title: "Contact", eyebrow: "Get in touch" },
+    },
+    aboutParagraph:
+      "I'm Anderson Carvalho, a developer focused on frontend and web engineering. I like well-crafted digital products: clean code, editorial design and performance as a requirement, not a privilege.",
+    projects: [
+      {
+        title: "andersonlimacrv.com",
+        description: "This site — portfolio and mini-blog in Astro.",
+      },
+      {
+        title: "GitHub",
+        description: "Open source, experiments and personal projects.",
+      },
+      {
+        title: "LinkedIn",
+        description: "Professional track record and network.",
+      },
+    ],
+    blogComingSoon: "First posts coming soon.",
+    viewAllPosts: "View all posts",
+    contactParagraph:
+      "If you'd like to talk about projects, technology or just exchange ideas, my inbox is always open.",
+    blogLabel: "Blog",
+    blogTitle: "Writings",
+    noPosts: "No posts published yet.",
+    backToBlog: "Blog",
+    readingTime: "{count} min read",
+    updatedLabel: "Updated",
+    share: "Share",
+    shareX: "X / Twitter",
+    shareEmail: "Email",
+    homeLink: "Home",
+    backToTop: "Back to top",
+  },
+} as const;
+
+export type Translation = (typeof ui)[Locale];
+
+export function translatePath(path: string, target: Locale): string {
+  const clean = path.replace(/^\/(?:pt|es|en)(?=\/|$)/, '');
+  const blogMatch = /^\/blog\/([^/]+)\/?$/.exec(clean);
+  if (blogMatch) {
+    const slug = blogMatch[1];
+    for (const entry of Object.values(postMap)) {
+      if (Object.values(entry).includes(slug)) {
+        const targetSlug = entry[target];
+        return target === defaultLocale
+          ? `/blog/${targetSlug}`
+          : `/${target}/blog/${targetSlug}`;
+      }
+    }
+  }
+  if (target === defaultLocale) return clean || '/';
+  return `/${target}${clean === '' ? '/' : clean}`;
+}

@@ -1,0 +1,126 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { getReadingTime, formatDate, getPostSlug } from '../lib/posts';
+import { siteUrl, authorName } from '../lib/site';
+import { defaultLocale, ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  locale?: Locale;
+}
+
+const { post, locale = defaultLocale } = Astro.props;
+const t = ui[locale];
+const { data } = post;
+const { title, description, pubDate, updatedDate, tags } = data;
+const readingTime = getReadingTime(post);
+const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
+const pageUrl = new URL(`${baseUrl}/blog/${getPostSlug(post)}`, siteUrl).toString();
+
+const blogPostingJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  url: pageUrl,
+  datePublished: pubDate.toISOString(),
+  dateModified: (updatedDate ?? pubDate).toISOString(),
+  inLanguage: locale,
+  author: {
+    '@type': 'Person',
+    name: authorName,
+    url: siteUrl,
+  },
+  image: data.cover ?? undefined,
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.homeLink, item: new URL(baseUrl || '/', siteUrl).toString() },
+    { '@type': 'ListItem', position: 2, name: t.navBlog, item: new URL(`${baseUrl}/blog`, siteUrl).toString() },
+    { '@type': 'ListItem', position: 3, name: title, item: pageUrl },
+  ],
+};
+
+const shareUrl = encodeURIComponent(pageUrl);
+const shareText = encodeURIComponent(title);
+---
+
+<BaseLayout
+  title={`${title} — Anderson Carvalho`}
+  description={description}
+  type="article"
+  image={data.cover ?? undefined}
+  locale={locale}
+>
+  <JsonLd schema={blogPostingJsonLd} />
+  <JsonLd schema={breadcrumbJsonLd} />
+
+  <article class="container-site pb-16 pt-12 sm:pt-16">
+    <header class="mx-auto mb-10 max-w-[70ch]">
+      <p class="mb-4">
+        <a
+          href={`${baseUrl}/blog`}
+          class="group-link transition-micro inline-flex min-h-[44px] items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+        >
+          <svg class="group-arrow rotate-180 transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          {t.backToBlog}
+        </a>
+      </p>
+      <h1 class="heading-display mb-4">{title}</h1>
+      <p class="mb-4 text-lg text-muted-foreground">{description}</p>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate, locale)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{t.readingTime.replace('{count}', String(readingTime))}</span>
+        {updatedDate && (
+          <>
+            <span aria-hidden="true">·</span>
+            <time datetime={updatedDate.toISOString()}>{t.updatedLabel} {formatDate(updatedDate, locale)}</time>
+          </>
+        )}
+      </div>
+      {tags.length > 0 && (
+        <div class="mt-4 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span class="rounded-lg border border-border px-2 py-0.5 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="post-content mx-auto">
+      <slot />
+    </div>
+
+    <footer class="mx-auto mt-12 max-w-[70ch] border-t border-border pt-8">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+          {t.share}
+        </p>
+        <div class="flex gap-4">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="transition-micro flex min-h-[44px] items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+          >
+            {t.shareX}
+          </a>
+          <a
+            href={`mailto:?subject=${shareText}&body=${shareUrl}`}
+            class="transition-micro flex min-h-[44px] items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+          >
+            {t.shareEmail}
+          </a>
+        </div>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>

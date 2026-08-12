@@ -1,25 +1,30 @@
 schema: spec-driven
 
 context: |
-  Projeto: Website pessoal de desenvolvedor (andersonlimacrv.com) combinando portfólio,
-  blog, vitrine de projetos e loja de produtos digitais.
+  Projeto: Website pessoal de desenvolvedor (andersonlimacrv.com) combinando portfólio
+  one-page com mini-blog, inspirado em padrões editoriais premium (lucasmontano.com como
+  referência de estrutura, não de conteúdo). Estética quase monocromática (B&W), tipografia
+  como elemento estrutural, seções numeradas, eyebrow em mono, retrato em preto e branco.
 
   Tech stack:
-  - Vite + React 18 + TypeScript (strict)
-  - Tailwind CSS v4 com design tokens via CSS variables (tema claro/escuro)
-  - shadcn/ui para componentes primitivos
-  - tweakcn para composição/variants de componentes
-  - React Router v6 para rotas client-side
-  - MDX para conteúdo do blog e casos de estudo
+  - Astro (SSG, zero JS por padrão) + Tailwind CSS v4 (config via CSS)
+  - Content Collections (Markdown/MDX tipado via content.config.ts) para o blog
+  - astro:assets para otimização de imagem (retrato hero: src/assets/me.png, já em B&W)
+  - @astrojs/sitemap, @astrojs/rss, View Transitions API (astro:transitions)
+  - Fontes variáveis self-hosted: Manrope (display/corpo), JetBrains Mono (eyebrows),
+    Fraunces (citações/pull-quotes) — nunca Google Fonts CDN em runtime
+  - Ícones line style (Lucide), stroke="currentColor", sem fill
 
   Convenções:
   - Conventional commits (feat:, fix:, docs:, refactor:, chore:)
   - Nomeação de arquivos: kebab-case para módulos, PascalCase para componentes
   - Código em inglês; conteúdo público do site em português (pt-BR)
-  - Acessibilidade: WCAG 2.1 AA, semântica HTML, focus visível
-  - SEO: meta tags dinâmicas, sitemap, Open Graph, dados estruturados JSON-LD
+  - Acessibilidade: WCAG 2.1 AA, semântica HTML, :focus-visible, skip-link,
+    prefers-reduced-motion
+  - SEO: meta tags dinâmicas, sitemap, Open Graph, JSON-LD, GEO (/llms.txt,
+    resposta direta primeiro)
 
-  Domínio: marketing pessoal + conteudo + micropagamentos (produtos digitais).
+  Domínio: marketing pessoal + conteúdo (mini-blog).
 
 # Per-artifact rules (optional)
 rules:

@@ -1,0 +1,204 @@
+---
+import { Image, getImage } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Eyebrow from '../Eyebrow.astro';
+import SectionHeading from '../SectionHeading.astro';
+import ProjectLink from '../ProjectLink.astro';
+import PostCard from '../PostCard.astro';
+import Reveal from '../Reveal.astro';
+import JsonLd from '../JsonLd.astro';
+import portrait from '../../assets/me.png';
+import { getPublishedPosts } from '../../lib/posts';
+import { siteUrl, socialLinks, authorName } from '../../lib/site';
+import { defaultLocale, ui, type Locale } from '../../i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+const t = ui[locale];
+const posts = await getPublishedPosts(locale);
+
+const portraitMeta = await getImage({
+  src: portrait,
+  format: 'webp',
+  width: 1122,
+});
+
+const projects = [
+  {
+    title: t.projects[0].title,
+    description: t.projects[0].description,
+    url: 'https://andersonlimacrv.com',
+    tags: ['Astro', 'Tailwind'],
+  },
+  {
+    title: 'GitHub',
+    description: t.projects[1].description,
+    url: socialLinks.github,
+    tags: ['Open Source'],
+  },
+  {
+    title: 'LinkedIn',
+    description: t.projects[2].description,
+    url: socialLinks.linkedin,
+    tags: ['Perfil'],
+  },
+];
+
+const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
+const homeUrl = `${baseUrl}/`;
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: authorName,
+  url: new URL(homeUrl, siteUrl).toString(),
+  image: new URL(portraitMeta.src, siteUrl).toString(),
+  jobTitle: 'Desenvolvedor',
+  sameAs: [socialLinks.github, socialLinks.linkedin],
+};
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Anderson Carvalho',
+  url: siteUrl,
+};
+---
+
+<BaseLayout
+  title={t.meta.homeTitle}
+  description={t.meta.homeDescription}
+  locale={locale}
+>
+  <JsonLd schema={personJsonLd} />
+  <JsonLd schema={websiteJsonLd} />
+
+  <div class="grid-bg">
+    <!-- Hero -->
+    <section class="container-site flex flex-col gap-10 md:flex-row md:items-center md:gap-16">
+      <div class="flex-1">
+        <p class="mb-6">
+          <Eyebrow label={t.heroEyebrow} />
+        </p>
+        <h1 class="hero-name">
+          Anderson Carvalho
+        </h1>
+        <p
+          class="mt-6 max-w-md text-lg text-muted-foreground"
+        >
+          {t.heroSubtitle}
+        </p>
+      </div>
+      <figure class="shrink-0 w-full">
+        <Image
+          src={portrait}
+          alt="Retrato em preto e branco de Anderson Carvalho"
+          widths={[480, 800, 1122]}
+          sizes="(min-width: 768px) 320px, 90vw"
+          loading="eager"
+          fetchpriority="high"
+          class="w-full rounded-lg border border-border"
+        />
+        <figcaption class="mt-3 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+          {t.figCaption}
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- {t.sections.about.number} / {t.sections.about.title} -->
+    <SectionHeading number={t.sections.about.number} title={t.sections.about.title} id="sobre" eyebrow={t.sections.about.eyebrow}>
+      <Reveal>
+        <div class="grid gap-10 lg:grid-cols-[1fr_240px]">
+          <p class="max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            {t.aboutParagraph}
+          </p>
+          <aside class="rail-left flex flex-col gap-2">
+            <a
+              href={socialLinks.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group-link transition-micro flex min-h-[44px] items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+            >
+              GitHub
+              <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a
+              href={socialLinks.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group-link transition-micro flex min-h-[44px] items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+            >
+              LinkedIn
+              <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a
+              href={`mailto:${socialLinks.email}`}
+              class="group-link transition-micro flex min-h-[44px] items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+            >
+              Email
+              <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </aside>
+        </div>
+      </Reveal>
+    </SectionHeading>
+
+    <!-- {t.sections.projects.number} / {t.sections.projects.title} -->
+    <SectionHeading number={t.sections.projects.number} title={t.sections.projects.title} id="projetos" eyebrow={t.sections.projects.eyebrow}>
+      <Reveal>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map((project) => (
+            <ProjectLink {...project} />
+          ))}
+        </div>
+      </Reveal>
+    </SectionHeading>
+
+    <!-- {t.sections.blog.number} / {t.sections.blog.title} -->
+    <SectionHeading number={t.sections.blog.number} title={t.sections.blog.title} id="blog" eyebrow={t.sections.blog.eyebrow}>
+      <Reveal>
+        {posts.length > 0 ? (
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {posts.slice(0, 3).map((post) => (
+              <PostCard post={post} locale={locale} />
+            ))}
+          </div>
+        ) : (
+          <p class="text-muted-foreground">
+            {t.blogComingSoon}
+          </p>
+        )}
+        <p class="mt-8">
+          <a
+            href={`${baseUrl}/blog`}
+            class="group-link transition-micro inline-flex min-h-[44px] items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-foreground hover:text-primary"
+          >
+            {t.viewAllPosts}
+            <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </p>
+      </Reveal>
+    </SectionHeading>
+
+    <!-- {t.sections.contact.number} / {t.sections.contact.title} -->
+    <SectionHeading number={t.sections.contact.number} title={t.sections.contact.title} id="contato" eyebrow={t.sections.contact.eyebrow}>
+      <Reveal>
+        <div class="card-surface flex max-w-xl flex-col gap-4 p-6 sm:p-8">
+          <p class="text-muted-foreground">
+            {t.contactParagraph}
+          </p>
+          <a
+            href={`mailto:${socialLinks.email}`}
+            class="group-link transition-micro inline-flex min-h-[44px] w-fit items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-foreground hover:text-primary"
+          >
+            {socialLinks.email}
+            <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </Reveal>
+    </SectionHeading>
+  </div>
+</BaseLayout>

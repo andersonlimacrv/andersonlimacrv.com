@@ -1,0 +1,127 @@
+---
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { siteUrl } from '../lib/site';
+import { defaultLocale, languages, localeNames, ogLocales, translatePath, ui, type Locale } from '../i18n/ui';
+import portrait from '../assets/me.png';
+
+interface Props {
+  title: string;
+  description: string;
+  locale?: Locale;
+  image?: string;
+  type?: 'website' | 'article';
+}
+
+const portraitMeta = await getImage({
+  src: portrait,
+  format: 'webp',
+  width: 1122,
+});
+
+const {
+  title,
+  description,
+  locale = defaultLocale,
+  image = portraitMeta.src,
+  type = 'website',
+} = Astro.props;
+
+const lang = localeNames[locale];
+const ogLocale = ogLocales[locale];
+const t = ui[locale];
+
+const canonicalPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const canonical = new URL(canonicalPath === '/' ? '/' : `${canonicalPath}/`, siteUrl).toString();
+
+const getAlternatePath = (target: Locale): string =>
+  translatePath(Astro.url.pathname, target);
+
+const localesList = Object.keys(languages) as Locale[];
+const hreflangLinks = localesList.map(
+  (target) => new URL(getAlternatePath(target), siteUrl).toString(),
+);
+const hreflangCodes = localesList.map((target) => localeNames[target]);
+const ogImage = new URL(image, siteUrl).toString();
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Hreflang / i18n -->
+    {localesList.map((_, i) => (
+      <link rel="alternate" hreflang={hreflangCodes[i]} href={hreflangLinks[i]} />
+    ))}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="Anderson Carvalho" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:url" content={canonical} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <ClientRouter />
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon.svg"
+    />
+
+    <script is:inline>
+      // Apply theme before first paint to avoid FOUC.
+      (() => {
+        const root = document.documentElement;
+        const stored = (() => {
+          try {
+            return localStorage.getItem('theme');
+          } catch {
+            return null;
+          }
+        })();
+        const theme = stored === 'light' || stored === 'dark'
+          ? stored
+          : window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+        root.classList.toggle('dark', theme === 'dark');
+        root.classList.add('theme-applied');
+      })();
+    </script>
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a
+      class="skip-link"
+      href="#main-content"
+      aria-label={t.skipLink}
+    >
+      {t.skipLink}
+    </a>
+    <Header locale={locale} />
+    <main id="main-content" class="site-main">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>

@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# AI crawlers (GEO - Generative Engine Optimization)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://andersonlimacrv.com/sitemap-index.xml

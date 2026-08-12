@@ -1,0 +1,47 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  url: string;
+  tags?: string[];
+  external?: boolean;
+}
+
+const { title, description, url, tags = [], external = true } = Astro.props;
+---
+
+<a
+  href={url}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+  class="group-link card-surface transition-micro flex min-h-[44px] flex-col gap-2 p-5 hover:border-primary/50 hover:bg-primary/5"
+>
+  <span class="flex items-center justify-between gap-3">
+    <span class="font-sans text-lg font-semibold tracking-tight">{title}</span>
+    <svg
+      class="group-arrow shrink-0 transition-transform"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  </span>
+  {description && <span class="text-sm text-muted-foreground">{description}</span>}
+  {tags.length > 0 && (
+    <span class="mt-1 flex flex-wrap gap-2">
+      {tags.map((tag) => (
+        <span class="rounded-lg border border-border px-2 py-0.5 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground">
+          {tag}
+        </span>
+      ))}
+    </span>
+  )}
+</a>

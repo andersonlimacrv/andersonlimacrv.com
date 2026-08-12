@@ -1,0 +1,30 @@
+# Anderson Carvalho
+
+> Anderson Carvalho é desenvolvedor de software com foco em frontend e engenharia web. Este site reúne seu portfólio, projetos e um mini-blog sobre desenvolvimento, tecnologia e design editorial para a web.
+
+## Sobre
+
+- Nome: Anderson Carvalho
+- Perfil: Desenvolvedor de software (frontend, engenharia web)
+- Idioma: Português (pt-BR)
+- Site: https://andersonlimacrv.com
+- Email: contato@andersonlimacrv.com
+
+## Redes sociais
+
+- GitHub: https://github.com/andersonlimacrv
+- LinkedIn: https://www.linkedin.com/in/andersonlimacrv
+
+## Blog
+
+Posts publicados, do mais recente para o mais antigo:
+
+- [Design editorial para a web — menos é mais](https://andersonlimacrv.com/blog/design-editorial-para-web)
+- [Meu setup de desenvolvimento em 2026](https://andersonlimacrv.com/blog/meu-setup-de-desenvolvimento)
+- [Por que você deveria ter um site próprio em 2026](https://andersonlimacrv.com/blog/por-que-ter-um-site-proprio)
+
+## Páginas
+
+- Home: https://andersonlimacrv.com
+- Blog: https://andersonlimacrv.com/blog
+- Feed RSS: https://andersonlimacrv.com/rss.xml

@@ -1,0 +1,45 @@
+---
+import { defaultLocale, languages, translatePath, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const current = Astro.props.locale ?? defaultLocale;
+
+const options = (Object.keys(languages) as Locale[]).map((target) => ({
+  locale: target,
+  label: target.toUpperCase(),
+  fullName: languages[target],
+  href: translatePath(Astro.url.pathname, target),
+  active: target === current,
+}));
+---
+
+<span class="site-locale-wrap">
+  <select class="site-locale-select" aria-label={languages[current]}>
+    {options.map((option) => (
+      <option value={option.href} title={option.fullName} selected={option.active}>
+        {option.label}
+      </option>
+    ))}
+  </select>
+  <svg
+    class="site-locale-chevron"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+</span>
+
+<script>
+  import './language-switcher';
+</script>
