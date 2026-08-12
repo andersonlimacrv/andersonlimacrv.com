@@ -5,12 +5,14 @@ Todas as páginas e componentes existem. Ver proposal.md - Why. Prompt §9 defin
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Verificar/ajustar todo layout para mobile-first (Tailwind ascendente).
 - Grade de posts 1→2→2-3 colunas.
 - Header compacto no mobile; touch targets ≥44px.
 - Zero overflow horizontal.
 
 **Non-Goals:**
+
 - Novas funcionalidades.
 - Modo escuro (design-tokens).
 - Testes automatizados de e2e (verificação manual em breakpoints).
@@ -25,7 +27,7 @@ Todas as páginas e componentes existem. Ver proposal.md - Why. Prompt §9 defin
 
 **Container fluido** — `mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8` centralizado em utility `.container-site` (global.css) — evitar repetição em cada página. Razão: gutter consistente.
 
-**Touch targets** — Links/CTAs com `min-h-[44px]` e `py-3` em mobile via classe base; `:focus-visible` garantido (accessibility).
+**Touch targets** — Links/CTAs com `min-h-11` e `py-3` em mobile via classe base; `:focus-visible` garantido (accessibility).
 
 **Verificação manual** — Checklist em 320/375/768/1024/1440: overflow horizontal ausente (devtools), toque ≥44px, grade correta. Registrado como tarefa de QA em tasks.md.
 

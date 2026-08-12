@@ -289,7 +289,7 @@ html {
 .site-locale-select {
   appearance: none;
   -webkit-appearance: none;
-  min-height: 44px;
+  min-height: 40px;
   width: 64px;
   min-width: 44px;
   padding-inline: 0.75rem 2rem;

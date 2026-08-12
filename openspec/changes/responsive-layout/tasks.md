@@ -7,7 +7,7 @@
 ## 2. Header e navegação mobile
 
 - [ ] 2.1 Implementar nav mobile com `<details>` nativo (botão "Menu" com `summary`, sem overlay pesado, sem JS), desktop com nav inline (`sm:` ou `md:`)
-- [ ] 2.2 Garantir touch targets ≥ 44px (`min-h-[44px]`, padding adequado) em links/CTAs do header, hero, projetos e footer
+- [ ] 2.2 Garantir touch targets ≥ 44px (`min-h-11`, padding adequado) em links/CTAs do header, hero, projetos e footer
 
 ## 3. Grades e hero
 

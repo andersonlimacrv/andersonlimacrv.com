@@ -27,17 +27,17 @@ const navLinks = [
   <div class="site-toolbar">
     <a
       href={baseUrl ? `/${locale}` : '/'}
-      class="transition-micro flex min-h-[44px] shrink-0 items-center px-3 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-foreground hover:text-primary"
+      class="transition-micro flex min-h-14 shrink-0 items-center px-3 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-foreground hover:text-primary"
     >
       AC<span class="text-primary">.</span>
     </a>
 
-    <nav class="hidden min-h-[44px] items-center gap-1 sm:flex">
+    <nav class="hidden min-h-14 items-center gap-2 sm:flex">
       {navLinks.map((link) => (
         <a
           href={link.href}
           aria-current={link.current ? 'page' : undefined}
-          class={`transition-micro flex min-h-[44px] w-24 items-center justify-center whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] ${
+          class={`transition-micro flex min-h-11 w-24 items-center justify-center whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] ${
             link.current
               ? 'text-foreground underline underline-offset-4'
               : 'text-muted-foreground hover:text-foreground'

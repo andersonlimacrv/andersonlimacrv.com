@@ -14,7 +14,7 @@ const { title, description, url, tags = [], external = true } = Astro.props;
   href={url}
   target={external ? '_blank' : undefined}
   rel={external ? 'noopener noreferrer' : undefined}
-  class="group-link card-surface transition-micro flex min-h-[44px] flex-col gap-2 p-5 hover:border-primary/50 hover:bg-primary/5"
+  class="group-link card-surface transition-micro flex min-h-11 flex-col gap-2 p-5 hover:border-primary/50 hover:bg-primary/5"
 >
   <span class="flex items-center justify-between gap-3">
     <span class="font-sans text-lg font-semibold tracking-tight">{title}</span>

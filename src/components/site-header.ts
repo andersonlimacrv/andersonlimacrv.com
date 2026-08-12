@@ -3,7 +3,7 @@ const header = document.querySelector<HTMLElement>(
 );
 
 // Rolagem (px) necessária para compactar o header 100%.
-const MAX_SCROLL = 200;
+const MAX_SCROLL = 150;
 const reduced =
   typeof window !== 'undefined' &&
   window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
