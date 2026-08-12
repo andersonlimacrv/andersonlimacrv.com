@@ -75,6 +75,8 @@
   --blur: 10px;
   --shadow-soft: 0 30px 70px -32px color-mix(in oklab, var(--foreground) 40%, transparent);
   --header-h: 3.5rem;
+  --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-expo-in: cubic-bezier(0.7, 0, 0.84, 0);
 }
 
 .dark {
@@ -497,6 +499,9 @@ html {
     color 0.18s ease-out,
     border-color 0.18s ease-out;
 }
+
+/* Theme toggle — rotação do ícone (port CSS do motion.g/motion.path do
+   ThemeToggleButton1). A classe .is-dark é aplicada por theme-toggle.ts. */
 
 @media (prefers-reduced-motion: no-preference) {
   .group-link:hover .group-arrow,

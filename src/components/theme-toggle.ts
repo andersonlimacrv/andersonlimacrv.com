@@ -1,33 +1,47 @@
-const button = document.querySelector('.theme-toggle') as HTMLButtonElement | null;
-const sun = button?.querySelector('.icon-sun') as SVGSVGElement | null;
-const moon = button?.querySelector('.icon-moon') as SVGSVGElement | null;
+import {
+  applyStoredTheme,
+  getTheme,
+  toggleTheme,
+  THEME_CHANGE_EVENT,
+} from '../lib/theme';
+import { createAnimation } from '../lib/theme-transition';
 
-if (!button || !sun || !moon) {
-  // Scripts do Astro são type="module"; se o elemento não existe, nada a fazer.
-} else {
-  const toggleButton = button;
-  const sunIcon = sun;
-  const moonIcon = moon;
-
-  function sync() {
-    const isDark = document.documentElement.classList.contains('dark');
-    sunIcon.classList.toggle('hidden', isDark);
-    moonIcon.classList.toggle('hidden', !isDark);
-    toggleButton.setAttribute('aria-pressed', String(isDark));
-    toggleButton.setAttribute('aria-label', isDark ? 'Ativar tema claro' : 'Ativar tema escuro');
-  }
-
-  toggleButton.addEventListener('click', () => {
-    const root = document.documentElement;
-    const isDark = root.classList.contains('dark');
-    root.classList.toggle('dark', !isDark);
-    try {
-      localStorage.setItem('theme', isDark ? 'light' : 'dark');
-    } catch {
-      // Preferência do sistema será usada na próxima visita.
-    }
-    sync();
+function bindToggle() {
+  const rootEl = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  if (!rootEl || rootEl.dataset.bound === 'true') return;
+  rootEl.dataset.bound = 'true';
+  rootEl.addEventListener('click', () => {
+    toggleTheme(createAnimation('circle', 'center', false));
   });
-
-  sync();
 }
+
+function syncToggle() {
+  const button = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  if (!button) return;
+  const darkLabel = button.dataset.labelDark ?? 'Ativar tema escuro';
+  const lightLabel = button.dataset.labelLight ?? 'Ativar tema claro';
+  const dark = getTheme() === 'dark';
+  button.classList.toggle('is-dark', dark);
+  button.setAttribute('aria-pressed', String(dark));
+  button.setAttribute('aria-label', dark ? lightLabel : darkLabel);
+}
+
+function watchThemeChanges() {
+  const rootEl = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  if (!rootEl || rootEl.dataset.listening === 'true') return;
+  rootEl.dataset.listening = 'true';
+  document.addEventListener(THEME_CHANGE_EVENT, syncToggle);
+}
+
+function init() {
+  bindToggle();
+  watchThemeChanges();
+  syncToggle();
+}
+
+init();
+document.addEventListener('astro:page-load', init);
+document.addEventListener('astro:after-swap', () => {
+  applyStoredTheme();
+  syncToggle();
+});
