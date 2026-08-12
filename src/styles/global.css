@@ -125,7 +125,7 @@
   /* Tokens locais do site */
   --blur: 10px;
   --shadow-soft: 0 30px 70px -32px color-mix(in oklab, var(--foreground) 40%, transparent);
-  --header-h: 3.5rem;
+  --header-h: 3.8125rem;
   --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-expo-in: cubic-bezier(0.7, 0, 0.84, 0);
 }
@@ -255,9 +255,16 @@
   }
 }
 
+/* Compensa o header fixo (toolbar 60px + borda 1px) para o conteúdo
+   não ficar escondido atrás da barra. Quando o header some, o espaço
+   permanece — a barra só desliza para cima sem reposicionar o layout. */
+.site-main {
+  padding-top: var(--header-h);
+}
+
 html {
   scroll-behavior: smooth;
-  /* Âncoras compensam o header sticky */
+  /* Âncoras compensam o header fixo */
   scroll-padding-top: calc(var(--header-h) + 1rem);
 }
 
@@ -271,24 +278,29 @@ html {
 }
 
 /* ------------------------------------------------------------------ */
-/* Header — toolbox flutuante, aproxima gradualmente no scroll         */
+/* Header — barra fixa no topo, tamanho constante. Esconde deslizando  */
+/* para cima após inatividade e reaparece com movimento (site-header.ts) */
 /* ------------------------------------------------------------------ */
 
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 50;
-  /* Progresso 0..1 controlado por site-header.ts (0 no topo, 1 rolado) */
-  --header-progress: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* No topo: barra full-width com apenas a borda inferior; a borda
-     some conforme a toolbox flutua centralizada (progresso 1) */
-  border-bottom: 1px solid
-    color-mix(in oklab, var(--border) calc(100% * (1 - var(--header-progress))), transparent);
-  padding-block: calc(0.375rem + 0.375rem * var(--header-progress));
+  border-bottom: 1px solid var(--border);
+  background-color: color-mix(in oklab, var(--background) 90%, transparent);
+  backdrop-filter: blur(var(--blur)) saturate(1.05);
   pointer-events: none;
+  transition: transform 0.35s var(--ease-expo-out);
+}
+
+/* Esconder para cima quando ocluir após inatividade (ver site-header.ts) */
+.site-header.is-hidden {
+  transform: translateY(-100%);
 }
 
 .site-toolbar {
@@ -303,23 +315,6 @@ html {
   gap: 1rem;
   padding: 0.25rem;
   padding-inline: clamp(0.75rem, 1.75vw, 1.5rem);
-  /* Borda/fundo/raio seguem o esquema do site; no topo ficam invisíveis
-     (alpha 0) — só aparecem quando a toolbox flutua */
-  border: 1px solid
-    color-mix(
-      in oklab,
-      var(--border) calc((45% + 55% * var(--header-progress)) * var(--header-progress)),
-      transparent
-    );
-  border-radius: calc(var(--radius) * var(--header-progress));
-  background-color: color-mix(
-    in oklab,
-    var(--background) calc(90% * var(--header-progress)),
-    transparent
-  );
-  backdrop-filter: blur(var(--blur)) saturate(1.05);
-  box-shadow: 0 60px 60px -60px
-    color-mix(in oklab, var(--muted) calc(40% * var(--header-progress)), transparent);
 }
 
 /* Logo à esquerda, nav centralizada, ações alinhadas à direita.
@@ -672,9 +667,6 @@ html {
     border-color 0.18s ease-out;
 }
 
-/* Theme toggle — rotação do ícone (port CSS do motion.g/motion.path do
-   ThemeToggleButton1). A classe .is-dark é aplicada por theme-toggle.ts. */
-
 @media (prefers-reduced-motion: no-preference) {
   .group-link:hover .group-arrow,
   .group-link:focus-visible .group-arrow {
@@ -688,6 +680,44 @@ html {
 
 .shadow-soft {
   box-shadow: var(--shadow-soft);
+}
+
+/* Faixas de desfoque fixas nas bordas da janela (scroll fade): um blur de 5px
+   suave no topo e embaixo da tela — aplicado por BaseLayout em todas as páginas. */
+.screen-fade {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 2rem;
+  z-index: 40;
+  pointer-events: none;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.screen-fade-top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--background) 92%, transparent) 0%,
+    color-mix(in oklab, var(--background) 65%, transparent) 18%,
+    color-mix(in oklab, var(--background) 30%, transparent) 45%,
+    color-mix(in oklab, var(--background) 12%, transparent) 70%,
+    transparent 100%
+  );
+}
+
+.screen-fade-bottom {
+  bottom: 0;
+  height: 2.5rem;
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--background) 88%, transparent) 0%,
+    color-mix(in oklab, var(--background) 58%, transparent) 14%,
+    color-mix(in oklab, var(--background) 25%, transparent) 40%,
+    color-mix(in oklab, var(--background) 9%, transparent) 68%,
+    transparent 100%
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {

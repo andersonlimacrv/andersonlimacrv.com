@@ -2,8 +2,10 @@ const header = document.querySelector<HTMLElement>(
   '[data-astro-transition-persist="header"]',
 );
 
-// Rolagem (px) necessária para compactar o header 100%.
-const MAX_SCROLL = 150;
+// Inatividade (s) de mouse/scroll/teclado antes do header esconder.
+const IDLE_MS = 3000;
+// Só esconde após o usuário rolar além deste ponto — no topo, sempre visível.
+const HIDE_AFTER = 80;
 const reduced =
   typeof window !== 'undefined' &&
   window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
@@ -14,18 +16,32 @@ const menuLinks = menu ? Array.from(menu.querySelectorAll<HTMLAnchorElement>('a'
 
 const isOpen = () => header?.classList.contains('is-open') === true;
 
-function sync() {
-  if (!header) return;
-  // Menu aberto trava a toolbox no estado "flutuando" (progresso 1) para que
-  // fundo/borda/sombra fiquem visíveis mesmo no topo da página.
-  const progress = isOpen()
-    ? 1
-    : reduced
-      ? window.scrollY > 8
-        ? 1
-        : 0
-      : Math.min(1, Math.max(0, window.scrollY / MAX_SCROLL));
-  header.style.setProperty('--header-progress', progress.toFixed(4));
+let idleTimer: ReturnType<typeof setTimeout> | undefined;
+
+function showHeader() {
+  header?.classList.remove('is-hidden');
+}
+
+function hideHeader() {
+  if (!header || reduced || isOpen()) return;
+  if (window.scrollY <= HIDE_AFTER) return;
+  header.classList.add('is-hidden');
+}
+
+function scheduleHide() {
+  if (idleTimer) clearTimeout(idleTimer);
+  idleTimer = setTimeout(hideHeader, IDLE_MS);
+}
+
+function cancelHide() {
+  if (idleTimer) clearTimeout(idleTimer);
+  idleTimer = undefined;
+}
+
+// Qualquer atividade do usuário traz o header de volta e reinicia o timer.
+function onActivity() {
+  showHeader();
+  scheduleHide();
 }
 
 const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
@@ -75,7 +91,9 @@ function openMenu() {
   setToggleState(true);
   setMenuHeight();
   animateLinks(true);
-  sync();
+  // Menu aberto: mantém o header visível.
+  showHeader();
+  cancelHide();
 }
 
 function closeMenu() {
@@ -84,7 +102,7 @@ function closeMenu() {
   menu?.style.removeProperty('--menu-h');
   setToggleState(false);
   animateLinks(false);
-  sync();
+  scheduleHide();
 }
 
 function handlePointerDown(event: PointerEvent) {
@@ -101,28 +119,22 @@ function handleKeyDown(event: KeyboardEvent) {
 function bind() {
   if (!header || header.dataset.bound === 'true') return;
   header.dataset.bound = 'true';
-  let ticking = false;
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      sync();
-      ticking = false;
-    });
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', onActivity, { passive: true });
+  document.addEventListener('pointermove', onActivity, { passive: true });
+  document.addEventListener('pointerdown', onActivity, { passive: true });
+  document.addEventListener('keydown', onActivity);
   toggle?.addEventListener('click', () => (isOpen() ? closeMenu() : openMenu()));
   menuLinks.forEach((link) => link.addEventListener('click', () => closeMenu()));
   document.addEventListener('pointerdown', handlePointerDown);
   document.addEventListener('keydown', handleKeyDown);
-  sync();
+  onActivity();
 }
 
 // View Transitions: o header persiste entre páginas — fecha o menu e reavalia
-// a posição ao navegar (inclusive troca de idioma, que é uma navegação).
+// o estado de visibilidade ao navegar (inclusive troca de idioma).
 document.addEventListener('astro:page-load', () => {
   closeMenu();
-  sync();
+  onActivity();
 });
 
 // Redimensionamento: ao cruzar para desktop, garante que o menu feche.
