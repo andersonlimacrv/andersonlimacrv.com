@@ -1,0 +1,48 @@
+---
+interface Props {
+  /** Classes Tailwind (ex.: "h-16 text-muted-foreground") — controlam
+   *  dimensões e cor via currentColor. O wrapper é um <div> stretch full-width. */
+  class?: string;
+  isVertical?: boolean;
+  grabThreshold?: number;
+  releaseThreshold?: number;
+  stiffness?: number;
+  damping?: number;
+  strokeWidth?: number;
+}
+
+const {
+  class: className = 'h-16 text-muted-foreground',
+  isVertical = false,
+  grabThreshold = 5,
+  releaseThreshold = 100,
+  stiffness = 300,
+  damping = 5,
+  strokeWidth = 1,
+} = Astro.props;
+---
+
+<div
+  class:list={['w-full', className]}
+  data-elastic-line
+  data-is-vertical={isVertical}
+  data-grab-threshold={grabThreshold}
+  data-release-threshold={releaseThreshold}
+  data-stiffness={stiffness}
+  data-damping={damping}
+  aria-hidden="true"
+>
+  <svg class="h-full w-full" preserveAspectRatio="none" focusable="false">
+    <path
+      stroke="currentColor"
+      stroke-width={strokeWidth}
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+</div>
+
+<script>
+  import './elastic-line';
+</script>

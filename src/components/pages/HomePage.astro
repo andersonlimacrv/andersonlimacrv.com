@@ -7,6 +7,7 @@ import ProjectLink from '../ProjectLink.astro';
 import PostCard from '../PostCard.astro';
 import Reveal from '../Reveal.astro';
 import JsonLd from '../JsonLd.astro';
+import ElasticLine from '../ElasticLine.astro';
 import portrait from '../../assets/me.png';
 import { getPublishedPosts } from '../../lib/posts';
 import { siteUrl, socialLinks, authorName } from '../../lib/site';
@@ -108,6 +109,9 @@ const websiteJsonLd = {
         </figcaption>
       </figure>
     </section>
+
+    <!-- Divisor elástico entre o hero e as seções — reage ao ponteiro -->
+    <ElasticLine class="container-site mt-4 h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
 
     <!-- {t.sections.about.number} / {t.sections.about.title} -->
     <SectionHeading number={t.sections.about.number} title={t.sections.about.title} id="sobre" eyebrow={t.sections.about.eyebrow}>
