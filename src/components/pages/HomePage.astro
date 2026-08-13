@@ -110,8 +110,9 @@ const websiteJsonLd = {
       </figure>
     </section>
 
-    <!-- Divisor elástico entre o hero e as seções — reage ao ponteiro -->
-    <ElasticLine class="container-site mt-4 h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
+    <!-- Divisor elástico: hero | sobre — reage ao ponteiro. Apague estas
+         4 linhas (ElasticLine) para remover os divisores por completo. -->
+    <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
 
     <!-- {t.sections.about.number} / {t.sections.about.title} -->
     <SectionHeading number={t.sections.about.number} title={t.sections.about.title} id="sobre" eyebrow={t.sections.about.eyebrow}>
@@ -151,6 +152,8 @@ const websiteJsonLd = {
       </Reveal>
     </SectionHeading>
 
+    <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
+
     <!-- {t.sections.projects.number} / {t.sections.projects.title} -->
     <SectionHeading number={t.sections.projects.number} title={t.sections.projects.title} id="projetos" eyebrow={t.sections.projects.eyebrow}>
       <Reveal>
@@ -161,6 +164,8 @@ const websiteJsonLd = {
         </div>
       </Reveal>
     </SectionHeading>
+
+    <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
 
     <!-- {t.sections.blog.number} / {t.sections.blog.title} -->
     <SectionHeading number={t.sections.blog.number} title={t.sections.blog.title} id="blog" eyebrow={t.sections.blog.eyebrow}>
@@ -187,6 +192,8 @@ const websiteJsonLd = {
         </p>
       </Reveal>
     </SectionHeading>
+
+    <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
 
     <!-- {t.sections.contact.number} / {t.sections.contact.title} -->
     <SectionHeading number={t.sections.contact.number} title={t.sections.contact.title} id="contato" eyebrow={t.sections.contact.eyebrow}>

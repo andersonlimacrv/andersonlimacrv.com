@@ -58,13 +58,25 @@ function midY(state: ElasticLineState) {
   return state.height / 2;
 }
 
+// Aplica novo tamanho: estado + viewBox + volta o controle ao centro.
+// Chamado no bind e a cada resize (ResizeObserver) — sem isso o viewBox
+// fica defasado e a linha renderiza nas coordenadas antigas.
+function applySize(state: ElasticLineState, width: number, height: number) {
+  state.width = width;
+  state.height = height;
+  if (width > 0 && height > 0) {
+    state.svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+  }
+  state.controlX = midX(state);
+  state.controlY = midY(state);
+  state.vx = 0;
+  state.vy = 0;
+  state.path.setAttribute('d', dFor(state));
+}
+
 function measure(state: ElasticLineState) {
   const rect = state.svg.getBoundingClientRect();
-  state.width = rect.width;
-  state.height = rect.height;
-  if (state.width > 0 && state.height > 0) {
-    state.svg.setAttribute('viewBox', `0 0 ${state.width} ${state.height}`);
-  }
+  applySize(state, rect.width, rect.height);
 }
 
 // d com extremidades FIXAS no centro e apenas o ponto de controle deformando.
@@ -183,9 +195,6 @@ function bindElastic(el: HTMLDivElement) {
   };
 
   measure(state);
-  state.controlX = midX(state);
-  state.controlY = midY(state);
-  state.path.setAttribute('d', dFor(state));
 
   svg.style.opacity = '0';
   window.requestAnimationFrame(() => {
@@ -211,13 +220,7 @@ function init() {
       for (const entry of entries) {
         const state = states.find((s) => s.svg === entry.target);
         if (state) {
-          state.width = entry.contentRect.width;
-          state.height = entry.contentRect.height;
-          state.controlX = midX(state);
-          state.controlY = midY(state);
-          state.vx = 0;
-          state.vy = 0;
-          state.path.setAttribute('d', dFor(state));
+          applySize(state, entry.contentRect.width, entry.contentRect.height);
         }
       }
     });
