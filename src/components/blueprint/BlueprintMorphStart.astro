@@ -1,0 +1,162 @@
+---
+interface Props {
+  finalSize?: number;
+}
+
+const { finalSize = 160 } = Astro.props;
+const radius = finalSize / 2;
+---
+
+<div class="bp-wireframe bp-start" data-bp-wireframe aria-hidden="true" style={`--bp-final-size: ${finalSize}px`}>
+  <div class="bp-rect">
+    <svg class="bp-corners" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path class="bp-corner" d="M 2 7 V 2 H 7" />
+      <path class="bp-corner" d="M 93 2 H 98 V 7" />
+      <path class="bp-corner" d="M 98 93 V 98 H 93" />
+      <path class="bp-corner" d="M 7 98 H 2 V 93" />
+    </svg>
+
+    <svg class="bp-leader" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <path class="bp-leader-path" d="M 8 8 L 78 78" />
+      <polygon class="bp-leader-head" points="69,77 79,73 77,83" />
+    </svg>
+
+    <div class="bp-ghost">
+      <span class="bp-ghost-cross bp-ghost-cross-x" aria-hidden="true"></span>
+      <span class="bp-ghost-cross bp-ghost-cross-y" aria-hidden="true"></span>
+    </div>
+
+    <span class="bp-ghost-r" aria-hidden="true">
+      <span class="bp-ghost-r-line"></span>
+      <b class="bp-ghost-r-label">r {radius}px</b>
+    </span>
+  </div>
+</div>
+
+<style>
+  .bp-wireframe {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    color: var(--muted-foreground);
+    /* Contraste ≥3:1 sobre o fundo (WCAG 1.4.11 — elementos não-texto). */
+    --bp-line: color-mix(in oklab, var(--foreground) 48%, transparent);
+    --bp-line-strong: color-mix(in oklab, var(--foreground) 60%, transparent);
+  }
+
+  .bp-rect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--bp-h);
+    aspect-ratio: 1122 / 1402;
+    /* Sem borda contínua nem grade — só as cantoneiras marcam o enquadramento. */
+  }
+
+  /* Cantoneiras nos 4 cantos exatos do box da imagem */
+  .bp-corners {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .bp-corner {
+    fill: none;
+    stroke: var(--bp-line);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* Leader diagonal tracejado do canto do retângulo até o círculo final */
+  .bp-leader {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .bp-leader-path {
+    fill: none;
+    stroke: var(--bp-line);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .bp-leader-head {
+    fill: var(--bp-line);
+  }
+
+  /* Círculo final (estado END) como fantasma tracejado sobre o retângulo */
+  .bp-ghost {
+    position: absolute;
+    left: 78%;
+    top: 78%;
+    width: var(--bp-final-size, 160px);
+    height: var(--bp-final-size, 160px);
+    translate: -50% -50%;
+    border: 1px dashed var(--bp-line-strong);
+    border-radius: 9999px;
+    background-color: color-mix(in oklab, var(--foreground) 4%, transparent);
+  }
+
+  .bp-ghost-cross {
+    position: absolute;
+    background-color: var(--bp-line);
+  }
+
+  .bp-ghost-cross-x {
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+  }
+
+  .bp-ghost-cross-y {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+  }
+
+  /* Raio atual (r = metade do diâmetro final) anotado sobre a imagem, à
+     esquerda do círculo-fantasma, com linha de cota ligando ao círculo. */
+  .bp-ghost-r {
+    position: absolute;
+    left: calc(78% - var(--bp-final-size, 160px) / 2 - 1.5rem);
+    top: 78%;
+    translate: 0 -50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .bp-ghost-r-line {
+    width: 1rem;
+    height: 0;
+    border-top: 1px solid var(--bp-line-strong);
+  }
+
+  .bp-ghost-r-label {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.04em;
+    color: var(--foreground);
+  }
+
+  @media (max-width: 767px) {
+    .bp-leader {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import './morph-measure';
+</script>

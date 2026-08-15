@@ -1,0 +1,141 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  finalSize?: number;
+  finalX?: number;
+  finalY?: number;
+}
+
+const { src, finalSize = 160, finalX = 0.15, finalY = 0.5 } = Astro.props;
+const radius = finalSize / 2;
+// Mesma clamp do JS do morph (transformFor): min(max(center, top+r), bottom-r)
+// → borda do círculo entre 0 e (100% - finalSize). Quando o alvo é menor que
+// o diâmetro, o máximo prevalece e o círculo "estoura" o topo (igual ao morph).
+const centerStyle = {
+  left: `min(max(0px, calc(${finalX * 100}% - ${radius}px)), calc(100% - ${finalSize}px))`,
+  top: `min(max(0px, calc(${finalY * 100}% - ${radius}px)), calc(100% - ${finalSize}px))`,
+} as const;
+---
+
+<div class="bp-end" data-bp-end aria-hidden="true" style={`--bp-final-size: ${finalSize}px`}>
+  <div class="bp-end-circle" style={centerStyle}>
+    <Image
+      src={src}
+      width={finalSize}
+      height={finalSize}
+      format="webp"
+      fit="cover"
+      alt=""
+      class="bp-end-img"
+    />
+    <span class="bp-end-hatch hatch-diagonal" aria-hidden="true"></span>
+    <span class="bp-end-cross bp-end-cross-x" aria-hidden="true"></span>
+    <span class="bp-end-cross bp-end-cross-y" aria-hidden="true"></span>
+  </div>
+
+  <!-- Cruzes cardeais (mira) UMA CAMADA ACIMA da imagem: por virem depois do
+       círculo na DOM, ficam sobre o retrato transparente. -->
+  <div class="bp-end-board" style={centerStyle}>
+    <svg class="bp-end-corners" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path class="bp-end-cross" d="M 42 0 H 58 M 50 -7 V 7" />
+      <path class="bp-end-cross" d="M 100 42 V 58 M 93 50 H 107" />
+      <path class="bp-end-cross" d="M 42 100 H 58 M 50 93 V 107" />
+      <path class="bp-end-cross" d="M 0 42 V 58 M -7 50 H 7" />
+    </svg>
+  </div>
+</div>
+
+<style>
+  .bp-end {
+    position: absolute;
+    inset: 0;
+    /* Sem stacking context próprio (z-index: auto): cada filho compete no
+       contexto do ancestral. Assim dá para colocar as cruzes ACIMA da
+       imagem final (figura do morph é z-10) e o círculo (hachura/crosshair)
+       ABAIXO dela. */
+    pointer-events: none;
+    color: var(--muted-foreground);
+    --bp-line: color-mix(in oklab, var(--foreground) 48%, transparent);
+    --bp-line-strong: color-mix(in oklab, var(--foreground) 60%, transparent);
+  }
+
+  /* Círculo final: mesma clamp do JS do morph (transformFor) — mantém o
+     centro entre r do alvo, sem cortar o conteúdo de #sobre-content.
+     Fica ABAIXO da imagem que chega (z-10 da figura): hachura, crosshair e
+     borda são cobertos pelo retrato final. */
+  .bp-end-circle {
+    position: absolute;
+    z-index: 2;
+    width: var(--bp-final-size, 160px);
+    height: var(--bp-final-size, 160px);
+    /* Anel na mesma cor/opacidade das hachuras (--bp-hatch: foreground 8%). */
+    border: 1px solid var(--bp-hatch);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .bp-end-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.2;
+  }
+
+  /* Só as cruzes cardeais (mira) ficam ACIMA da imagem final: mesmo box do
+     círculo, mas com z-index acima do z-10 da figura do morph. */
+  .bp-end-board {
+    position: absolute;
+    z-index: 30;
+    width: var(--bp-final-size, 160px);
+    height: var(--bp-final-size, 160px);
+  }
+
+  .bp-end-corners {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .bp-end-cross {
+    fill: none;
+    /* Cruzes cardeais sobre a imagem: um pouco mais transparentes. */
+    stroke: color-mix(in oklab, var(--foreground) 48%, transparent);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* Hachura sobre o preenchimento (padrão diagonal do hatches.css) — mesma
+     cor/transparência de todas as hachuras do projeto (--bp-hatch). */
+  .bp-end-hatch {
+    position: absolute;
+    inset: 0;
+    --hatch-color: var(--bp-hatch);
+    --hatch-gap: 7px;
+  }
+
+  .bp-end-cross {
+    position: absolute;
+    background-color: var(--bp-line-strong);
+  }
+
+  .bp-end-cross-x {
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+  }
+
+  .bp-end-cross-y {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+  }
+</style>

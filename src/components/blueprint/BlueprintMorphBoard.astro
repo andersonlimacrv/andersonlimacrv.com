@@ -1,0 +1,319 @@
+---
+interface Props {
+  finalSize?: number;
+  finalX?: number;
+  finalY?: number;
+  figLabel?: string;
+}
+
+const { finalSize = 160, finalX = 0.15, finalY = 0.5, figLabel = 'ANDERSONLimaCRV' } =
+  Astro.props;
+const radius = finalSize / 2;
+const areaFinal = Math.round(Math.PI * radius * radius);
+const circumference = Math.round(2 * Math.PI * radius);
+---
+
+<div
+  class="bp-board"
+  data-bp-wireframe
+  data-bp-board
+  aria-hidden="true"
+  style={`--bp-final-size: ${finalSize}px`}
+>
+  <!-- Quadriculado atrás da foto: grade 8×8 em toda a área delimitada pelas
+       cantoneiras, bem mais transparente (aspecto de área hachurada). -->
+  <div class="bp-grid hatch-square" aria-hidden="true"></div>
+
+  <!-- Legenda no meio da imagem, na camada de baixo: coberta pela foto e
+       revelada quando o morph leva a imagem para #sobre-content. -->
+  <div class="bp-legend">
+    <div class="bp-legend-head">
+      <span class="bp-legend-name">{figLabel}</span>
+      <span class="bp-legend-rule" aria-hidden="true"></span>
+      <span class="bp-legend-tag">MORPH — EVOLUÇÃO</span>
+    </div>
+    <div class="bp-legend-body">
+      <!-- Diagrama na MESMA orientação do morph: retângulo em pé (largura <
+           altura, escala da imagem 1122×1402) → seta ↓ → círculo embaixo. -->
+      <div class="bp-diagram">
+        <span class="bp-glyph bp-glyph-rect" aria-hidden="true">
+          <span class="bp-glyph-tag">W×H</span>
+        </span>
+        <span class="bp-glyph-arrow" aria-hidden="true">
+          <span class="bp-glyph-arrow-line"></span>
+          <span class="bp-glyph-arrow-label">s={' '}<b data-bp="s">—</b></span>
+        </span>
+        <span class="bp-glyph bp-glyph-circle">
+          <span class="bp-glyph-tag">Ø{finalSize}</span>
+        </span>
+      </div>
+
+    <dl class="bp-data">
+      <div class="bp-group">
+        <dt class="bp-group-title">Inicial</dt>
+        <div class="bp-group-row">
+          <dt>W</dt>
+          <dd data-bp="w">—</dd>
+        </div>
+        <div class="bp-group-row">
+          <dt>H</dt>
+          <dd data-bp="h">—</dd>
+        </div>
+        <div class="bp-group-row">
+          <dt>d = √(W²+H²)</dt>
+          <dd data-bp="d">—</dd>
+        </div>
+        <div class="bp-group-row">
+          <dt>A = W·H</dt>
+          <dd data-bp="a">—</dd>
+        </div>
+      </div>
+      <div class="bp-group">
+        <dt class="bp-group-title">Final</dt>
+        <div class="bp-group-row">
+          <dt>D</dt>
+          <dd>{finalSize}px</dd>
+        </div>
+        <div class="bp-group-row">
+          <dt>r</dt>
+          <dd>{radius}px</dd>
+        </div>
+        <div class="bp-group-row">
+          <dt>A = πr²</dt>
+          <dd>{areaFinal}px²</dd>
+        </div>
+        <div class="bp-group-row">
+          <dt>C = 2πr</dt>
+          <dd>{circumference}px</dd>
+        </div>
+      </div>
+      <div class="bp-group">
+        <dt class="bp-group-title">Posição</dt>
+        <div class="bp-group-row">
+          <dt>x·y</dt>
+          <dd>{Math.round(finalX * 100)}% · {Math.round(finalY * 100)}%</dd>
+        </div>
+        <div class="bp-group-row">
+          <dt>s</dt>
+          <dd data-bp="s">—</dd>
+        </div>
+      </div>
+    </dl>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bp-board {
+    position: absolute;
+    inset: 0;
+    /* Camada de baixo: atrás da foto (figure z-10) e do wireframe (z-20). */
+    z-index: 5;
+    pointer-events: none;
+    color: var(--muted-foreground);
+    --bp-line: color-mix(in oklab, var(--foreground) 48%, transparent);
+  }
+
+  /* Quadriculado (padrão hatch-square do hatches.css) com célula fixa de
+     20px — a mesma escala da figura: o número de quadrados acompanha o
+     tamanho do retrato em qualquer viewport. A cor usa o padrão único do
+     projeto (--bp-hatch: foreground 8%). */
+  .bp-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--bp-h);
+    --hatch-color: var(--bp-hatch);
+    --hatch-cell: 20px;
+  }
+
+  .bp-legend {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--bp-h) / 2);
+    translate: -50% -50%;
+    width: min(28rem, calc(100% - 2rem));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 0.875rem;
+    background-color: var(--background);
+    font-family: var(--font-mono);
+    color: var(--muted-foreground);
+  }
+
+  /* Cabeçalho com a identidade do projeto: nome em chip, régua e tag */
+  .bp-legend-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .bp-legend-name {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: color-mix(in oklab, var(--background) 60%, transparent);
+    padding: 0.3125rem 0.5rem;
+  }
+
+  .bp-legend-rule {
+    height: 1px;
+    flex: 1;
+    background-color: var(--border);
+  }
+
+  .bp-legend-tag {
+    font-size: 0.5625rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+  }
+
+  /* Diagrama e dados LADO A LADO com espaço igualitário (2 colunas iguais) */
+  .bp-legend-body {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1.25rem;
+    align-items: center;
+  }
+
+  /* Diagrama na mesma orientação do morph: retângulo em pé → seta ↓ → círculo */
+  .bp-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  /* Glifos proporcionais à imagem (1122×1402) e ao diâmetro final */
+  .bp-glyph {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--foreground);
+    color: var(--foreground);
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .bp-glyph-rect {
+    width: 32px;
+    height: 40px;
+  }
+
+  .bp-glyph-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+  }
+
+  .bp-glyph-tag {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    white-space: nowrap;
+    background-color: var(--background);
+    padding: 0 0.125rem;
+  }
+
+  /* Seta vertical (linha tracejada ↓) com o rótulo da escala s= à direita */
+  .bp-glyph-arrow {
+    position: relative;
+    width: 0;
+    height: 1.5rem;
+  }
+
+  .bp-glyph-arrow-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-left: 1px dashed var(--muted-foreground);
+  }
+
+  .bp-glyph-arrow-label {
+    position: absolute;
+    left: 0.25rem;
+    top: 50%;
+    translate: 0 -50%;
+    font-size: 0.5rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .bp-glyph-arrow-label b {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+
+  /* Dados agrupados: INICIAL / FINAL / POSIÇÃO — um abaixo do outro */
+  .bp-data {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem 0;
+    margin: 0;
+  }
+
+  .bp-group-title {
+    display: block;
+    margin-bottom: 0.375rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+
+  .bp-group-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.625rem;
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+  }
+
+  .bp-group-row dt {
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .bp-group-row dd {
+    margin: 0;
+    color: var(--foreground);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 767px) {
+    .bp-legend {
+      width: min(22rem, calc(100% - 2rem));
+      padding: 0.5rem 0.625rem;
+    }
+
+    .bp-legend-head {
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Diagrama em cima (centralizado), dados embaixo */
+    .bp-legend-body {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: 0.75rem 0;
+    }
+  }
+</style>

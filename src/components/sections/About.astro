@@ -1,6 +1,8 @@
 ---
 import Reveal from '../ui/Reveal.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
+import BlueprintMorphEnd from '../blueprint/BlueprintMorphEnd.astro';
+import portrait from '../../assets/me.png';
 import { socialLinks } from '../../lib/site';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
 
@@ -18,38 +20,39 @@ const t = ui[locale];
   id="sobre"
   eyebrow={t.sections.about.eyebrow}
 >
-  <Reveal>
-    <div id="sobre-content" class="grid gap-10 lg:grid-cols-[1fr_240px]">
+  <div id="sobre-content" class="relative grid gap-10 lg:grid-cols-[1fr_240px]">
+    <BlueprintMorphEnd src={portrait} />
+    <Reveal>
       <p class="max-w-2xl text-lg leading-relaxed text-muted-foreground">
         {t.aboutParagraph}
       </p>
-      <aside class="rail-left flex flex-col gap-2">
-        <a
-          href={socialLinks.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group-link transition-micro flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
-        >
-          GitHub
-          <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-        <a
-          href={socialLinks.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group-link transition-micro flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
-        >
-          LinkedIn
-          <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-        <a
-          href={`mailto:${socialLinks.email}`}
-          class="group-link transition-micro flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
-        >
-          Email
-          <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-      </aside>
-    </div>
-  </Reveal>
+    </Reveal>
+    <Reveal as="aside" class="rail-left flex flex-col gap-2">
+      <a
+        href={socialLinks.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group-link transition-micro flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+      >
+        GitHub
+        <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a
+        href={socialLinks.linkedin}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group-link transition-micro flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+      >
+        LinkedIn
+        <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a
+        href={`mailto:${socialLinks.email}`}
+        class="group-link transition-micro flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+      >
+        Email
+        <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </Reveal>
+  </div>
 </SectionHeading>

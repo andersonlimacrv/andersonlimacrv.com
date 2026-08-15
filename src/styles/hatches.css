@@ -1,0 +1,56 @@
+/* ==========================================================================
+   Hachuras blueprint — padrão único e reutilizável do projeto
+   ==========================================================================
+   Estrutura:
+   - Cada hachura é uma classe utilitária global (.hatch-*) que desenha um
+     fundo via background-image.
+   - A cor/espessura/escala NUNCA é fixada aqui: vêm de custom properties
+     que o componente define no próprio elemento:
+       --hatch-color       cor das linhas (default: --bp-hatch, token do
+                           projeto — foreground 8%, mesma em todas as
+                           hachuras)
+       --hatch-thickness   espessura da linha (default: 1px)
+       --hatch-gap         espaço entre linhas diagonais (default: 8px)
+       --hatch-cell        tamanho da célula da hachura quadrada
+                          (default: 20px — escala fixa, o número de
+                           quadrados acompanha o tamanho da figura)
+   - Para adicionar um novo padrão: crie .hatch-<nome> desenhando o fundo
+     com as vars acima e documente aqui.
+   Exemplo de uso:
+     <div class="hatch-square" style="--hatch-cell: 20px"></div>
+   ========================================================================== */
+
+:root {
+  /* Cor/transparência PADRÃO de todas as hachuras do projeto — a mesma da
+     hero inicial (quadriculado): foreground a 8%. Componentes usam
+     `--hatch-color: var(--bp-hatch)` para garantir um padrão único. */
+  --bp-hatch: color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+
+.hatch-diagonal {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      var(--hatch-color, currentColor) 0 var(--hatch-thickness, 1px),
+      transparent var(--hatch-thickness, 1px) var(--hatch-gap, 8px)
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      var(--hatch-color, currentColor) 0 var(--hatch-thickness, 1px),
+      transparent var(--hatch-thickness, 1px) var(--hatch-gap, 8px)
+    );
+}
+
+.hatch-square {
+  background-image:
+    linear-gradient(
+      var(--hatch-color, currentColor) var(--hatch-thickness, 1px),
+      transparent var(--hatch-thickness, 1px)
+    ),
+    linear-gradient(
+      90deg,
+      var(--hatch-color, currentColor) var(--hatch-thickness, 1px),
+      transparent var(--hatch-thickness, 1px)
+    );
+  background-size: var(--hatch-cell, 20px) var(--hatch-cell, 20px);
+}

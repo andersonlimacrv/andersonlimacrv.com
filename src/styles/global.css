@@ -263,7 +263,7 @@
   /* Escala tipográfica editorial fluida (clamp).
      Exposta como utilities Tailwind: text-hero, text-h1, text-h2, text-lead.
      --measure vira max-width dedicado para texto corrido (.post-content etc). */
-  --text-hero: clamp(2.5rem, 6vw, 5.5rem);
+  --text-hero: clamp(2.75rem, 7vw, 6.25rem);
   --text-h1: clamp(1.875rem, 4vw, 3.25rem);
   --text-h2: clamp(1.5rem, 3vw, 2rem);
   --text-h3: 1.25rem;
