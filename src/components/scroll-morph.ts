@@ -21,6 +21,8 @@ interface MorphTarget {
   target: HTMLElement;
   vertices: number;
   finalScale: number;
+  finalX: number;
+  finalY: number;
   reduced: boolean;
   rect: DOMRect;
   targetRect: DOMRect;
@@ -53,8 +55,10 @@ function computeProgress(t: MorphTarget): number {
 }
 
 // Gera os pontos do polígono interpolados entre o retângulo e o círculo.
-// 16 vértices: cantos + pontos por borda no retângulo; no círculo, os mesmos
-// 16 pontos sobre a circunferência centrada no box local do elemento.
+// 64 vértices: cantos + pontos por borda no retângulo; no círculo, os mesmos
+// 64 pontos sobre a circunferência centrada no box local do elemento. Com 64
+// pontos a circunferência final é visualmente um círculo perfeito, e a
+// interpolação arredonda os cantos de forma progressiva.
 function polygonFor(t: MorphTarget, p: number): string {
   const w = t.rect.width;
   const h = t.rect.height;
@@ -96,13 +100,14 @@ function polygonFor(t: MorphTarget, p: number): string {
 }
 
 // Transform: do tamanho original (scale 1) até o círculo final (finalScale).
-// translate desloca o centro da imagem ao centro do destino; scale encolhe.
+// translate desloca o centro da imagem até a posição alvo na seção de
+// destino (fração finalX/finalY do retângulo alvo); scale encolhe.
 function transformFor(t: MorphTarget, p: number): string {
   const s = 1 + (t.finalScale - 1) * p;
   const srcCx = t.rect.left + t.rect.width / 2;
   const srcCy = t.rect.top + t.rect.height / 2;
-  const dstCx = t.targetRect.left + t.targetRect.width / 2;
-  const dstCy = t.targetRect.top + t.targetRect.height / 2;
+  const dstCx = t.targetRect.left + t.targetRect.width * t.finalX;
+  const dstCy = t.targetRect.top + t.targetRect.height * t.finalY;
   const dx = (dstCx - srcCx) * p;
   const dy = (dstCy - srcCy) * p;
   return `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${s.toFixed(4)})`;
@@ -147,8 +152,10 @@ function bindTarget(el: HTMLElement) {
     root: el,
     img,
     target,
-    vertices: 16,
+    vertices: num(el, 'vertices', 64),
     finalScale: num(el, 'finalScale', 0.35),
+    finalX: num(el, 'finalX', 0.5),
+    finalY: num(el, 'finalY', 0.5),
     reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
     rect: new DOMRect(),
     targetRect: new DOMRect(),
