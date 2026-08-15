@@ -80,7 +80,7 @@ O estado inicial SHALL anotar sobre a imagem, **sem nenhum traçado cruzando a f
 
 #### Scenario: Quatro rótulos nos quadrantes
 - **WHEN** a página carrega
-- **THEN** existem 4 rótulos nos quadrantes do círculo (inf-esq `r 80px`, sup-esq `A`, sup-dir `s`, inf-dir `x`/`y` empilhados), cada um **sem sobrepor as linhas-guia** do crosshair e **dentro do círculo**, **colados à borda interna** (os da esquerda com `text-align: right`, os da direita com `text-align: left` — conteúdo simétrico em torno do centro), **sem fundo sólido e sem text-shadow** (cor `var(--foreground)` pura sobre a foto)
+- **THEN** existem 4 rótulos nos quadrantes do círculo (inf-esq `r 80px`, sup-esq `A`, sup-dir `s`, inf-dir `x`/`y` empilhados), cada um **sem sobrepor as linhas-guia** do crosshair e **dentro do círculo**, **colados à borda interna** (os da esquerda com `text-align: right`, os da direita com `text-align: left`), com `r`/`s`/`x·y` **simétricos a 12px do centro** e o `A` **nudgado 4px para a direita** (8px do centro), **sem fundo sólido e sem text-shadow** (cor `var(--foreground)` pura sobre a foto)
 
 #### Scenario: Valores ao vivo durante o morph
 - **WHEN** o usuário rola e o morph da imagem progride

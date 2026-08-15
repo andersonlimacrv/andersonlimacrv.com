@@ -228,8 +228,10 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         expect(d.a.ta).toBe('right');
         expect(d.s.ta).toBe('left');
         expect(d.xy.ta).toBe('left');
-        const inners = [d.r.inner, d.a.inner, d.s.inner, d.xy.inner];
+        const inners = [d.r.inner, d.s.inner, d.xy.inner];
         expect(Math.max(...inners) - Math.min(...inners)).toBeLessThanOrEqual(2);
+        expect(d.a.inner).toBeLessThan(d.r.inner);
+        expect(d.a.inner).toBeGreaterThanOrEqual(4);
       });
 
       test('start: valores ao vivo atualizam durante o morph', async ({ page }) => {
