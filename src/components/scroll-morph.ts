@@ -39,11 +39,16 @@ function num(el: HTMLElement, key: string, fallback: number): number {
 }
 
 // Progresso 0..1 entre o topo (hero) e a seção de destino.
+// Usa posições absolutas (documento) armazenadas em measure() — imunes ao
+// scroll — e compara com o scrollY atual. p=0 no topo; p=1 quando a seção
+// de destino atinge ~30% da altura da viewport.
 function computeProgress(t: MorphTarget): number {
-  const start = t.rect.top;
-  const end = t.targetRect.top;
-  const span = Math.max(window.innerHeight * 0.25, end - start);
-  const p = (start - span + window.innerHeight * 0.5) / span;
+  const innerH = window.innerHeight;
+  const imgTop = t.rect.top;
+  const targetTop = t.targetRect.top;
+  const startScroll = Math.max(0, imgTop - innerH * 0.3);
+  const endScroll = Math.max(startScroll + 1, targetTop - innerH * 0.3);
+  const p = (window.scrollY - startScroll) / (endScroll - startScroll);
   return Math.min(1, Math.max(0, p));
 }
 
@@ -122,8 +127,12 @@ function schedule() {
 }
 
 function measure(t: MorphTarget) {
-  t.rect = t.img.getBoundingClientRect();
-  t.targetRect = t.target.getBoundingClientRect();
+  const sy = window.scrollY;
+  const sx = window.scrollX;
+  const r = t.img.getBoundingClientRect();
+  t.rect = new DOMRect(r.left + sx, r.top + sy, r.width, r.height);
+  const tr = t.target.getBoundingClientRect();
+  t.targetRect = new DOMRect(tr.left + sx, tr.top + sy, tr.width, tr.height);
 }
 
 function bindTarget(el: HTMLElement) {
