@@ -38,7 +38,7 @@ async function gotoHome(page: Page) {
 
 async function morphState(page: Page): Promise<MorphState> {
   return page.evaluate(() => {
-    const img = document.querySelector('[data-scroll-morph] img');
+    const img = document.querySelector<HTMLElement>('[data-scroll-morph] img');
     const target = document.querySelector<HTMLElement>('#sobre-content');
     if (!img || !target) throw new Error('morph elements not found');
     const r = img.getBoundingClientRect();

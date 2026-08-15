@@ -1,16 +1,14 @@
 ---
 import { getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Eyebrow from '../Eyebrow.astro';
-import SectionHeading from '../SectionHeading.astro';
-import ProjectLink from '../ProjectLink.astro';
-import PostCard from '../PostCard.astro';
-import Reveal from '../Reveal.astro';
-import JsonLd from '../JsonLd.astro';
-import ElasticLine from '../ElasticLine.astro';
-import ScrollMorphPortrait from '../ScrollMorphPortrait.astro';
+import JsonLd from '../ui/JsonLd.astro';
+import ElasticLine from '../ui/ElasticLine.astro';
+import Hero from '../sections/Hero.astro';
+import About from '../sections/About.astro';
+import Projects from '../sections/Projects.astro';
+import Blog from '../sections/Blog.astro';
+import Contact from '../sections/Contact.astro';
 import portrait from '../../assets/me.png';
-import { getPublishedPosts } from '../../lib/posts';
 import { siteUrl, socialLinks, authorName } from '../../lib/site';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
 
@@ -20,34 +18,12 @@ interface Props {
 
 const { locale = defaultLocale } = Astro.props;
 const t = ui[locale];
-const posts = await getPublishedPosts(locale);
 
 const portraitMeta = await getImage({
   src: portrait,
   format: 'webp',
   width: 1122,
 });
-
-const projects = [
-  {
-    title: t.projects[0].title,
-    description: t.projects[0].description,
-    url: 'https://andersonlimacrv.com',
-    tags: ['Astro', 'Tailwind'],
-  },
-  {
-    title: 'GitHub',
-    description: t.projects[1].description,
-    url: socialLinks.github,
-    tags: ['Open Source'],
-  },
-  {
-    title: 'LinkedIn',
-    description: t.projects[2].description,
-    url: socialLinks.linkedin,
-    tags: ['Perfil'],
-  },
-];
 
 const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
 const homeUrl = `${baseUrl}/`;
@@ -79,132 +55,23 @@ const websiteJsonLd = {
   <JsonLd slot="head" schema={personJsonLd} />
   <JsonLd slot="head" schema={websiteJsonLd} />
 
-  <!-- Hero -->
-    <section class="container-site flex flex-col gap-10 md:flex-row md:items-center md:gap-16">
-      <div class="max-w-2xl md:flex-1 md:min-w-0">
-        <p class="mb-6">
-          <Eyebrow label={t.heroEyebrow} />
-        </p>
-        <h1 class="hero-name font-sans text-hero font-extrabold leading-[1.05] tracking-[-0.03em]">
-          Anderson Carvalho
-        </h1>
-        <p
-          class="mt-6 max-w-md text-lg text-muted-foreground"
-        >
-          {t.heroSubtitle}
-        </p>
-      </div>
-      <ScrollMorphPortrait
-        src={portrait}
-        alt="Retrato em preto e branco de Anderson Carvalho"
-        caption={t.figCaption}
-        target="#sobre-content"
-        finalSize={160}
-        finalX={0.15}
-        finalY={0.5}
-      />
-    </section>
+  <Hero locale={locale} />
 
-    <!-- Divisor elástico: hero | sobre — reage ao ponteiro. Apague estas
-         4 linhas (ElasticLine) para remover os divisores por completo. -->
-    <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
+  <!-- Divisor elástico: hero | sobre — reage ao ponteiro. Apague estas
+       4 linhas (ElasticLine) para remover os divisores por completo. -->
+  <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
 
-    <!-- {t.sections.about.number} / {t.sections.about.title} -->
-    <SectionHeading number={t.sections.about.number} title={t.sections.about.title} id="sobre" eyebrow={t.sections.about.eyebrow}>
-      <Reveal>
-        <div id="sobre-content" class="grid gap-10 lg:grid-cols-[1fr_240px]">
-          <p class="max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            {t.aboutParagraph}
-          </p>
-          <aside class="rail-left flex flex-col gap-2">
-            <a
-              href={socialLinks.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group-link transition-micro flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
-            >
-              GitHub
-              <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-            <a
-              href={socialLinks.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group-link transition-micro flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
-            >
-              LinkedIn
-              <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-            <a
-              href={`mailto:${socialLinks.email}`}
-              class="group-link transition-micro flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
-            >
-              Email
-              <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-          </aside>
-        </div>
-      </Reveal>
-    </SectionHeading>
+  <About locale={locale} />
 
-    <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
+  <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
 
-    <!-- {t.sections.projects.number} / {t.sections.projects.title} -->
-    <SectionHeading number={t.sections.projects.number} title={t.sections.projects.title} id="projetos" eyebrow={t.sections.projects.eyebrow}>
-      <Reveal>
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <ProjectLink {...project} />
-          ))}
-        </div>
-      </Reveal>
-    </SectionHeading>
+  <Projects locale={locale} />
 
-    <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
+  <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
 
-    <!-- {t.sections.blog.number} / {t.sections.blog.title} -->
-    <SectionHeading number={t.sections.blog.number} title={t.sections.blog.title} id="blog" eyebrow={t.sections.blog.eyebrow}>
-      <Reveal>
-        {posts.length > 0 ? (
-          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {posts.slice(0, 3).map((post) => (
-              <PostCard post={post} locale={locale} />
-            ))}
-          </div>
-        ) : (
-          <p class="text-muted-foreground">
-            {t.blogComingSoon}
-          </p>
-        )}
-        <p class="mt-8">
-          <a
-            href={`${baseUrl}/blog`}
-            class="group-link transition-micro inline-flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-foreground hover:text-primary"
-          >
-            {t.viewAllPosts}
-            <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
-        </p>
-      </Reveal>
-    </SectionHeading>
+  <Blog locale={locale} />
 
-    <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
+  <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
 
-    <!-- {t.sections.contact.number} / {t.sections.contact.title} -->
-    <SectionHeading number={t.sections.contact.number} title={t.sections.contact.title} id="contato" eyebrow={t.sections.contact.eyebrow}>
-      <Reveal>
-        <div class="flex max-w-xl flex-col gap-4 p-6 sm:p-8">
-          <p class="text-muted-foreground">
-            {t.contactParagraph}
-          </p>
-          <a
-            href={`mailto:${socialLinks.email}`}
-            class="group-link transition-micro inline-flex min-h-11 w-fit items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-foreground hover:text-primary"
-          >
-            {socialLinks.email}
-            <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
-        </div>
-      </Reveal>
-    </SectionHeading>
+  <Contact locale={locale} />
 </BaseLayout>

@@ -1,0 +1,37 @@
+---
+import Eyebrow from '../ui/Eyebrow.astro';
+import ScrollMorphPortrait from '../ui/ScrollMorphPortrait.astro';
+import portrait from '../../assets/me.png';
+import { defaultLocale, ui, type Locale } from '../../i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? defaultLocale;
+const t = ui[locale];
+---
+
+<section id="hero" class="container-site flex flex-col gap-10 md:flex-row md:items-center md:gap-16">
+  <div class="max-w-2xl md:flex-1 md:min-w-0">
+    <p class="mb-6">
+      <Eyebrow label={t.heroEyebrow} />
+    </p>
+    <h1 class="hero-name font-sans text-hero font-extrabold leading-[1.05] tracking-[-0.03em]">
+      Anderson Carvalho
+    </h1>
+    <p class="mt-6 max-w-md text-lg text-muted-foreground">
+      {t.heroSubtitle}
+    </p>
+  </div>
+
+  <ScrollMorphPortrait
+    src={portrait}
+    alt="Retrato em preto e branco de Anderson Carvalho"
+    caption={t.figCaption}
+    target="#sobre-content"
+    finalSize={160}
+    finalX={0.15}
+    finalY={0.5}
+  />
+</section>

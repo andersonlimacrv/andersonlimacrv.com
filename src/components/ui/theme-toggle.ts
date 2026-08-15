@@ -3,8 +3,8 @@ import {
   getTheme,
   toggleTheme,
   THEME_CHANGE_EVENT,
-} from '../lib/theme';
-import { createAnimation } from '../lib/theme-transition';
+} from '../../lib/theme';
+import { createAnimation } from '../../lib/theme-transition';
 
 function bindToggle() {
   const rootEl = document.querySelector<HTMLButtonElement>('.theme-toggle');

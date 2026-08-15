@@ -1,0 +1,46 @@
+---
+import Reveal from '../ui/Reveal.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import PostCard from '../ui/PostCard.astro';
+import { getPublishedPosts } from '../../lib/posts';
+import { defaultLocale, ui, type Locale } from '../../i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? defaultLocale;
+const t = ui[locale];
+const posts = await getPublishedPosts(locale);
+const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
+---
+
+<SectionHeading
+  number={t.sections.blog.number}
+  title={t.sections.blog.title}
+  id="blog"
+  eyebrow={t.sections.blog.eyebrow}
+>
+  <Reveal>
+    {posts.length > 0 ? (
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.slice(0, 3).map((post) => (
+          <PostCard post={post} locale={locale} />
+        ))}
+      </div>
+    ) : (
+      <p class="text-muted-foreground">
+        {t.blogComingSoon}
+      </p>
+    )}
+    <p class="mt-8">
+      <a
+        href={`${baseUrl}/blog`}
+        class="group-link transition-micro inline-flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-foreground hover:text-primary"
+      >
+        {t.viewAllPosts}
+        <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </p>
+  </Reveal>
+</SectionHeading>

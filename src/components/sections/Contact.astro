@@ -1,0 +1,35 @@
+---
+import Reveal from '../ui/Reveal.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { socialLinks } from '../../lib/site';
+import { defaultLocale, ui, type Locale } from '../../i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? defaultLocale;
+const t = ui[locale];
+---
+
+<SectionHeading
+  number={t.sections.contact.number}
+  title={t.sections.contact.title}
+  id="contato"
+  eyebrow={t.sections.contact.eyebrow}
+>
+  <Reveal>
+    <div class="flex max-w-xl flex-col gap-4 p-6 sm:p-8">
+      <p class="text-muted-foreground">
+        {t.contactParagraph}
+      </p>
+      <a
+        href={`mailto:${socialLinks.email}`}
+        class="group-link transition-micro inline-flex min-h-11 w-fit items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-foreground hover:text-primary"
+      >
+        {socialLinks.email}
+        <svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </Reveal>
+</SectionHeading>
