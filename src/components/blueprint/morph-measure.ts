@@ -67,9 +67,54 @@ function fill(wf: Wireframe): void {
     c: `${fmt(2 * Math.PI * radius)}px`,
   };
   for (const span of wf.root.querySelectorAll<HTMLElement>('[data-bp]')) {
+    if (span.hasAttribute('data-bp-live')) continue;
     const key = span.dataset.bp;
     if (key && values[key]) span.textContent = values[key];
   }
+}
+
+// --- Leitura ao vivo durante o morph (desacoplado do scroll-morph.ts) ---
+// Lê o transform aplicado no <img> a cada frame agendado (scroll/resize) e
+// publica valores atuais nos rótulos [data-bp-live] dos quadrantes do
+// círculo-fantasma: escala s, área A = W·H·s² e deslocamento do centro x·y.
+let liveRafId: number | null = null;
+let boundLive = false;
+
+function fillLive(wf: Wireframe): void {
+  if (!wf.img) return;
+  let scale = 1;
+  let dx = 0;
+  let dy = 0;
+  const tf = getComputedStyle(wf.img).transform;
+  if (tf && tf !== 'none') {
+    const m = new DOMMatrixReadOnly(tf);
+    scale = m.a;
+    dx = m.e;
+    dy = m.f;
+  }
+  const w0 = parseFloat(wf.root.style.getPropertyValue('--bp-w')) || 0;
+  const h0 = parseFloat(wf.root.style.getPropertyValue('--bp-h')) || 0;
+
+  const live: Record<string, string> = {
+    a: `A ${fmt(w0 * h0 * scale * scale)}px²`,
+    s: `s ${fmt(scale, 3)}`,
+    xy: `x ${fmt(dx)}\ny ${fmt(dy)}`,
+  };
+  for (const span of wf.root.querySelectorAll<HTMLElement>('[data-bp-live]')) {
+    const key = span.dataset.bp;
+    const text = key && live[key] ? live[key] : null;
+    if (text !== null && span.textContent !== text) span.textContent = text;
+  }
+}
+
+function frameLive(): void {
+  for (const wf of wireframes) fillLive(wf);
+  liveRafId = null;
+}
+
+function scheduleLive(): void {
+  if (liveRafId !== null) return;
+  liveRafId = requestAnimationFrame(frameLive);
 }
 
 function refresh(): void {
@@ -96,6 +141,12 @@ function init(): void {
     window.addEventListener('load', refresh, { passive: true });
     document.fonts?.ready?.then(refresh).catch(() => undefined);
   }
+  if (!boundLive) {
+    boundLive = true;
+    window.addEventListener('scroll', scheduleLive, { passive: true });
+    window.addEventListener('resize', scheduleLive, { passive: true });
+  }
+  scheduleLive();
 }
 
 document.addEventListener('astro:page-load', init);

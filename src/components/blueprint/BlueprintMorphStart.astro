@@ -23,6 +23,9 @@ const radius = finalSize / 2;
       <span class="bp-ghost-tick bp-ghost-tick-bottom" aria-hidden="true"></span>
       <span class="bp-ghost-tick bp-ghost-tick-right" aria-hidden="true"></span>
       <b class="bp-ghost-r-label" aria-hidden="true">r {radius}px</b>
+      <b class="bp-ghost-q bp-ghost-q-a" data-bp="a" data-bp-live aria-hidden="true">—</b>
+      <b class="bp-ghost-q bp-ghost-q-s" data-bp="s" data-bp-live aria-hidden="true">—</b>
+      <b class="bp-ghost-q bp-ghost-q-xy" data-bp="xy" data-bp-live aria-hidden="true">0 · 0</b>
     </div>
 
     <span class="bp-ghost-r" aria-hidden="true">
@@ -147,17 +150,52 @@ const radius = finalSize / 2;
     border-top: 1px solid var(--bp-line-strong);
   }
 
-  /* Rótulo do raio (r 80px) no quadrante inferior esquerdo do círculo-fantasma,
-     fora do cruzamento das linhas-guia */
-  .bp-ghost-r-label {
+  /* Rótulos de cota nos quadrantes do círculo-fantasma, fora do cruzamento
+     das linhas-guia (crosshair). Orientação: os da esquerda colados à direita
+     (text-align: right) e os da direita colados à esquerda (text-align: left),
+     de modo que o conteúdo fique simétrico em torno do centro. */
+  .bp-ghost-r-label,
+  .bp-ghost-q {
     position: absolute;
-    left: 25%;
-    top: 59%;
-    translate: -50% -50%;
+    translate: 0 -50%;
+    display: block;
     font-family: var(--font-mono);
     font-size: 0.625rem;
     letter-spacing: 0.04em;
     color: var(--foreground);
+    white-space: nowrap;
+  }
+
+  .bp-ghost-r-label,
+  .bp-ghost-q-a {
+    right: calc(50% + 0.75rem);
+    text-align: right;
+  }
+
+  .bp-ghost-r-label {
+    top: 59%;
+  }
+
+  .bp-ghost-q-a {
+    top: 41%;
+    font-size: 0.5625rem;
+  }
+
+  .bp-ghost-q-s,
+  .bp-ghost-q-xy {
+    left: calc(50% + 0.75rem);
+    text-align: left;
+  }
+
+  .bp-ghost-q-s {
+    top: 41%;
+  }
+
+  .bp-ghost-q-xy {
+    top: 59%;
+    font-size: 0.5625rem;
+    line-height: 1.2;
+    white-space: pre-line;
   }
 </style>
 

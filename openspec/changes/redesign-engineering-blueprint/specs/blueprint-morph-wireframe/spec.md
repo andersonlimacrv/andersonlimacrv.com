@@ -49,11 +49,11 @@ As hachuras do blueprint SHALL ser definidas em um único arquivo (`src/styles/h
 - **THEN** todas usam a mesma cor e transparência (`--bp-hatch` = foreground 8%)
 
 ### Requirement: Legenda de evolução com identidade do projeto
-A legenda SHALL documentar a **evolução** do morph (retângulo → círculo) usando a identidade visual do site (mono, uppercase, tracking, bordas `border`), sem sombra, com a **figura identificada** (`IMG.-01`), e o corpo em **coluna única com os dados** (INICIAL / FINAL / POSIÇÃO) com valores medidos via JS — **sem diagrama**.
+A legenda SHALL documentar a **evolução** do morph (retângulo → círculo) usando a identidade visual do site (mono, uppercase, tracking, bordas `border`), sem sombra, com a **figura identificada** (`IMG01`), e o corpo em **coluna única com os dados** (INICIAL / FINAL / POSIÇÃO) com valores medidos via JS — **sem diagrama**.
 
 #### Scenario: Nome real e dados
 - **WHEN** a página carrega
-- **THEN** a legenda exibe a figura identificada (`IMG.-01`) + `MORPH — EVOLUÇÃO`, os grupos **INICIAL / FINAL / POSIÇÃO** com os valores `W`, `H`, `d`, `A`, `D`, `r`, `A=πr²`, `C`, `x·y`
+- **THEN** a legenda exibe a figura identificada (`IMG01`) + `MORPH — EVOLUÇÃO`, os grupos **INICIAL / FINAL / POSIÇÃO** com os valores `W`, `H`, `d`, `A`, `D`, `r`, `A=πr²`, `C`, `x·y`
 
 #### Scenario: Sem sombra
 - **WHEN** a legenda é renderizada
@@ -63,8 +63,8 @@ A legenda SHALL documentar a **evolução** do morph (retângulo → círculo) u
 - **WHEN** a legenda é renderizada
 - **THEN** o raio das bordas do painel e do chip usa a variável do projeto (`--radius`)
 
-### Requirement: Raio atual anotado sobre a imagem
-O raio do círculo final (`r` = metade de `finalSize`) SHALL ser anotado sobre a imagem no estado inicial **sem nenhum traçado cruzando a foto**: o círculo-fantasma fica **centrado horizontalmente e quase na borda inferior** da imagem, com **4 traços de cota nos pontos cardeais** e o rótulo `r 80px` (em `font-mono`) **dentro do círculo, no quadrante inferior esquerdo, fora do cruzamento das linhas-guia**.
+### Requirement: Rótulos de cota no círculo-fantasma do estado inicial
+O estado inicial SHALL anotar sobre a imagem, **sem nenhum traçado cruzando a foto**, o círculo-fantasma **centrado horizontalmente e quase na borda inferior**, com **4 traços de cota nos pontos cardeais** e **4 rótulos nos quadrantes do círculo** (fora do cruzamento das linhas-guia): `r 80px` (estático), `A` (área), `s` (escala) e `x·y` (deslocamento do centro) — os três últimos com valores **ao vivo** durante o morph.
 
 #### Scenario: Círculo-fantasma centralizado e ancorado em baixo
 - **WHEN** a página carrega
@@ -76,11 +76,15 @@ O raio do círculo final (`r` = metade de `finalSize`) SHALL ser anotado sobre a
 
 #### Scenario: Quatro traços de cota nos cardeais
 - **WHEN** a página carrega
-- **THEN** existem 4 traços de cota de 1rem nos pontos cardeais do círculo-fantasma: esquerda (linha de cota do raio, horizontal, na altura do centro), **superior e inferior verticais** (rotacionados 90°) e **direita horizontal** (offset `right: -1.5rem`)
+- **THEN** existem 4 traços de cota de 1rem nos pontos cardeais do círculo-fantasma: esquerda (linha de cota do raio, horizontal, na altura do centro), **superior e inferior verticais** (rotacionados 90°, distância 1rem) e **direita horizontal** (offset `right: -1.5rem`)
 
-#### Scenario: Rótulo do raio no quadrante inferior esquerdo
+#### Scenario: Quatro rótulos nos quadrantes
 - **WHEN** a página carrega
-- **THEN** existe um rótulo `r 80px` **dentro do círculo-fantasma, no quadrante inferior esquerdo** (`left: 25%`, `top: 59%`), **sem sobrepor as linhas-guia** do crosshair, **sem fundo sólido e sem text-shadow** (cor `var(--foreground)` pura sobre a foto)
+- **THEN** existem 4 rótulos nos quadrantes do círculo (inf-esq `r 80px`, sup-esq `A`, sup-dir `s`, inf-dir `x`/`y` empilhados), cada um **sem sobrepor as linhas-guia** do crosshair e **dentro do círculo**, **colados à borda interna** (os da esquerda com `text-align: right`, os da direita com `text-align: left` — conteúdo simétrico em torno do centro), **sem fundo sólido e sem text-shadow** (cor `var(--foreground)` pura sobre a foto)
+
+#### Scenario: Valores ao vivo durante o morph
+- **WHEN** o usuário rola e o morph da imagem progride
+- **THEN** os rótulos `A`, `s` e `x·y` atualizam em tempo real: `s` cai de `1.000` para o fator final, `A` encolhe proporcionalmente (`W·H·s²`) e `x·y` mostra o deslocamento do centro do morph em px
 
 ### Requirement: Círculo final com base de trás
 O círculo final SHALL ser desenhado em `#sobre-content` com a mesma clamp do morph (`finalX=0.15`, `finalY=0.5`, raio 80px), com o retrato **mais transparente** (opacidade 0.2), hachura (na cor/transparência padrão das hachuras), crosshair e **anel na mesma cor/opacidade das hachuras**, e **cruzes nos pontos cardeais (mira)** — acima, abaixo e dos lados (sem cantos de quadrado, evitando sobras abaixo do círculo) — desenhadas **uma camada acima da imagem**. O anel SHALL ficar sempre alinhado e coberto pela imagem final: para isso, `#sobre-content` (alvo do morph + overlay) não fica dentro do `transform` do Reveal.

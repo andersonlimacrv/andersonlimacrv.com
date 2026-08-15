@@ -162,7 +162,115 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         expect(d.noLeader).toBe(true);
       });
 
-      test('legenda: figura IMG.-01 + grupos de dados do morph', async ({
+      test('start: rótulos nos 4 quadrantes, fora do cruzamento do crosshair', async ({
+        page,
+      }) => {
+        await gotoHome(page);
+        const data = await page.evaluate(() => {
+          const sel = '[data-bp-wireframe].bp-start';
+          const ghost = document.querySelector(`${sel} .bp-ghost`);
+          const rl = document.querySelector(`${sel} .bp-ghost-r-label`);
+          const a = document.querySelector(`${sel} .bp-ghost-q-a`);
+          const s = document.querySelector(`${sel} .bp-ghost-q-s`);
+          const xy = document.querySelector(`${sel} .bp-ghost-q-xy`);
+          const cx = document.querySelector(`${sel} .bp-ghost-cross-x`);
+          const cy = document.querySelector(`${sel} .bp-ghost-cross-y`);
+          if (!ghost || !rl || !a || !s || !xy) return null;
+          const box = (el: Element) => {
+            const r = el.getBoundingClientRect();
+            return { x: r.x, y: r.y, w: r.width, h: r.height };
+          };
+          const g = box(ghost);
+          const intersects = (
+            p: { x: number; y: number; w: number; h: number },
+            q: { x: number; y: number; w: number; h: number },
+          ) => p.x < q.x + q.w && p.x + p.w > q.x && p.y < q.y + q.h && p.y + p.h > q.y;
+          const quadrant = (b: { x: number; y: number; w: number; h: number }) => ({
+            left: b.x + b.w / 2 < g.x + g.w / 2,
+            top: b.y + b.h / 2 < g.y + g.h / 2,
+          });
+          const noCross = (b: { x: number; y: number; w: number; h: number }) =>
+            (!cx || !intersects(b, box(cx))) && (!cy || !intersects(b, box(cy)));
+          const inside = (b: { x: number; y: number; w: number; h: number }) =>
+            b.x >= g.x && b.y >= g.y && b.x + b.w <= g.x + g.w && b.y + b.h <= g.y + g.h;
+          const cxAbs = g.x + g.w / 2;
+          const inner = (b: { x: number; y: number; w: number; h: number }) =>
+            Math.abs(b.x < cxAbs ? cxAbs - (b.x + b.w) : b.x - cxAbs);
+          const meta = (b: { x: number; y: number; w: number; h: number }) => ({
+            q: quadrant(b),
+            cross: noCross(b),
+            inside: inside(b),
+            inner: Math.round(inner(b)),
+          });
+          const ta = (sel2: string) => {
+            const el = document.querySelector(`${sel} ${sel2}`);
+            return el ? getComputedStyle(el).textAlign : '';
+          };
+          return {
+            r: { ...meta(box(rl)), ta: ta('.bp-ghost-r-label') },
+            a: { ...meta(box(a)), ta: ta('.bp-ghost-q-a') },
+            s: { ...meta(box(s)), ta: ta('.bp-ghost-q-s') },
+            xy: { ...meta(box(xy)), ta: ta('.bp-ghost-q-xy') },
+          };
+        });
+        expect(data).not.toBeNull();
+        const d = data!;
+        expect(d.r.q).toEqual({ left: true, top: false });
+        expect(d.a.q).toEqual({ left: true, top: true });
+        expect(d.s.q).toEqual({ left: false, top: true });
+        expect(d.xy.q).toEqual({ left: false, top: false });
+        expect(d.r.cross).toBe(true);
+        expect(d.a.cross).toBe(true);
+        expect(d.s.cross).toBe(true);
+        expect(d.xy.cross).toBe(true);
+        expect(d.r.inside && d.a.inside && d.s.inside && d.xy.inside).toBe(true);
+        expect(d.r.ta).toBe('right');
+        expect(d.a.ta).toBe('right');
+        expect(d.s.ta).toBe('left');
+        expect(d.xy.ta).toBe('left');
+        const inners = [d.r.inner, d.a.inner, d.s.inner, d.xy.inner];
+        expect(Math.max(...inners) - Math.min(...inners)).toBeLessThanOrEqual(2);
+      });
+
+      test('start: valores ao vivo atualizam durante o morph', async ({ page }) => {
+        await gotoHome(page);
+        const read = () =>
+          page.evaluate(() => {
+            const sel = '[data-bp-wireframe].bp-start';
+            const qs = (c: string) =>
+              document.querySelector(`${sel} ${c}`)?.textContent ?? '';
+            return {
+              s: qs('.bp-ghost-q-s'),
+              a: qs('.bp-ghost-q-a'),
+              xy: qs('.bp-ghost-q-xy'),
+              sNum: parseFloat(qs('.bp-ghost-q-s').replace(/^s\s*/, '')) || 0,
+              aNum: parseInt((qs('.bp-ghost-q-a').match(/[\d.]+/) ?? ['0'])[0], 10) || 0,
+              x: (qs('.bp-ghost-q-xy').match(/x\s*(-?\d+)/) ?? [])[1] ?? '0',
+            };
+          });
+        const top = await read();
+        expect(top.sNum).toBe(1);
+        expect(top.x).toBe('0');
+        await page.evaluate(() => window.scrollTo(0, Number.MAX_SAFE_INTEGER));
+        await page
+          .waitForFunction(
+            () =>
+              /0\.[0-9]/.test(
+                document.querySelector(
+                  '[data-bp-wireframe].bp-start .bp-ghost-q-s',
+                )?.textContent ?? '',
+              ),
+            undefined,
+            { timeout: 5000 },
+          )
+          .catch(() => undefined);
+        const morphed = await read();
+        expect(morphed.sNum).toBeLessThan(1);
+        expect(morphed.aNum).toBeLessThan(top.aNum);
+        expect(parseFloat(morphed.x ?? '0')).not.toBe(0);
+      });
+
+      test('legenda: figura IMG01 + grupos de dados do morph', async ({
         page,
       }) => {
         await gotoHome(page);
@@ -171,7 +279,7 @@ test.describe('wireframe blueprint do morph da imagem', () => {
           if (!legend) return null;
           const text = legend.textContent ?? '';
           return {
-            hasFigName: /IMG\.-?01/i.test(text),
+            hasFigName: /IMG\.?-?01/i.test(text),
             hasEvolucao: /EVOLU/.test(text),
             hasFinal: new RegExp(`${finalSize}px`).test(text),
             hasD: legend.querySelector('[data-bp="d"]') !== null,
