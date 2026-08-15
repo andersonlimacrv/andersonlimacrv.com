@@ -583,30 +583,6 @@ html {
     padding-top: 1rem;
   }
 }
-
-.grid-bg {
-  position: relative;
-}
-
-.grid-bg::before {
-  content: "";
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      480px 480px at 8% 4%,
-      color-mix(in oklab, var(--foreground) 7%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      520px 520px at 96% 90%,
-      color-mix(in oklab, var(--foreground) 5%, transparent),
-      transparent 70%
-    );
-  position: fixed;
-  inset: 0;
-}
-
 .skip-link {
   z-index: 100;
   background-color: var(--foreground);

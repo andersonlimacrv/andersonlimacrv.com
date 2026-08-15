@@ -1,0 +1,73 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  target?: string;
+  finalScale?: number;
+  finalSize?: number;
+  finalX?: number;
+  finalY?: number;
+  vertices?: number;
+  widths?: number[];
+  sizes?: string;
+  easing?: string;
+}
+
+const {
+  src,
+  alt,
+  caption,
+  target = '#sobre',
+  finalScale = 0.35,
+  finalSize,
+  finalX = 0.5,
+  finalY = 0.5,
+  vertices = 64,
+  widths = [480, 800, 1122],
+  sizes = '(min-width: 768px) min(560px, 60%), calc(100vw - 2rem)',
+  easing = 'expo-out',
+} = Astro.props;
+---
+
+<figure
+  class="shrink-0 w-full md:w-[min(560px,60%)]"
+  data-scroll-morph
+  data-target={target}
+  data-final-scale={finalScale}
+  data-final-size={finalSize}
+  data-final-x={finalX}
+  data-final-y={finalY}
+  data-vertices={vertices}
+  data-easing={easing}
+>
+  <Image
+    src={src}
+    alt={alt}
+    widths={widths}
+    sizes={sizes}
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+    class="scroll-morph-img w-full rounded-lg border border-border"
+  />
+  {caption && (
+    <figcaption class="mt-3 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+      {caption}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .scroll-morph-img {
+    transform-origin: center;
+    contain: paint;
+    will-change: clip-path, transform;
+  }
+</style>
+
+<script>
+  import './scroll-morph';
+</script>

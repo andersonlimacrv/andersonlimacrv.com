@@ -77,7 +77,7 @@ test.describe('estabilidade entre idiomas', () => {
       const hero = page.locator('section.container-site').first();
       await expect(hero).toBeVisible();
 
-      for (const selector of ['h1.hero-name', 'div.flex-1 p.mt-6', 'figure']) {
+      for (const selector of ['h1.hero-name', 'p.mt-6', 'figure']) {
         const animation = await page
           .locator(`${selector}`)
           .first()

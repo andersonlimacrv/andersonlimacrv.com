@@ -17,7 +17,7 @@ const href = `${baseUrl}/blog/${getPostSlug(post)}`;
 <article class="h-full">
   <a
     href={href}
-    class="group-link card-surface transition-micro flex h-full min-h-11 flex-col gap-3 p-5 hover:border-primary/50 hover:bg-primary/5"
+    class="group-link transition-micro flex h-full min-h-11 flex-col gap-3 border border-border p-5 hover:border-primary/50"
   >
     <span class="flex items-center justify-between gap-3">
       <time class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground" datetime={data.pubDate.toISOString()}>
@@ -48,7 +48,7 @@ const href = `${baseUrl}/blog/${getPostSlug(post)}`;
     {data.tags.length > 0 && (
       <span class="mt-auto flex flex-wrap gap-2 pt-1">
         {data.tags.map((tag) => (
-          <span class="rounded-lg border border-border px-2 py-0.5 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted-foreground">
+          <span class="rounded-lg border border-border px-2 py-0.5 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground">
             {tag}
           </span>
         ))}
