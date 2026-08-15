@@ -1,8 +1,8 @@
-# Auditoria de performance & SEO — 2026-08-13
+# Auditoria de performance & SEO — 2026-08-15
 
 - **Páginas HTML:** 15
 - **Arquivos no dist/:** 37
-- **Peso total:** 697.9 KB (raw) / 391.2 KB (gzip)
+- **Peso total:** 703.1 KB (raw) / 392.9 KB (gzip)
 
 - **Fontes:** 6
 
@@ -10,10 +10,10 @@
 
 | Categoria | Peso |
 | --- | --- |
-| html | 360.6 KB |
+| html | 366.4 KB |
 | font | 161.9 KB |
 | image | 118.2 KB |
-| css | 32.3 KB |
+| css | 31.7 KB |
 | js | 16.0 KB |
 | other | 8.9 KB |
 

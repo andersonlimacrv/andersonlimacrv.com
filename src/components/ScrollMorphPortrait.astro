@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  target?: string;
+  finalScale?: number;
+  widths?: number[];
+  sizes?: string;
+}
+
+const {
+  src,
+  alt,
+  caption,
+  target = '#sobre',
+  finalScale = 0.35,
+  widths = [480, 800, 1122],
+  sizes = '(min-width: 768px) 320px, 90vw',
+} = Astro.props;
+---
+
+<figure
+  class="shrink-0 w-full"
+  data-scroll-morph
+  data-target={target}
+  data-final-scale={finalScale}
+>
+  <Image
+    src={src}
+    alt={alt}
+    widths={widths}
+    sizes={sizes}
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+    class="scroll-morph-img w-full rounded-lg border border-border"
+  />
+  {caption && (
+    <figcaption class="mt-3 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+      {caption}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .scroll-morph-img {
+    transform-origin: center;
+    contain: paint;
+    will-change: clip-path, transform;
+  }
+</style>
+
+<script>
+  import './scroll-morph';
+</script>

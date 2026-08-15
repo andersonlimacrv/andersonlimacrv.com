@@ -1,5 +1,5 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Eyebrow from '../Eyebrow.astro';
 import SectionHeading from '../SectionHeading.astro';
@@ -8,6 +8,7 @@ import PostCard from '../PostCard.astro';
 import Reveal from '../Reveal.astro';
 import JsonLd from '../JsonLd.astro';
 import ElasticLine from '../ElasticLine.astro';
+import ScrollMorphPortrait from '../ScrollMorphPortrait.astro';
 import portrait from '../../assets/me.png';
 import { getPublishedPosts } from '../../lib/posts';
 import { siteUrl, socialLinks, authorName } from '../../lib/site';
@@ -93,20 +94,12 @@ const websiteJsonLd = {
           {t.heroSubtitle}
         </p>
       </div>
-      <figure class="shrink-0 w-full">
-        <Image
-          src={portrait}
-          alt="Retrato em preto e branco de Anderson Carvalho"
-          widths={[480, 800, 1122]}
-          sizes="(min-width: 768px) 320px, 90vw"
-          loading="eager"
-          fetchpriority="high"
-          class="w-full rounded-lg border border-border"
-        />
-        <figcaption class="mt-3 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-          {t.figCaption}
-        </figcaption>
-      </figure>
+      <ScrollMorphPortrait
+        src={portrait}
+        alt="Retrato em preto e branco de Anderson Carvalho"
+        caption={t.figCaption}
+        target="#sobre"
+      />
     </section>
 
     <!-- Divisor elástico: hero | sobre — reage ao ponteiro. Apague estas
