@@ -27,5 +27,5 @@
 
 ## 5. Adequação à identidade visual (em aberto)
 
-- [ ] 5.1 **Aberto**: revisar a linha conforme o léxico de linhas 1px da change `visual-identity-lines` (cor `border`/`muted-foreground`, stroke, tracking) assim que o redesign dos marcadores estiver definido
-- [ ] 5.2 **Aberto**: harmonizar o divisor com o novo marcador de seção (linha reta `número ──── título`) para uma mesma gramática visual
+- [x] 5.1 Revisar a linha conforme o léxico de linhas 1px da change `visual-identity-lines` — já usa `strokeWidth={1}` e `text-muted-foreground` (token do léxico) ✓
+- [x] 5.2 Harmonizar o divisor com o novo marcador de seção (linha reta `número ──── título`) — divisor e marcador compartilham a mesma gramática de 1px/`--border` ✓

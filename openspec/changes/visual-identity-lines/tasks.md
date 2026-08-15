@@ -20,4 +20,4 @@
 - [x] 4.2 `npm run build` verde
 - [x] 4.3 `npm run test:e2e` verde (23/23)
 - [x] 4.4 Inspeção visual dark/light das 4 seções × 3 idiomas + auditoria (`scripts/audit.mjs`) sem regressão de peso
-- [ ] 4.5 Atualizar `elastic-line-divider` (task 5.x) para harmonizar o divisor elástico com esta gramática, **quando o redesign for aprovado**
+- [x] 4.5 Atualizar `elastic-line-divider` (task 5.x) para harmonizar o divisor elástico com esta gramática — divisor já usa `strokeWidth=1` + `text-muted-foreground` (léxico 1px) ✓
