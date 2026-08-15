@@ -13,6 +13,7 @@ interface Props {
   vertices?: number;
   widths?: number[];
   sizes?: string;
+  easing?: string;
 }
 
 const {
@@ -27,6 +28,7 @@ const {
   vertices = 64,
   widths = [480, 800, 1122],
   sizes = '(min-width: 768px) min(560px, 60%), calc(100vw - 2rem)',
+  easing = 'expo-out',
 } = Astro.props;
 ---
 
@@ -39,6 +41,7 @@ const {
   data-final-x={finalX}
   data-final-y={finalY}
   data-vertices={vertices}
+  data-easing={easing}
 >
   <Image
     src={src}

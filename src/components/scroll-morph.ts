@@ -24,6 +24,7 @@ interface MorphTarget {
   finalSize: number;
   finalX: number;
   finalY: number;
+  easing: string;
   reduced: boolean;
   rect: DOMRect;
   targetRect: DOMRect;
@@ -39,6 +40,20 @@ function num(el: HTMLElement, key: string, fallback: number): number {
   if (raw === undefined) return fallback;
   const value = Number.parseFloat(raw);
   return Number.isFinite(value) ? value : fallback;
+}
+
+// Curva de suavização aplicada ao progresso p ∈ [0,1]. "expo-out" acelera no
+// início e desacelera no fim (mesma sensação do --ease-expo-out do site);
+// "none"/"linear" mantém o percurso linear. O fim (p=1) nunca muda.
+function ease(p: number, easing: string): number {
+  switch (easing) {
+    case 'none':
+    case 'linear':
+      return p;
+    case 'expo-out':
+    default:
+      return p >= 1 ? 1 : 1 - Math.pow(2, -10 * p);
+  }
 }
 
 // Progresso 0..1 entre o topo (hero) e a seção de destino.
@@ -135,8 +150,9 @@ function transformFor(t: MorphTarget, p: number): string {
 }
 
 function apply(t: MorphTarget, p: number) {
-  t.img.style.clipPath = polygonFor(t, p);
-  t.img.style.transform = transformFor(t, p);
+  const q = ease(p, t.easing);
+  t.img.style.clipPath = polygonFor(t, q);
+  t.img.style.transform = transformFor(t, q);
 }
 
 function frame() {
@@ -152,12 +168,49 @@ function schedule() {
   rafId = requestAnimationFrame(frame);
 }
 
+// Rect de layout (box puro), ignorando transform e clip-path — tanto os
+// aplicados pelo morph no <img> quanto os de animação (ex.: translateY do
+// Reveal, que fica num ancestral). Neutraliza transforms inline/CSS do
+// elemento e dos ancestrais, mede e restaura tudo no mesmo frame: síncrono,
+// sem paint visível nem transição disparada entre a troca.
+function layoutRect(el: HTMLElement): DOMRect {
+  const affected: Array<{
+    el: HTMLElement;
+    transform: string;
+    clip: string;
+    transition: string;
+  }> = [];
+  let node: HTMLElement | null = el;
+  while (node && node !== document.documentElement) {
+    const cs = getComputedStyle(node);
+    if (cs.transform !== 'none' || node.style.transform) {
+      affected.push({
+        el: node,
+        transform: node.style.transform,
+        clip: node.style.clipPath,
+        transition: node.style.transition,
+      });
+      node.style.transform = 'none';
+      node.style.clipPath = 'none';
+      node.style.transition = 'none';
+    }
+    node = node.parentElement;
+  }
+  const r = el.getBoundingClientRect();
+  for (const a of affected) {
+    a.el.style.transform = a.transform;
+    a.el.style.clipPath = a.clip;
+    a.el.style.transition = a.transition;
+  }
+  return r;
+}
+
 function measure(t: MorphTarget) {
   const sy = window.scrollY;
   const sx = window.scrollX;
-  const r = t.img.getBoundingClientRect();
+  const r = layoutRect(t.img);
   t.rect = new DOMRect(r.left + sx, r.top + sy, r.width, r.height);
-  const tr = t.target.getBoundingClientRect();
+  const tr = layoutRect(t.target);
   t.targetRect = new DOMRect(tr.left + sx, tr.top + sy, tr.width, tr.height);
 }
 
@@ -178,6 +231,7 @@ function bindTarget(el: HTMLElement) {
     finalSize: num(el, 'finalSize', 0),
     finalX: num(el, 'finalX', 0.5),
     finalY: num(el, 'finalY', 0.5),
+    easing: el.dataset.easing ?? 'expo-out',
     reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
     rect: new DOMRect(),
     targetRect: new DOMRect(),
