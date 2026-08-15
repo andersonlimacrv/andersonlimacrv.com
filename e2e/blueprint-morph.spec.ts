@@ -95,7 +95,74 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         expect(label?.trim()).toMatch(/^r\s*80px$/);
       });
 
-      test('legenda de evolução: nome real da figura + retângulo → círculo', async ({
+      test('start: círculo-fantasma centralizado + 4 traços cardeais + rótulo no quadrante', async ({
+        page,
+      }) => {
+        await gotoHome(page);
+        const data = await page.evaluate(() => {
+          const sel = '[data-bp-wireframe].bp-start';
+          const ghost = document.querySelector(`${sel} .bp-ghost`);
+          const rect = document.querySelector(`${sel} .bp-rect`);
+          const rLine = document.querySelector(`${sel} .bp-ghost-r-line`);
+          const top = document.querySelector(`${sel} .bp-ghost-tick-top`);
+          const bottom = document.querySelector(`${sel} .bp-ghost-tick-bottom`);
+          const right = document.querySelector(`${sel} .bp-ghost-tick-right`);
+          const label = document.querySelector(`${sel} .bp-ghost-r-label`);
+          const leader = document.querySelector(`${sel} .bp-leader`);
+          if (!ghost || !rect || !rLine || !top || !bottom || !right || !label) {
+            return null;
+          }
+          const box = (el: Element) => {
+            const r = el.getBoundingClientRect();
+            return { x: r.x, y: r.y, w: r.width, h: r.height };
+          };
+          const g = box(ghost);
+          const rr = box(rect);
+          const l = box(label);
+          const cx = document.querySelector(`${sel} .bp-ghost-cross-x`);
+          const cy = document.querySelector(`${sel} .bp-ghost-cross-y`);
+          const intersects = (
+            a: { x: number; y: number; w: number; h: number },
+            b: { x: number; y: number; w: number; h: number },
+          ) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+          return {
+            ghostCenterX: g.x + g.w / 2,
+            rectCenterX: rr.x + rr.w / 2,
+            ghostBottomDist: rr.y + rr.h - (g.y + g.h),
+            tickTop: box(top),
+            tickBottom: box(bottom),
+            tickRight: box(right),
+            rLineW: rLine.getBoundingClientRect().width,
+            rLineCenterY: rLine.getBoundingClientRect().y + rLine.getBoundingClientRect().height / 2,
+            ghostCenterY: g.y + g.h / 2,
+            labelInsideGhost:
+              l.x >= g.x && l.x + l.w <= g.x + g.w && l.y >= g.y && l.y + l.h <= g.y + g.h,
+            labelBottomLeft:
+              l.x + l.w / 2 < g.x + g.w / 2 && l.y + l.h / 2 > g.y + g.h / 2,
+            labelNotCrossed:
+              !cx || !cy || !(intersects(l, box(cx)) || intersects(l, box(cy))),
+            noLeader: leader === null,
+          };
+        });
+        expect(data).not.toBeNull();
+        const d = data!;
+        expect(Math.abs(d.ghostCenterX - d.rectCenterX)).toBeLessThanOrEqual(TOLERANCE_PX);
+        expect(d.ghostBottomDist).toBeLessThanOrEqual(16);
+        expect(d.tickTop.w).toBeLessThanOrEqual(2);
+        expect(d.tickTop.h).toBeGreaterThan(10);
+        expect(d.tickBottom.w).toBeLessThanOrEqual(2);
+        expect(d.tickBottom.h).toBeGreaterThan(10);
+        expect(d.tickRight.w).toBeGreaterThan(10);
+        expect(d.tickRight.h).toBeLessThanOrEqual(2);
+        expect(d.rLineW).toBeGreaterThan(10);
+        expect(Math.abs(d.rLineCenterY - d.ghostCenterY)).toBeLessThanOrEqual(2);
+        expect(d.labelInsideGhost).toBe(true);
+        expect(d.labelBottomLeft).toBe(true);
+        expect(d.labelNotCrossed).toBe(true);
+        expect(d.noLeader).toBe(true);
+      });
+
+      test('legenda: figura IMG.-01 + grupos de dados do morph', async ({
         page,
       }) => {
         await gotoHome(page);
@@ -104,11 +171,9 @@ test.describe('wireframe blueprint do morph da imagem', () => {
           if (!legend) return null;
           const text = legend.textContent ?? '';
           return {
-            hasFigName: /AndersonLimaCRV/i.test(text),
+            hasFigName: /IMG\.-?01/i.test(text),
             hasEvolucao: /EVOLU/.test(text),
-            hasFinal: new RegExp(`Ø${finalSize}`).test(text),
-            glyphRect: legend.querySelector('.bp-glyph-rect') !== null,
-            glyphCircle: legend.querySelector('.bp-glyph-circle') !== null,
+            hasFinal: new RegExp(`${finalSize}px`).test(text),
             hasD: legend.querySelector('[data-bp="d"]') !== null,
             hasXy: /x.*y/.test(text),
           };
@@ -118,8 +183,6 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         expect(d.hasFigName).toBe(true);
         expect(d.hasEvolucao).toBe(true);
         expect(d.hasFinal).toBe(true);
-        expect(d.glyphRect).toBe(true);
-        expect(d.glyphCircle).toBe(true);
         expect(d.hasD).toBe(true);
         expect(d.hasXy).toBe(true);
       });

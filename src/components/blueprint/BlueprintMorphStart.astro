@@ -16,19 +16,17 @@ const radius = finalSize / 2;
       <path class="bp-corner" d="M 7 98 H 2 V 93" />
     </svg>
 
-    <svg class="bp-leader" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <path class="bp-leader-path" d="M 8 8 L 78 78" />
-      <polygon class="bp-leader-head" points="69,77 79,73 77,83" />
-    </svg>
-
     <div class="bp-ghost">
       <span class="bp-ghost-cross bp-ghost-cross-x" aria-hidden="true"></span>
       <span class="bp-ghost-cross bp-ghost-cross-y" aria-hidden="true"></span>
+      <span class="bp-ghost-tick bp-ghost-tick-top" aria-hidden="true"></span>
+      <span class="bp-ghost-tick bp-ghost-tick-bottom" aria-hidden="true"></span>
+      <span class="bp-ghost-tick bp-ghost-tick-right" aria-hidden="true"></span>
+      <b class="bp-ghost-r-label" aria-hidden="true">r {radius}px</b>
     </div>
 
     <span class="bp-ghost-r" aria-hidden="true">
       <span class="bp-ghost-r-line"></span>
-      <b class="bp-ghost-r-label">r {radius}px</b>
     </span>
   </div>
 </div>
@@ -71,35 +69,14 @@ const radius = finalSize / 2;
     vector-effect: non-scaling-stroke;
   }
 
-  /* Leader diagonal tracejado do canto do retângulo até o círculo final */
-  .bp-leader {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-  }
-
-  .bp-leader-path {
-    fill: none;
-    stroke: var(--bp-line);
-    stroke-width: 1;
-    stroke-dasharray: 3 3;
-    vector-effect: non-scaling-stroke;
-  }
-
-  .bp-leader-head {
-    fill: var(--bp-line);
-  }
-
   /* Círculo final (estado END) como fantasma tracejado sobre o retângulo */
   .bp-ghost {
     position: absolute;
-    left: 78%;
-    top: 78%;
+    left: 50%;
+    bottom: 0.5rem;
     width: var(--bp-final-size, 160px);
     height: var(--bp-final-size, 160px);
-    translate: -50% -50%;
+    translate: -50% 0;
     border: 1px dashed var(--bp-line-strong);
     border-radius: 9999px;
     background-color: color-mix(in oklab, var(--foreground) 4%, transparent);
@@ -124,36 +101,61 @@ const radius = finalSize / 2;
     width: 1px;
   }
 
-  /* Raio atual (r = metade do diâmetro final) anotado sobre a imagem, à
-     esquerda do círculo-fantasma, com linha de cota ligando ao círculo. */
-  .bp-ghost-r {
+  /* Traços de cota nos 4 pontos cardeais do círculo-fantasma (extensão do
+     círculo): esquerda, superior, inferior e direita. Mesmo estilo/tamanho
+     do traço do r (1rem horizontal). O rótulo r 80px fica no centro do
+     círculo. */
+  .bp-ghost-tick {
     position: absolute;
-    left: calc(78% - var(--bp-final-size, 160px) / 2 - 1.5rem);
-    top: 78%;
-    translate: 0 -50%;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-  }
-
-  .bp-ghost-r-line {
     width: 1rem;
     height: 0;
     border-top: 1px solid var(--bp-line-strong);
   }
 
+  .bp-ghost-tick-top {
+    left: 50%;
+    top: -0.5rem;
+    translate: -50% 0;
+  }
+
+  .bp-ghost-tick-bottom {
+    left: 50%;
+    bottom: -0.5rem;
+    translate: -50% 0;
+  }
+
+  .bp-ghost-tick-right {
+    top: 50%;
+    right: -1.5rem;
+    translate: 0 -50%;
+  }
+
+  /* Linha de cota do raio à esquerda do círculo-fantasma, na altura do centro */
+  .bp-ghost-r {
+    position: absolute;
+    left: calc(50% - var(--bp-final-size, 160px) / 2 - 1.5rem);
+    bottom: calc(0.5rem + var(--bp-final-size, 160px) / 2);
+    translate: 0 50%;
+  }
+
+  .bp-ghost-r-line {
+    display: block;
+    width: 1rem;
+    height: 0;
+    border-top: 1px solid var(--bp-line-strong);
+  }
+
+  /* Rótulo do raio (r 80px) no quadrante inferior esquerdo do círculo-fantasma,
+     fora do cruzamento das linhas-guia */
   .bp-ghost-r-label {
+    position: absolute;
+    left: 25%;
+    top: 59%;
+    translate: -50% -50%;
     font-family: var(--font-mono);
     font-size: 0.625rem;
     letter-spacing: 0.04em;
     color: var(--foreground);
-  }
-
-  @media (max-width: 767px) {
-    .bp-leader {
-      display: none;
-    }
   }
 </style>
 

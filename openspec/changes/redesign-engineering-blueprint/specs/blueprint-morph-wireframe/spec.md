@@ -49,11 +49,11 @@ As hachuras do blueprint SHALL ser definidas em um único arquivo (`src/styles/h
 - **THEN** todas usam a mesma cor e transparência (`--bp-hatch` = foreground 8%)
 
 ### Requirement: Legenda de evolução com identidade do projeto
-A legenda SHALL documentar a **evolução** do morph (retângulo → círculo) usando a identidade visual do site (mono, uppercase, tracking, bordas `border`), sem sombra, com o **nome real da figura**, e o corpo em 2 colunas: o **diagrama na mesma orientação do morph** (retângulo em pé → seta vertical ↓ → círculo embaixo) e os **dados ao lado, um abaixo do outro** (INICIAL / FINAL / POSIÇÃO) com valores medidos via JS.
+A legenda SHALL documentar a **evolução** do morph (retângulo → círculo) usando a identidade visual do site (mono, uppercase, tracking, bordas `border`), sem sombra, com a **figura identificada** (`IMG.-01`), e o corpo em **coluna única com os dados** (INICIAL / FINAL / POSIÇÃO) com valores medidos via JS — **sem diagrama**.
 
-#### Scenario: Nome real e diagrama gráfico
+#### Scenario: Nome real e dados
 - **WHEN** a página carrega
-- **THEN** a legenda exibe o nome real da figura (`AndersonLimaCRV`) + `MORPH — EVOLUÇÃO`, o diagrama na **orientação vertical** (retângulo em pé, seta ↓, círculo embaixo) com os **dados ao lado**, e os valores `W`, `H`, `d`, `A`, `D`, `r`, `A=πr²`, `C`, `x·y`
+- **THEN** a legenda exibe a figura identificada (`IMG.-01`) + `MORPH — EVOLUÇÃO`, os grupos **INICIAL / FINAL / POSIÇÃO** com os valores `W`, `H`, `d`, `A`, `D`, `r`, `A=πr²`, `C`, `x·y`
 
 #### Scenario: Sem sombra
 - **WHEN** a legenda é renderizada
@@ -64,11 +64,23 @@ A legenda SHALL documentar a **evolução** do morph (retângulo → círculo) u
 - **THEN** o raio das bordas do painel e do chip usa a variável do projeto (`--radius`)
 
 ### Requirement: Raio atual anotado sobre a imagem
-O raio do círculo final (`r` = metade de `finalSize`) SHALL ser anotado sobre a imagem no estado inicial, ao lado do círculo-fantasma, com linha de cota e rótulo em `font-mono`.
+O raio do círculo final (`r` = metade de `finalSize`) SHALL ser anotado sobre a imagem no estado inicial **sem nenhum traçado cruzando a foto**: o círculo-fantasma fica **centrado horizontalmente e quase na borda inferior** da imagem, com **4 traços de cota nos pontos cardeais** e o rótulo `r 80px` (em `font-mono`) **dentro do círculo, no quadrante inferior esquerdo, fora do cruzamento das linhas-guia**.
 
-#### Scenario: Rótulo do raio
+#### Scenario: Círculo-fantasma centralizado e ancorado em baixo
 - **WHEN** a página carrega
-- **THEN** existe um rótulo `r 80px` próximo ao círculo-fantasma, **sem fundo sólido e sem text-shadow** (cor `var(--foreground)` pura sobre a foto)
+- **THEN** o círculo-fantasma está centrado horizontalmente (`left: 50%`) e quase na borda inferior da imagem (`bottom: 0.5rem`)
+
+#### Scenario: Sem traçado cruzando a imagem
+- **WHEN** o estado inicial é renderizado
+- **THEN** não existe o traçado diagonal tracejado com seta cruzando a imagem até o círculo
+
+#### Scenario: Quatro traços de cota nos cardeais
+- **WHEN** a página carrega
+- **THEN** existem 4 traços de cota de 1rem nos pontos cardeais do círculo-fantasma: esquerda (linha de cota do raio, horizontal, na altura do centro), **superior e inferior verticais** (rotacionados 90°) e **direita horizontal** (offset `right: -1.5rem`)
+
+#### Scenario: Rótulo do raio no quadrante inferior esquerdo
+- **WHEN** a página carrega
+- **THEN** existe um rótulo `r 80px` **dentro do círculo-fantasma, no quadrante inferior esquerdo** (`left: 25%`, `top: 59%`), **sem sobrepor as linhas-guia** do crosshair, **sem fundo sólido e sem text-shadow** (cor `var(--foreground)` pura sobre a foto)
 
 ### Requirement: Círculo final com base de trás
 O círculo final SHALL ser desenhado em `#sobre-content` com a mesma clamp do morph (`finalX=0.15`, `finalY=0.5`, raio 80px), com o retrato **mais transparente** (opacidade 0.2), hachura (na cor/transparência padrão das hachuras), crosshair e **anel na mesma cor/opacidade das hachuras**, e **cruzes nos pontos cardeais (mira)** — acima, abaixo e dos lados (sem cantos de quadrado, evitando sobras abaixo do círculo) — desenhadas **uma camada acima da imagem**. O anel SHALL ficar sempre alinhado e coberto pela imagem final: para isso, `#sobre-content` (alvo do morph + overlay) não fica dentro do `transform` do Reveal.
@@ -100,7 +112,7 @@ Os wireframes SHALL ser decorativos: `aria-hidden="true"`, `pointer-events: none
 - **THEN** os wireframes não capturam eventos e não alteram o box dos elementos de conteúdo
 
 ### Requirement: Responsividade
-Em telas menores (`<768px`) os wireframes SHALL reduzir tipografia, empilhar grupos e ocultar elementos dispensáveis (leader) para evitar overflow horizontal.
+Em telas menores (`<768px`) os wireframes SHALL reduzir tipografia e empilhar grupos para evitar overflow horizontal.
 
 #### Scenario: Sem overflow no mobile
 - **WHEN** a viewport é de 390px de largura
