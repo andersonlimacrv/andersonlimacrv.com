@@ -12,7 +12,7 @@
 
 ## 3. Definição do destino do círculo (aberto)
 
-- [ ] 3.1 Definir visualmente posição/raio exatos do círculo na seção Sobre e ajustar via `data-*` (sem alterar o controller)
+- [x] 3.1 Definir visualmente posição/raio exatos do círculo na seção Sobre e ajustar via `data-*` (sem alterar o controller). Definido: `finalSize=160`, `finalX=0.15`, `finalY=0.5`, alvo `#sobre-content` com clamp para manter o círculo dentro da área de conteúdo em todas as telas.
 
 ## 4. Validação
 

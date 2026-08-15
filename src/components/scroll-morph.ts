@@ -21,6 +21,7 @@ interface MorphTarget {
   target: HTMLElement;
   vertices: number;
   finalScale: number;
+  finalSize: number;
   finalX: number;
   finalY: number;
   reduced: boolean;
@@ -56,9 +57,16 @@ function computeProgress(t: MorphTarget): number {
 
 // Gera os pontos do polígono interpolados entre o retângulo e o círculo.
 // 64 vértices: cantos + pontos por borda no retângulo; no círculo, os mesmos
-// 64 pontos sobre a circunferência centrada no box local do elemento. Com 64
-// pontos a circunferência final é visualmente um círculo perfeito, e a
-// interpolação arredonda os cantos de forma progressiva.
+// 64 pontos sobre a circunferência centrada no box local do elemento.
+//
+// Cada borda do retângulo mapeia para o arco de círculo do MESMO lado:
+//  - topo → arco superior (ângulo de 135° a 225°, em coords de tela);
+//  - direita → arco direito (225° a 315°);
+//  - base → arco inferior (315° a 45°);
+//  - esquerda → arco esquerdo (45° a 135°).
+// Assim o morph arredonda os cantos gradualmente (como border-radius) em vez
+// de "girar" o retângulo em torno do círculo. Com 64 pontos o círculo final
+// é visualmente perfeito.
 function polygonFor(t: MorphTarget, p: number): string {
   const w = t.rect.width;
   const h = t.rect.height;
@@ -88,7 +96,10 @@ function polygonFor(t: MorphTarget, p: number): string {
       y0 = h * (1 - k);
     }
 
-    const angle = (i / used) * Math.PI * 2;
+    // Ângulo do arco no círculo correspondente à borda. Coordenadas de tela
+    // (y cresce para baixo): 0°=direita, 90°=base, 180°=esquerda, 270°=topo.
+    const baseAngle = [225, 315, 45, 135][edge];
+    const angle = ((baseAngle + k * 90) * Math.PI) / 180;
     const x1 = cx + Math.cos(angle) * r;
     const y1 = cy + Math.sin(angle) * r;
 
@@ -99,15 +110,25 @@ function polygonFor(t: MorphTarget, p: number): string {
   return `polygon(${points.join(', ')})`;
 }
 
-// Transform: do tamanho original (scale 1) até o círculo final (finalScale).
-// translate desloca o centro da imagem até a posição alvo na seção de
-// destino (fração finalX/finalY do retângulo alvo); scale encolhe.
+// Transform: do tamanho original (scale 1) até o círculo final. O fator de
+// escala final é finalSize/min(w,h) (diâmetro fixo em px, consistente entre
+// telas) quando finalSize > 0; caso contrário usa finalScale. translate
+// desloca o centro da imagem até a posição alvo na seção de destino (fração
+// finalX/finalY do retângulo alvo); scale encolhe.
 function transformFor(t: MorphTarget, p: number): string {
-  const s = 1 + (t.finalScale - 1) * p;
+  const minDim = Math.min(t.rect.width, t.rect.height);
+  const sFinal = t.finalSize > 0 ? t.finalSize / Math.max(1, minDim) : t.finalScale;
+  const s = 1 + (sFinal - 1) * p;
+  const rFinal = minDim * sFinal / 2;
   const srcCx = t.rect.left + t.rect.width / 2;
   const srcCy = t.rect.top + t.rect.height / 2;
-  const dstCx = t.targetRect.left + t.targetRect.width * t.finalX;
-  const dstCy = t.targetRect.top + t.targetRect.height * t.finalY;
+  let dstCx = t.targetRect.left + t.targetRect.width * t.finalX;
+  let dstCy = t.targetRect.top + t.targetRect.height * t.finalY;
+  // Mantém o círculo dentro da área de conteúdo (nunca corta as bordas).
+  if (t.finalSize > 0) {
+    dstCx = Math.min(Math.max(dstCx, t.targetRect.left + rFinal), t.targetRect.right - rFinal);
+    dstCy = Math.min(Math.max(dstCy, t.targetRect.top + rFinal), t.targetRect.bottom - rFinal);
+  }
   const dx = (dstCx - srcCx) * p;
   const dy = (dstCy - srcCy) * p;
   return `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${s.toFixed(4)})`;
@@ -154,6 +175,7 @@ function bindTarget(el: HTMLElement) {
     target,
     vertices: num(el, 'vertices', 64),
     finalScale: num(el, 'finalScale', 0.35),
+    finalSize: num(el, 'finalSize', 0),
     finalX: num(el, 'finalX', 0.5),
     finalY: num(el, 'finalY', 0.5),
     reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches,

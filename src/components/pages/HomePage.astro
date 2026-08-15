@@ -80,8 +80,8 @@ const websiteJsonLd = {
   <JsonLd slot="head" schema={websiteJsonLd} />
 
   <!-- Hero -->
-    <section class="container-site flex flex-col gap-10 md:flex-row md:items-center md:gap-16">
-      <div class="flex-1">
+    <section class="container-site flex flex-col gap-10 md:gap-16">
+      <div class="max-w-2xl">
         <p class="mb-6">
           <Eyebrow label={t.heroEyebrow} />
         </p>
@@ -98,9 +98,10 @@ const websiteJsonLd = {
         src={portrait}
         alt="Retrato em preto e branco de Anderson Carvalho"
         caption={t.figCaption}
-        target="#sobre"
-        finalX={0.18}
-        finalY={0.42}
+        target="#sobre-content"
+        finalSize={160}
+        finalX={0.15}
+        finalY={0.5}
       />
     </section>
 
@@ -111,7 +112,7 @@ const websiteJsonLd = {
     <!-- {t.sections.about.number} / {t.sections.about.title} -->
     <SectionHeading number={t.sections.about.number} title={t.sections.about.title} id="sobre" eyebrow={t.sections.about.eyebrow}>
       <Reveal>
-        <div class="grid gap-10 lg:grid-cols-[1fr_240px]">
+        <div id="sobre-content" class="grid gap-10 lg:grid-cols-[1fr_240px]">
           <p class="max-w-2xl text-lg leading-relaxed text-muted-foreground">
             {t.aboutParagraph}
           </p>

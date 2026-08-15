@@ -7,6 +7,7 @@ interface Props {
   caption?: string;
   target?: string;
   finalScale?: number;
+  finalSize?: number;
   finalX?: number;
   finalY?: number;
   vertices?: number;
@@ -20,11 +21,12 @@ const {
   caption,
   target = '#sobre',
   finalScale = 0.35,
+  finalSize,
   finalX = 0.5,
   finalY = 0.5,
   vertices = 64,
   widths = [480, 800, 1122],
-  sizes = '(min-width: 768px) 320px, 90vw',
+  sizes = '(min-width: 768px) calc(min(64rem, 100vw) - 4rem), calc(100vw - 2rem)',
 } = Astro.props;
 ---
 
@@ -33,6 +35,7 @@ const {
   data-scroll-morph
   data-target={target}
   data-final-scale={finalScale}
+  data-final-size={finalSize}
   data-final-x={finalX}
   data-final-y={finalY}
   data-vertices={vertices}
