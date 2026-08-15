@@ -26,12 +26,12 @@ const {
   finalY = 0.5,
   vertices = 64,
   widths = [480, 800, 1122],
-  sizes = '(min-width: 768px) calc(min(64rem, 100vw) - 4rem), calc(100vw - 2rem)',
+  sizes = '(min-width: 768px) min(420px, 50%), calc(100vw - 2rem)',
 } = Astro.props;
 ---
 
 <figure
-  class="shrink-0 w-full"
+  class="shrink-0 w-full md:w-[min(420px,50%)]"
   data-scroll-morph
   data-target={target}
   data-final-scale={finalScale}
