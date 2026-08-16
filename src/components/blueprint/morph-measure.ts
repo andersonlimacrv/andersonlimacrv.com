@@ -105,6 +105,15 @@ function fillLive(wf: Wireframe): void {
     const text = key && live[key] ? live[key] : null;
     if (text !== null && span.textContent !== text) span.textContent = text;
   }
+
+  // Flip de cor no Start quando a imagem está cobrindo o wireframe (light
+  // mode: a tinta escura someria sobre a foto preta). Histerese 0.99/0.95.
+  // Só a raiz Start (o Board fica atrás da foto; flip não teria efeito).
+  if (wf.root.classList.contains('bp-start')) {
+    const covered = wf.root.classList.contains('bp-covered');
+    if (scale >= 0.99 && !covered) wf.root.classList.add('bp-covered');
+    else if (scale < 0.95 && covered) wf.root.classList.remove('bp-covered');
+  }
 }
 
 function frameLive(): void {

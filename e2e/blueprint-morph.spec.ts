@@ -272,6 +272,42 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         expect(parseFloat(morphed.x ?? '0')).not.toBe(0);
       });
 
+      test('start: cantoneiras e círculo usam tinta clara enquanto a imagem cobre', async ({
+        page,
+      }) => {
+        await gotoHome(page);
+        const read = () =>
+          page.evaluate(() => {
+            const f = document.querySelector('[data-bp-wireframe].bp-start');
+            const lab = document.querySelector(
+              '[data-bp-wireframe].bp-start .bp-ghost-r-label',
+            );
+            return {
+              covered: f?.classList.contains('bp-covered') ?? false,
+              label: lab ? getComputedStyle(lab).color : '',
+            };
+          });
+        const top = await read();
+        expect(top.covered).toBe(true);
+        expect(top.label).toMatch(/9[0-9]%|0\.9/);
+        await page.evaluate(() => window.scrollTo(0, Number.MAX_SAFE_INTEGER));
+        await page
+          .waitForFunction(
+            () =>
+              !(
+                document.querySelector(
+                  '[data-bp-wireframe].bp-start',
+                ) as HTMLElement | null
+              )?.classList.contains('bp-covered'),
+            undefined,
+            { timeout: 5000 },
+          )
+          .catch(() => undefined);
+        const end = await read();
+        expect(end.covered).toBe(false);
+        expect(end.label).not.toMatch(/9[0-9]%|0\.9/);
+      });
+
       test('legenda: figura IMG01 + grupos de dados do morph', async ({
         page,
       }) => {

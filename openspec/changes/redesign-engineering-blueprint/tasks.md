@@ -28,7 +28,7 @@
 ## 4. Validação (concluída)
 
 - [x] 4.1 `npm run check` → 0 erros
-- [x] 4.2 `npm run test:e2e` → 58 testes (8 novos para board/raio/cantoneiras-cruz/opacidade + círculo-fantasma/traços cardeais/rótulo no quadrante + rótulos nos 4 quadrantes com valores ao vivo e alinhamento simétrico)
+- [x] 4.2 `npm run test:e2e` → 60 testes (board/raio/cantoneiras-cruz/opacidade + círculo-fantasma/traços cardeais/rótulo no quadrante + rótulos nos 4 quadrantes com valores ao vivo e alinhamento simétrico + flip de tinta clara `bp-covered` enquanto a imagem cobre)
 - [x] 4.3 `node scripts/audit.mjs` → payload mínimo (gzip ~400 KB)
 
 ## 5. Próximas partes (postergadas)

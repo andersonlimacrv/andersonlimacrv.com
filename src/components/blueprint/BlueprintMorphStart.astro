@@ -44,6 +44,30 @@ const radius = finalSize / 2;
     /* Contraste ≥3:1 sobre o fundo (WCAG 1.4.11 — elementos não-texto). */
     --bp-line: color-mix(in oklab, var(--foreground) 48%, transparent);
     --bp-line-strong: color-mix(in oklab, var(--foreground) 60%, transparent);
+    /* Tinta clara constante (= --foreground do dark-mode) usada enquanto a
+       imagem cobre o wireframe. No dark-mode coincide com o --foreground. */
+    --bp-ink-covered: oklch(0.967 0 0);
+  }
+
+  /* Enquanto a imagem cobre o wireframe (classe bp-covered alternada via JS
+     em morph-measure.ts), cantoneiras e círculo usam tinta CLARA constante
+     (= --foreground do dark-mode): a foto é escura, então no light-mode a
+     tinta escura someria. Quando a imagem sai (morph), a classe é removida e
+     volta --foreground do tema (escuro sobre o fundo claro revelado). No
+     dark-mode os dois valores coincidem, então não há mudança visual. */
+  .bp-wireframe.bp-start.bp-covered {
+    --bp-line: color-mix(in oklab, var(--bp-ink-covered) 48%, transparent);
+    --bp-line-strong: color-mix(in oklab, var(--bp-ink-covered) 60%, transparent);
+  }
+
+  .bp-wireframe.bp-start.bp-covered .bp-ghost {
+    background-color: color-mix(in oklab, var(--bp-ink-covered) 4%, transparent);
+  }
+
+  /* Rótulos dentro do círculo acompanham o flip junto com o círculo. */
+  .bp-wireframe.bp-start.bp-covered .bp-ghost-r-label,
+  .bp-wireframe.bp-start.bp-covered .bp-ghost-q {
+    color: var(--bp-ink-covered);
   }
 
   .bp-rect {
