@@ -23,7 +23,7 @@
 - [x] 4.2 `npm run build` verde (15 páginas)
 - [x] 4.3 `npm run test:e2e` verde (23/23)
 - [x] 4.4 Auditoria (`scripts/audit.mjs`): JS total ~16 KB, HTML +~4.9 KB, docs/audit* atualizados
-- [ ] 4.5 **Aberto**: validar traço/altura e deformação em viewports >1440px/1920px em monitor maior
+- [x] 4.5 Validar traço/altura e deformação em viewports >1440px/1920px em monitor maior (confirmado pelo usuário)
 
 ## 5. Adequação à identidade visual (em aberto)
 
