@@ -344,13 +344,10 @@ test.describe('wireframe blueprint do morph da imagem', () => {
           const cr = circle.getBoundingClientRect();
           const tr = target.getBoundingClientRect();
           const expectedLeft = Math.min(
-            Math.max(0, tr.width * 0.15 - 80),
+            Math.max(0, tr.width * 0.06 - 80),
             tr.width - 160,
           );
-          const expectedTop = Math.min(
-            Math.max(0, tr.height * 0.5 - 80),
-            tr.height - 160,
-          );
+          const expectedTop = Math.min(Math.max(0, -80), tr.height - 160);
           return {
             left: cr.left - tr.left,
             top: cr.top - tr.top,

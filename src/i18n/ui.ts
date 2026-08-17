@@ -59,8 +59,29 @@ export const ui = {
       blog: { number: "03", title: "Blog", eyebrow: "Escritos" },
       contact: { number: "04", title: "Contato", eyebrow: "Fale comigo" },
     },
-    aboutParagraph:
-      "Sou Anderson Carvalho, desenvolvedor com foco em frontend e engenharia web. Gosto de produtos digitais bem construídos: código limpo, design editorial e performance como requisito, não como privilégio.",
+    aboutQuote:
+      "Faço web pensando em quem lê: rápida para carregar, clara para entender e com personalidade para lembrar.",
+    aboutBio: [
+      "Sou Anderson Carvalho, desenvolvedor com foco em frontend e engenharia web. Trabalho com produtos digitais onde código limpo, design editorial e performance caminham juntos — performance é requisito, não privilégio.",
+      "Gosto de transformar problemas reais em interfaces simples: reduzir atrito, respeitar o tempo de quem usa e medir o resultado em vez de decorar.",
+    ],
+    aboutStackLabel: "Foco",
+    aboutStack: [
+      "Frontend",
+      "Web performance",
+      "Design editorial",
+      "TypeScript",
+      "Astro",
+      "Acessibilidade",
+    ],
+    aboutNowLabel: "Agora",
+    aboutNow:
+      "disponível para projetos — explorando interfaces mais rápidas e uma web sem excesso.",
+    aboutTimelineLabel: "Trajetória",
+    aboutStackTitle: "Stack",
+    aboutFactsTitle: "Detalhes",
+    aboutContactTitle: "Contato",
+    aboutDetailsLabel: "Detalhes",
     projects: [
       {
         title: "andersonlimacrv.com",
@@ -127,8 +148,29 @@ export const ui = {
       blog: { number: "03", title: "Blog", eyebrow: "Escritos" },
       contact: { number: "04", title: "Contacto", eyebrow: "Hablemos" },
     },
-    aboutParagraph:
-      "Soy Anderson Carvalho, desarrollador enfocado en frontend e ingeniería web. Me gustan los productos digitales bien construidos: código limpio, diseño editorial y rendimiento como requisito, no como privilegio.",
+    aboutQuote:
+      "Hago web pensando en quien lee: rápida de cargar, clara de entender y con personalidad para recordar.",
+    aboutBio: [
+      "Soy Anderson Carvalho, desarrollador enfocado en frontend e ingeniería web. Trabajo con productos digitales donde el código limpio, el diseño editorial y el rendimiento caminan juntos — el rendimiento es requisito, no privilegio.",
+      "Me gusta convertir problemas reales en interfaces sencillas: reducir la fricción, respetar el tiempo de quien usa y medir el resultado en lugar de decorar.",
+    ],
+    aboutStackLabel: "Enfoque",
+    aboutStack: [
+      "Frontend",
+      "Rendimiento web",
+      "Diseño editorial",
+      "TypeScript",
+      "Astro",
+      "Accesibilidad",
+    ],
+    aboutNowLabel: "Ahora",
+    aboutNow:
+      "disponible para proyectos — explorando interfaces más rápidas y una web sin exceso.",
+    aboutTimelineLabel: "Trayectoria",
+    aboutStackTitle: "Stack",
+    aboutFactsTitle: "Detalles",
+    aboutContactTitle: "Contacto",
+    aboutDetailsLabel: "Detalles",
     projects: [
       {
         title: "andersonlimacrv.com",
@@ -195,8 +237,29 @@ export const ui = {
       blog: { number: "03", title: "Blog", eyebrow: "Writings" },
       contact: { number: "04", title: "Contact", eyebrow: "Get in touch" },
     },
-    aboutParagraph:
-      "I'm Anderson Carvalho, a developer focused on frontend and web engineering. I like well-crafted digital products: clean code, editorial design and performance as a requirement, not a privilege.",
+    aboutQuote:
+      "I build for the web with readers in mind: fast to load, clear to understand, and with a personality you remember.",
+    aboutBio: [
+      "I'm Anderson Carvalho, a developer focused on frontend and web engineering. I work on digital products where clean code, editorial design and performance go hand in hand — performance is a requirement, not a privilege.",
+      "I like turning real problems into simple interfaces: reducing friction, respecting people's time and measuring results instead of decorating.",
+    ],
+    aboutStackLabel: "Focus",
+    aboutStack: [
+      "Frontend",
+      "Web performance",
+      "Editorial design",
+      "TypeScript",
+      "Astro",
+      "Accessibility",
+    ],
+    aboutNowLabel: "Now",
+    aboutNow:
+      "available for projects — exploring faster interfaces and a web without excess.",
+    aboutTimelineLabel: "Timeline",
+    aboutStackTitle: "Stack",
+    aboutFactsTitle: "Details",
+    aboutContactTitle: "Contact",
+    aboutDetailsLabel: "Details",
     projects: [
       {
         title: "andersonlimacrv.com",

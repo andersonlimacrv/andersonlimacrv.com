@@ -93,7 +93,7 @@ O estado inicial SHALL anotar sobre a imagem, **sem nenhum traçado cruzando a f
 - **AND** os rótulos dentro do círculo (`r`, `A`, `s`, `x·y`) acompanham o flip junto com o círculo
 
 ### Requirement: Círculo final com base de trás
-O círculo final SHALL ser desenhado em `#sobre-content` com a mesma clamp do morph (`finalX=0.15`, `finalY=0.5`, raio 80px), com o retrato **mais transparente** (opacidade 0.2), hachura (na cor/transparência padrão das hachuras), crosshair e **anel na mesma cor/opacidade das hachuras**, e **cruzes nos pontos cardeais (mira)** — acima, abaixo e dos lados (sem cantos de quadrado, evitando sobras abaixo do círculo) — desenhadas **uma camada acima da imagem**. O anel SHALL ficar sempre alinhado e coberto pela imagem final: para isso, `#sobre-content` (alvo do morph + overlay) não fica dentro do `transform` do Reveal.
+O círculo final SHALL ser desenhado em `#sobre-content` com a mesma clamp do morph (`finalX=0.06`, `finalY=0`, raio 80px — selo no canto superior-esquerdo), com o retrato **mais transparente** (opacidade 0.2), hachura (na cor/transparência padrão das hachuras), crosshair e **anel na mesma cor/opacidade das hachuras**, e **cruzes nos pontos cardeais (mira)** — acima, abaixo e dos lados (sem cantos de quadrado, evitando sobras abaixo do círculo) — desenhadas **uma camada acima da imagem**. O anel SHALL ficar sempre alinhado e coberto pela imagem final: para isso, `#sobre-content` (alvo do morph + overlay) não fica dentro do `transform` do Reveal.
 
 #### Scenario: Mesma clamp do morph
 - **WHEN** a página carrega

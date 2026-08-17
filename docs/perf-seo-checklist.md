@@ -9,7 +9,7 @@ com o baseline salvo em `docs/audit-baseline.json`.
 ```sh
 npm run build          # build de produção
 npm run check          # diagnóstico Astro (0 erros)
-npm run test:e2e       # 60 testes Playwright (desktop/mobile, wireframe blueprint)
+npm run test:e2e       # 70 testes Playwright (desktop/mobile, wireframe blueprint)
 node scripts/audit.mjs # build + métricas + comparação vs baseline
 ```
 
@@ -26,8 +26,8 @@ node scripts/audit.mjs # build + métricas + comparação vs baseline
 | Métrica | Baseline | Atual | Δ |
 | --- | --- | --- | --- |
 | Arquivos dist/ | 42 | 39 | −3 |
-| Peso raw | 640.9 KB | 761.9 KB | +121.0 KB |
-| Peso gzip | 411.1 KB | 409.0 KB | −2.1 KB |
+| Peso raw | 640.9 KB | 837.3 KB | +196.4 KB |
+| Peso gzip | 411.1 KB | 422.3 KB | +11.2 KB |
 | Fontes | 13 | 6 | −7 |
 
 ## SEO on-page

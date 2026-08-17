@@ -568,21 +568,6 @@ html {
   transform: none;
 }
 
-/* Rail lateral da seção Sobre (coluna de links sociais) — divisória fina
-   que vira linha no topo em telas menores. */
-.rail-left {
-  border-left: 1px solid var(--border);
-  padding-left: 1rem;
-}
-
-@media (max-width: 1023px) {
-  .rail-left {
-    border-left: none;
-    border-top: 1px solid var(--border);
-    padding-left: 0;
-    padding-top: 1rem;
-  }
-}
 .skip-link {
   z-index: 100;
   background-color: var(--foreground);
