@@ -162,9 +162,9 @@
   /* Diâmetro do círculo final do morph da imagem. Responsivo: acompanha a
      caixa do retrato na seção Sobre (coluna esquerda das duas colunas fixas).
      O JS do morph (scroll-morph.ts) e os wireframes blueprint leem esta var. */
-  --morph-final-size: 64px;
+  --morph-final-size: 128px;
   @media (min-width: 640px) {
-    --morph-final-size: 104px;
+    --morph-final-size: 128px;
   }
   @media (min-width: 768px) {
     --morph-final-size: 128px;

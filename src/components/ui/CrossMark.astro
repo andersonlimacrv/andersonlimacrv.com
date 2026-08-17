@@ -1,0 +1,22 @@
+---
+interface Props {
+  variant?: 'plus' | 't-top' | 't-bottom' | 't-left' | 't-right';
+  size?: number;
+  class?: string;
+}
+
+const { variant = 'plus', size = 10, class: className = '' } = Astro.props;
+const half = size / 2;
+---
+
+<span
+  aria-hidden="true"
+  data-cross={variant}
+  class={`relative block ${className}`}
+  style={`width:${size}px;height:${size}px;`}
+>
+  <span class="absolute bg-foreground" style={`left:0;top:${half - 0.5}px;width:${size}px;height:1px;`}></span>
+  {variant !== 't-top' && (
+    <span class="absolute bg-foreground" style={`left:${half - 0.5}px;top:0;width:1px;height:${size}px;`}></span>
+  )}
+</span>

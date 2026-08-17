@@ -29,9 +29,13 @@ node scripts/audit.mjs # build + métricas + comparação vs baseline
 | Métrica | Baseline | Atual | Δ |
 | --- | --- | --- | --- |
 | Arquivos dist/ | 42 | 39 | −3 |
-| Peso raw | 640.9 KB | 882.4 KB | +241.5 KB |
-| Peso gzip | 411.1 KB | 423.4 KB | +12.3 KB |
+| Peso raw | 640.9 KB | 932.4 KB | +291.5 KB |
+| Peso gzip | 411.1 KB | 442.8 KB | +31.7 KB |
 | Fontes | 13 | 6 | −7 |
+| CSS externo (linhas global.css) | 706 | 687 | −19 |
+| `group-link`/`group-arrow` (regras) | 2 | 0 | −2 |
+| SVGs inline de link | 6 | 0 | −6 |
+| Instâncias `<TargetHover>` | 1 (About) | 1 (global) | — |
 
 ## SEO on-page
 
@@ -64,3 +68,6 @@ node scripts/audit.mjs # build + métricas + comparação vs baseline
 - [x] Logo com `aria-label` localizado.
 - [x] Nav com `aria-label` localizado.
 - [x] Theme toggle com `aria-label` localizado e sincronizado com o estado.
+- [x] Seções numeradas com `aria-labelledby` apontando para o `<h2 id="*-title">`.
+- [x] Hero com `aria-labelledby="hero-title"` no `<h1>`.
+- [x] Colunas Perfil/Trajetória marcadadas com `data-col` (sem landmarks anônimos).

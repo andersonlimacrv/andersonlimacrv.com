@@ -8,7 +8,7 @@ const VIEWPORTS = [
 // Diâmetro final responsivo do morph (--morph-final-size no :root).
 const FINAL_SIZE_BY_VIEWPORT: Record<(typeof VIEWPORTS)[number]['name'], number> = {
   desktop: 160,
-  mobile: 64,
+  mobile: 128,
 };
 
 const TOLERANCE_PX = 3;

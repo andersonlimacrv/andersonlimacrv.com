@@ -1,16 +1,15 @@
 ## Why
 
-A seção Sobre precisa refletir o novo desenho do usuário: **duas colunas fixas** (desktop e mobile — no mobile as larguras reduzem proporcionalmente, sem nunca empilhar). À esquerda, o **retrato P&B com marcações blueprint** e as **informações pessoais ao lado da foto (nunca abaixo)**: Nome, cargo, stack principal e localização, curtos e alinhados. À direita, uma **timeline vertical contínua** com os anos como pontos fixos na linha e a **duração destacada visualmente**. A estética Engineering Blueprint (grid rigorosa, divisores finos, tipografia técnica, espaçamento uniforme) permanece.
-
-O usuário editou `About.astro` manualmente (quebrou a compilação) e pediu: corrigir o arquivo atual, rodar para visualizar e adequar o código ao spec.
+A seção Sobre precisa refletir o novo desenho do usuário: **duas colunas** (Perfil à esquerda, Trajetória à direita) que **empilham no mobile** e ficam lado a lado em `lg`. À esquerda, o **retrato P&B com marcações blueprint** e as **informações pessoais ao lado da foto (nunca abaixo)**: Role, stack principal e localização, curtos e alinhados. À direita, uma **timeline vertical contínua agrupada por ano**, com os anos como pontos fixos na linha, a data primeiro ao lado do ano e o marcador preenchido (concluído) ou vazio (em andamento). A estética Engineering Blueprint (divisores finos, tipografia técnica, marcadores `T` no topo/fim da linha, espaçamento uniforme) permanece. Hover de links padronizado no site todo via `TargetHover` global e classe `.cursor-target`; seções numeradas com `aria-labelledby`.
 
 ## What Changes
 
-- **Duas colunas fixas em `#sobre-content`**: grid `grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]` com `divide-x` + `border-t`/`divide-border`. No mobile as colunas **permanecem lado a lado** (larguras reduzem; padding `pr-3`/`pl-3`, `sm:pr-6/pl-6`, `lg:pr-10/pl-10`), nunca empilham.
-- **Coluna 01 — Perfil**: label "Perfil" + `01`; box do retrato (`id="sobre-portrait"`, `aspect-square`, alvo do morph, `BlueprintMorphEnd finalX=0/finalY=0`) com um `dl` ao lado (nunca abaixo): **Nome** (`hero.name`), **Role** (`hero.title`), **Stack principal** (`hero.mainStack`), **Localização** (`hero.location`). Depois: **frase** (`blockquote` serif + `<cite>`), **"Sobre mim"** (`aboutBio`, 2 parágrafos) e **social/contato** no fim da coluna (GitHub/LinkedIn/Email com `cursor-target`/TargetHover + telefone `+55` + localização).
-- **Coluna 02 — Trajetória**: label "Trajetória" + intervalo real dos dados (header `yearRange` = min–max dos anos dos períodos; `presente` conta como o ano corrente). **Timeline vertical contínua**: linha `w-px` percorrendo toda a coluna; cada item de `careerJourney` tem o **ano como ponto fixo** na linha (marcador), cargo/formação (`h3`), empresa, período em mono e **descrição de 1 linha** (`summary`). Marcação temporal (início / trajetória / atual) e marcação técnica inferior (`AC / ABOUT / 01`).
-- **Morph alinhado ao retrato**: o alvo do morph vira `#sobre-portrait` (`Hero.astro` `target="#sobre-portrait"`, `finalX=0`, `finalY=0`). Diâmetro final responsivo via `--morph-final-size` no `:root` (64px base, 104px ≥640, 128px ≥768, 160px ≥1024); JS do morph (`scroll-morph.ts`) e wireframes blueprint (`morph-measure.ts`, `BlueprintMorphEnd/Start/Board`) leem a var, com a prop como fallback.
-- **Dados**: `profile.ts` ganha `hero.mainStack` e `TimelineEntry.summary` (7 entradas preenchidas). Fatos em pt; rótulos localizados (pt/es/en).
+- **Layout em duas colunas (flex) em `#sobre-content`**: `relative flex flex-col divide-y divide-border border-t border-border lg:flex-row lg:divide-x lg:divide-y-0`. Cada coluna é um `<section data-col="perfil"|"trajetoria">` com `min-w-0` e `basis-full lg:basis-[46%]`/`lg:basis-[54%]`. No mobile (<1024px) as colunas **empilham** (Perfil acima, Trajetória abaixo); em `lg` ficam lado a lado.
+- **Coluna 01 — Perfil**: header com label "Perfil" + `01`; bloco **foto + informações** (`flex items-start gap-3 sm:gap-5`): `#sobre-portrait` (`aspect-square shrink-0 basis-[47.5%]`, alvo do morph, `BlueprintMorphEnd finalX=0/finalY=0`) com um `dl` `flex-1` ao lado (nunca abaixo) com **3 itens**: **Role** (`hero.title` em 3 `span class="block"` — "Engenheiro de Software", "Enterpreneur", "Arquiteto de Soluções"), **Stack principal** (`hero.mainStack`), **Localização** (`hero.location`). Depois, separados por `border-t`: **frase** (`blockquote` serif itálico em caixa `border border-dashed` com cantoneiras blueprint, **sem `<cite>`**), **"Sobre mim"** (`aboutBio`) e **"Redes sociais"** (rótulo `aboutContactTitle` localizado — "Redes sociais"/"Redes sociales"/"Social media" — com `<nav>` de **5 links** — GitHub, LinkedIn, Instagram, WhatsApp, Email — cada `<a class="cursor-target border-b border-border py-2.5 hover:border-foreground hover:text-foreground">`; **sem telefone e sem localização** nesse bloco).
+- **Coluna 02 — Trajetória**: header simétrico ao da coluna 01 (label "Trajetória" + `02`); o intervalo real dos dados (`yearRange` = min–max dos anos dos períodos; `presente` conta como o ano corrente) aparece como rótulo mono `absolute right-0 top-2` **dentro do wrapper da timeline**. **Timeline vertical contínua**: linha `w-px` percorrendo a coluna, com **marcadores `T`** (`CrossMark` `t-top`/`t-bottom`) no topo e no fim. Itens de `careerJourney` **agrupados pelo ano de início** (`careerGroups` em `About.astro`); cada grupo é um `<li>` com a coluna do ano (ponto fixo + marcador preenchido/vazio conforme `ongoing`) e a coluna das experiências (`flex-1`), onde cada `entry` renderiza **nesta ordem**: período (mono uppercase), `h3` cargo, `p` empresa, `p` **summary** de 1 linha.
+- **Morph alinhado ao retrato**: o alvo do morph vira `#sobre-portrait` (`Hero.astro` `target="#sobre-portrait"`, `finalX=0`, `finalY=0`). Diâmetro final responsivo via `--morph-final-size` no `:root` (**128px** base/`sm`/`md`, **160px** ≥1024); JS do morph (`scroll-morph.ts`) e wireframes blueprint (`morph-measure.ts`, `BlueprintMorphEnd/Start/Board`) leem a var, com a prop como fallback.
+- **TargetHover global + semântica**: `<TargetHover>` instanciado uma única vez em `BaseLayout.astro` (seletor default `.cursor-target`); `.group-link`/`.group-arrow` e os 6 SVGs inline removidos do site todo; `SectionHeading`/`Hero` com `aria-labelledby` nos `<h2>`/`<h1>`; `.container-site` migrado para utilitários Tailwind e a regra CSS apagada.
+- **Dados**: `profile.ts` já tem `hero.mainStack` e `TimelineEntry.summary` preenchidos. `src/lib/site.ts` ganha `socialLinks.instagram` e `socialLinks.whatsapp` (`https://wa.me/5553981004874`, derivado de `hero.contact.phone`). Fatos em pt; rótulos localizados (pt/es/en).
 
 ## Capabilities
 
@@ -23,19 +22,25 @@ O usuário editou `About.astro` manualmente (quebrou a compilação) e pediu: co
 
 ## Non-goals
 
-- Não empilhar as colunas no mobile (a decisão do usuário é manter lado a lado).
-- Não alterar as demais seções (Projetos, Blog, Contato) nem o design system global (tokens, cores, tipografia).
+- Não empilhar a foto acima das informações no mobile (foto+informações sempre lado a lado).
+- Não alterar `TargetHover.astro` (componente), o design system de cores/fontes, ou os wireframes blueprint.
+- Não migrar para grid (decisão: layout usa flex/flexbox).
 - Não traduzir os dados factuais (cargos/períodos/stack) — ficam em pt; só rótulos/quote são localizados.
-- Não remover CSS em uso nem alterar estilos de outras seções.
+- Não exibir o telefone formatado na UI (somente no `wa.me`).
 
 ## Impact
 
-- `src/components/sections/About.astro`: reescrito (duas colunas fixas, info ao lado da foto, timeline contínua com barra de duração, header com intervalo real).
-- `src/data/profile.ts`: `hero.mainStack`, `TimelineEntry.summary`.
-- `src/i18n/ui.ts`: novos rótulos (colunas, Nome/Role/Stack/Location, bio, duração).
-- `src/styles/global.css`: `--morph-final-size` responsivo.
+- `src/components/sections/About.astro`: reescrito (flex/empilha no mobile, info ao lado da foto, timeline agrupada por ano, marcadores `T`, 5 links sociais, sem telefone).
+- `src/components/ui/CrossMark.astro` (novo): marcadores `T` no topo/fim da linha vertical.
+- `src/data/profile.ts`: `hero.mainStack`, `TimelineEntry.summary` (já preenchidos).
+- `src/lib/site.ts`: `socialLinks.instagram`, `socialLinks.whatsapp`.
+- `src/i18n/ui.ts`: `aboutContactTitle` → "Redes sociais"/"Redes sociales"/"Social media".
+- `src/styles/global.css`: `--morph-final-size` (128px base/`sm`/`md`, 160px ≥1024); `.container-site` e `.group-link:hover .group-arrow` apagadas.
 - `src/components/ui/scroll-morph.ts`, `src/components/blueprint/morph-measure.ts`, `BlueprintMorphEnd.astro`, `BlueprintMorphStart.astro`, `BlueprintMorphBoard.astro`: tamanho final responsivo + escala de rótulos (`--bp-scale`).
-- `src/components/sections/Hero.astro`: alvo `#sobre-portrait`, `finalX=0`, `finalY=0`.
-- `e2e/about-section.spec.ts`: reescrito (duas colunas, info ao lado, timeline, header, /en/).
-- `e2e/blueprint-morph.spec.ts`, `e2e/scroll-morph.spec.ts`: alvo/parâmetros/tamanho final responsivos.
-- `docs/perf-seo-checklist.md` + `docs/audit*.md`: atualizados.
+- `src/components/sections/Hero.astro`: alvo `#sobre-portrait`, `finalX=0`, `finalY=0` + `aria-labelledby="hero-title"` + container via utilitários.
+- `src/components/layout/Header.astro`, `Footer.astro`: `.cursor-target` no lugar de `group-link` + container via utilitários (Footer).
+- `src/components/ui/{PostCard,ProjectLink,SectionHeading}.astro`, `src/components/sections/{Blog,Contact}.astro`, `src/components/pages/BlogIndexPage.astro`, `src/layouts/{BaseLayout,PostLayout}.astro`: `.cursor-target` + `aria-labelledby` + TargetHover global em `BaseLayout`.
+- `e2e/about-section.spec.ts`: reescrito (flex/empilha no mobile, 3 itens no dl, 6 grupos na timeline, 5 links, sem telefone, CrossMarks).
+- `e2e/blueprint-morph.spec.ts`, `e2e/scroll-morph.spec.ts`: tamanho final responsivo (mobile 128px).
+- `e2e/locale-layout.spec.ts`: `section#hero` no lugar de `section.container-site`.
+- `docs/perf-seo-checklist.md` + `docs/audit*.md`: atualizados com métricas atuais (932.4 KB raw / 442.8 KB gzip, −19 linhas em `global.css`, −6 SVGs, −2 regras `.group-*`).

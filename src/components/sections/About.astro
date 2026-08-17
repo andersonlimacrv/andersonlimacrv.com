@@ -6,7 +6,7 @@ import portrait from '../../assets/me.png';
 import { authorName, socialLinks } from '../../lib/site';
 import { profile } from '../../data/profile';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
-import TargetHover from '../ui/TargetHover.astro';
+import CrossMark from '../ui/CrossMark.astro';
 
 interface Props {
   locale?: Locale;
@@ -18,11 +18,10 @@ const t = ui[locale];
 const socials = [
   { label: 'GitHub', href: socialLinks.github, external: true },
   { label: 'LinkedIn', href: socialLinks.linkedin, external: true },
+  { label: 'Instagram', href: socialLinks.instagram, external: true },
+  { label: 'WhatsApp', href: socialLinks.whatsapp, external: true },
   { label: 'Email', href: `mailto:${socialLinks.email}`, external: false },
 ];
-
-const phoneRaw = profile.hero.contact.phone; // '53981004874'
-const phoneDisplay = `+55 ${phoneRaw.slice(0, 2)} ${phoneRaw.slice(2, 7)}-${phoneRaw.slice(7)}`;
 
 // Intervalo real da trajetória a partir dos períodos (min–max de anos).
 // "presente" conta como o ano corrente.
@@ -36,6 +35,22 @@ const years = profile.careerJourney.map((entry) => {
 const yearStart = Math.min(...years.map((y) => y.start));
 const yearEnd = Math.max(...years.map((y) => y.end));
 const yearRange = `${yearStart}—${yearEnd}`;
+
+// Agrupa os itens da trajetória por ano de início.
+// Mesmo ano → um único ponto fixo na linha (ex.: 2022).
+const careerGroups = profile.careerJourney.reduce<{
+  year: string;
+  entries: typeof profile.careerJourney;
+}[]>((acc, entry) => {
+  const year = entry.period.match(/\d{4}/)?.[0] ?? '';
+  const last = acc[acc.length - 1];
+  if (last && last.year === year) {
+    last.entries.push(entry);
+  } else {
+    acc.push({ year, entries: [entry] });
+  }
+  return acc;
+}, []);
 ---
 
 <SectionHeading
@@ -57,12 +72,16 @@ const yearRange = `${yearStart}—${yearEnd}`;
 
     <div
       class="
-        grid
-        grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]
-        divide-x
+        relative
+        flex
+        flex-col
+        divide-y
         divide-border
         border-t
         border-border
+        lg:flex-row
+        lg:divide-x
+        lg:divide-y-0
       "
     >
 
@@ -71,10 +90,12 @@ const yearRange = `${yearStart}—${yearEnd}`;
            ======================================================= -->
 
       <section
+        data-col="perfil"
         class="
           min-w-0
-          pr-3
-          sm:pr-6
+          basis-full
+          pr-0
+          lg:basis-[46%]
           lg:pr-10
         "
       >
@@ -83,6 +104,7 @@ const yearRange = `${yearStart}—${yearEnd}`;
 
         <div
           class="
+            relative
             flex
             items-center
             justify-between
@@ -125,13 +147,10 @@ const yearRange = `${yearStart}—${yearEnd}`;
 
         <div
           class="
-            grid
-            grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]
+            flex
             items-start
             gap-3
-            py-4
-            sm:gap-5
-            sm:py-8
+            pt-3
           "
         >
 
@@ -143,6 +162,8 @@ const yearRange = `${yearStart}—${yearEnd}`;
               relative
               aspect-square
               min-w-0
+              shrink-0
+              basis-[47.5%]
               mt-5
             "
           >
@@ -152,12 +173,13 @@ const yearRange = `${yearStart}—${yearEnd}`;
               finalX={0}
               finalY={0}
             />
+            <p class="mt-40 lg:mt-46 px-3">Anderson Carvalho</p>
           </div>
 
 
           <!-- INFORMAÇÕES -->
 
-          <div class="min-w-0">
+          <div class="min-w-0 flex-1">
             <dl
               class="
                 mt-1
@@ -272,8 +294,8 @@ const yearRange = `${yearStart}—${yearEnd}`;
           class="
             border-t
             border-border
-            py-6
-            sm:py-7
+            py-4
+            sm:py-5
           "
         >
           <div
@@ -350,8 +372,8 @@ const yearRange = `${yearStart}—${yearEnd}`;
           class="
             border-t
             border-border
-            py-6
-            sm:py-7
+            py-4
+            sm:py-5
           "
         >
 
@@ -366,25 +388,16 @@ const yearRange = `${yearStart}—${yearEnd}`;
             <p
               class="
                 font-mono
-                text-[9px]
+                text-[7px]
                 uppercase
                 tracking-[0.18em]
-                text-muted-foreground
-                sm:text-[10px]
+                text-muted-foreground/60
+                sm:text-[9px]
               "
             >
               {t.aboutBioTitle}
             </p>
 
-            <span
-              class="
-                font-mono
-                text-[8px]
-                text-muted-foreground/40
-              "
-            >
-              01/02
-            </span>
           </div>
 
 
@@ -419,30 +432,28 @@ const yearRange = `${yearStart}—${yearEnd}`;
         <Reveal
           delay={200}
           class="
-            mt-8
+            mt-6
             border-t
             border-border
-            pt-8
+            pt-6
           "
         >
           <footer
             class="
               flex
               flex-col
-              gap-6
-              lg:flex-row
-              lg:items-start
-              lg:justify-between
+              gap-3
             "
           >
             <div class="flex flex-col gap-2">
               <p
                 class="
                   font-mono
-                  text-xs
+                  text-[7px]
                   uppercase
-                  tracking-[0.16em]
-                  text-muted-foreground
+                  tracking-[0.18em]
+                  text-muted-foreground/60
+                  sm:text-[9px]
                 "
               >
                 {t.aboutContactTitle}
@@ -459,34 +470,24 @@ const yearRange = `${yearStart}—${yearEnd}`;
                       ? { target: '_blank', rel: 'noopener noreferrer' }
                       : {})}
                     class="
-                      group-link
+                      text-center
                       cursor-target
                       transition-micro
-                      flex
-                      min-h-11
-                      items-center
-                      gap-2
+                      border
+                      py-2.5
                       font-mono
-                      text-sm
+                      text-xs
                       uppercase
                       tracking-[0.16em]
                       text-muted-foreground
                       hover:text-foreground
+                      sm:text-sm
                     "
                   >
                     {social.label}
                   </a>
                 ))}
               </nav>
-            </div>
-
-            <div class="flex flex-col gap-1.5">
-              <p class="font-mono text-xs text-muted-foreground">
-                {phoneDisplay}
-              </p>
-              <p class="font-mono text-xs text-muted-foreground">
-                {profile.hero.location}
-              </p>
             </div>
           </footer>
         </Reveal>
@@ -499,10 +500,12 @@ const yearRange = `${yearStart}—${yearEnd}`;
            ======================================================= -->
 
       <section
+        data-col="trajetoria"
         class="
           min-w-0
-          pl-3
-          sm:pl-6
+          basis-full
+          pl-0
+          lg:basis-[54%]
           lg:pl-10
         "
       >
@@ -511,6 +514,7 @@ const yearRange = `${yearStart}—${yearEnd}`;
 
         <div
           class="
+            relative
             flex
             items-center
             justify-between
@@ -542,7 +546,7 @@ const yearRange = `${yearStart}—${yearEnd}`;
               sm:text-[9px]
             "
           >
-            {yearRange}
+            02
           </span>
 
         </div>
@@ -559,6 +563,21 @@ const yearRange = `${yearStart}—${yearEnd}`;
             sm:py-8
           "
         >
+
+          <span
+            class="
+              absolute
+              right-0
+              top-2
+              font-mono
+              text-[8px]
+              tracking-[0.15em]
+              text-muted-foreground/40
+              sm:text-[9px]
+            "
+          >
+            {yearRange}
+          </span>
 
           <!--
             Linha vertical contínua: percorre toda a trajetória
@@ -578,27 +597,40 @@ const yearRange = `${yearStart}—${yearEnd}`;
             "
           ></span>
 
+          <!-- T no topo: travessa horizontal sobre o topo da linha vertical -->
+
+          <CrossMark
+            variant="t-top"
+            size={10}
+            class="absolute left-[2.9rem] top-0 -translate-x-1/2 -translate-y-1/2 sm:left-[3.75rem]"
+          />
+
+          <!-- T no fim: travessa horizontal no fim da linha vertical -->
+
+          <CrossMark
+            variant="t-bottom"
+            size={10}
+            class="absolute left-[2.9rem] bottom-0 -translate-x-1/2 translate-y-1/2 sm:left-[3.75rem]"
+          />
+
 
           <ol
             class="relative flex flex-col"
             aria-label={t.aboutTimelineLabel}
           >
 
-            {profile.careerJourney.map((entry) => {
+            {careerGroups.map((group) => {
 
-              const year = entry.period.match(/\d{4}/)?.[0] ?? '';
-              const ongoing = entry.period.includes('presente');
+              const ongoing = group.entries.some((e) => e.period.includes('presente'));
 
               return (
                 <li
                   class="
                     relative
-                    grid
-                    grid-cols-[3.2rem_minmax(0,1fr)]
+                    flex
                     gap-3
                     pb-7
                     last:pb-0
-                    sm:grid-cols-[4.1rem_minmax(0,1fr)]
                     sm:gap-5
                     sm:pb-8
                   "
@@ -606,7 +638,7 @@ const yearRange = `${yearStart}—${yearEnd}`;
 
                   <!-- ANO (ponto fixo na linha) -->
 
-                  <div class="relative">
+                  <div class="relative w-[3.2rem] shrink-0 sm:w-[4.1rem]">
                     <p
                       class="
                         pt-0.5
@@ -621,7 +653,7 @@ const yearRange = `${yearStart}—${yearEnd}`;
                         sm:text-xs
                       "
                     >
-                      {year}
+                      {group.year}
                     </p>
 
                     <!-- MARCADOR na linha: concluído = preenchido; em andamento = vazio -->
@@ -643,80 +675,89 @@ const yearRange = `${yearStart}—${yearEnd}`;
                   </div>
 
 
-                  <!-- EXPERIÊNCIA -->
+                  <!-- EXPERIÊNCIA(S) DO ANO -->
 
                   <div
                     class="
                       relative
                       min-w-0
-                      border-b
-                      border-border
-                      pb-6
-                      last:border-b-0
+                      flex-1
                     "
                   >
 
-                    <!-- CARGO / FORMAÇÃO -->
+                    {group.entries.map((entry) => (
+                      <div
+                        class="
+                          border-b
+                          border-border
+                          pb-6
+                          last:border-b-0
+                          last:pb-0
+                        "
+                      >
 
-                    <h3
-                      class="
-                        text-[10px]
-                        font-semibold
-                        leading-snug
-                        tracking-[-0.01em]
-                        text-foreground
-                        sm:text-sm
-                      "
-                    >
-                      {entry.role}
-                    </h3>
+                        <!-- PERÍODO (data ao lado do ano) -->
 
+                        <p
+                          class="
+                            pt-0.5
+                            font-mono
+                            text-[7px]
+                            uppercase
+                            tracking-[0.13em]
+                            text-muted-foreground/60
+                            sm:text-[9px]
+                          "
+                        >
+                          {entry.period}
+                        </p>
 
-                    <!-- EMPRESA -->
+                        <!-- CARGO / FORMAÇÃO -->
 
-                    <p
-                      class="
-                        mt-1
-                        text-[9px]
-                        leading-relaxed
-                        text-muted-foreground
-                        sm:text-xs
-                      "
-                    >
-                      {entry.company}
-                    </p>
+                        <h3
+                          class="
+                            mt-2
+                            text-[10px]
+                            font-semibold
+                            leading-snug
+                            tracking-[-0.01em]
+                            text-foreground
+                            sm:text-sm
+                          "
+                        >
+                          {entry.role}
+                        </h3>
 
+                        <!-- EMPRESA -->
 
-                    <!-- PERÍODO -->
+                        <p
+                          class="
+                            mt-1
+                            text-[9px]
+                            leading-relaxed
+                            text-muted-foreground
+                            sm:text-xs
+                          "
+                        >
+                          {entry.company}
+                        </p>
 
-                    <p
-                      class="
-                        mt-2
-                        font-mono
-                        text-[7px]
-                        uppercase
-                        tracking-[0.13em]
-                        text-muted-foreground/60
-                        sm:text-[9px]
-                      "
-                    >
-                      {entry.period}
-                    </p>
+                        <!-- DESCRIÇÃO DE 1 LINHA -->
 
+                        <p
+                          class="
+                            mt-2
+                            text-[9px]
+                            leading-relaxed
+                            text-muted-foreground
+                            sm:text-[11px]
+                          "
+                        >
+                          {entry.summary}
+                        </p>
 
-                    <!-- DESCRIÇÃO DE 1 LINHA -->
-
-                    <p
-                      class="
-                        mt-2
-                        text-[9px]
-                        leading-relaxed
-                        text-muted-foreground
-                        sm:text-[11px]
-                      "
-                    >
-                      {entry.summary}
-                    </p>
+                      </div>
+                    ))}
 
                   </div>
 
@@ -733,19 +774,5 @@ const yearRange = `${yearStart}—${yearEnd}`;
     </div>
 
   </div>
-
-
-  <!-- ===========================================================
-       TARGET HOVER
-       =========================================================== -->
-
-  <TargetHover
-    hoverDuration={0.2}
-    parallaxOn={true}
-    parallaxStrength={7}
-    cornerSize={12}
-    borderWidth={2}
-    offset={8}
-  />
 
 </SectionHeading>

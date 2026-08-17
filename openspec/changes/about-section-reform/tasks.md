@@ -18,10 +18,10 @@
 - [x] C.1 Reescrever `e2e/about-section.spec.ts`: duas colunas fixas (grid, nunca empilha), info ao lado do retrato, conteúdo das colunas, timeline (7 itens, ano/período/summary), header `2007—2027`, /en/ localizado, sem overflow
 - [x] C.2 Atualizar `blueprint-morph.spec.ts`/`scroll-morph.spec.ts`: alvo `#sobre-portrait`, `finalX=0`/`finalY=0`, tamanho final responsivo (160/64), escala dos rótulos; rodar suíte completa
 - [x] C.3 Revisão visual desktop/mobile (claro/escuro) com o usuário — usuário pediu remoção da barra de duração (feito)
-- [ ] C.4 Revisão visual final após remoção da barra de duração
+- [x] C.4 Revisão visual final após remoção da barra de duração
 
 ## Fase D — Verificação final
 
-- [ ] D.1 Build limpo + `node scripts/audit.mjs` + atualizar `docs/perf-seo-checklist.md` (76 testes, métricas atuais)
-- [ ] D.2 `npx openspec validate` + suíte e2e completa + `npm run check`
-- [ ] D.3 Commit sob pedido do usuário
+- [x] D.1 Build limpo + `node scripts/audit.mjs` + atualizar `docs/perf-seo-checklist.md` (76 testes, métricas atuais)
+- [x] D.2 `npx openspec validate` + suíte e2e completa + `npm run check`
+- [x] D.3 Commit sob pedido do usuário
