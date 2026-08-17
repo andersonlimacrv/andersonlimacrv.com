@@ -10,17 +10,19 @@ interface Props {
 }
 
 const { src, finalSize = 160, finalX = 0.15, finalY = 0.5 } = Astro.props;
-const radius = finalSize / 2;
+// Diâmetro final responsivo: a var --morph-final-size (definida no :root)
+// acompanha o breakpoint; o prop vira fallback.
+const resolvedSize = `var(--morph-final-size, ${finalSize}px)`;
 // Mesma clamp do JS do morph (transformFor): min(max(center, top+r), bottom-r)
 // → borda do círculo entre 0 e (100% - finalSize). Quando o alvo é menor que
 // o diâmetro, o máximo prevalece e o círculo "estoura" o topo (igual ao morph).
 const centerStyle = {
-  left: `min(max(0px, calc(${finalX * 100}% - ${radius}px)), calc(100% - ${finalSize}px))`,
-  top: `min(max(0px, calc(${finalY * 100}% - ${radius}px)), calc(100% - ${finalSize}px))`,
+  left: `min(max(0px, calc(${finalX * 100}% - ${resolvedSize} / 2)), calc(100% - ${resolvedSize}))`,
+  top: `min(max(0px, calc(${finalY * 100}% - ${resolvedSize} / 2)), calc(100% - ${resolvedSize}))`,
 } as const;
 ---
 
-<div class="bp-end" data-bp-end aria-hidden="true" style={`--bp-final-size: ${finalSize}px`}>
+<div class="bp-end" data-bp-end aria-hidden="true" style={`--bp-final-size: ${resolvedSize}`}>
   <div class="bp-end-circle" style={centerStyle}>
     <Image
       src={src}

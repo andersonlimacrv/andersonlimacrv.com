@@ -42,6 +42,17 @@ function num(el: HTMLElement, key: string, fallback: number): number {
   return Number.isFinite(value) ? value : fallback;
 }
 
+// Diâmetro final do círculo: lê o CSS var --morph-final-size (responsivo,
+// definido no :root) e cai para o data-final-size quando ausente.
+function readFinalSize(el: HTMLElement): number {
+  const raw = getComputedStyle(el).getPropertyValue('--morph-final-size').trim();
+  if (raw) {
+    const value = Number.parseFloat(raw);
+    if (Number.isFinite(value) && value > 0) return value;
+  }
+  return num(el, 'finalSize', 0);
+}
+
 // Curva de suavização aplicada ao progresso p ∈ [0,1]. "expo-out" acelera no
 // início e desacelera no fim (mesma sensação do --ease-expo-out do site);
 // "none"/"linear" mantém o percurso linear. O fim (p=1) nunca muda.
@@ -212,6 +223,9 @@ function measure(t: MorphTarget) {
   t.rect = new DOMRect(r.left + sx, r.top + sy, r.width, r.height);
   const tr = layoutRect(t.target);
   t.targetRect = new DOMRect(tr.left + sx, tr.top + sy, tr.width, tr.height);
+  // O diâmetro final é responsivo (--morph-final-size): recomputa no resize
+  // para acompanhar o breakpoint atual sem re-bind.
+  t.finalSize = readFinalSize(t.root);
 }
 
 function bindTarget(el: HTMLElement) {
@@ -228,7 +242,7 @@ function bindTarget(el: HTMLElement) {
     target,
     vertices: num(el, 'vertices', 64),
     finalScale: num(el, 'finalScale', 0.35),
-    finalSize: num(el, 'finalSize', 0),
+    finalSize: readFinalSize(el),
     finalX: num(el, 'finalX', 0.5),
     finalY: num(el, 'finalY', 0.5),
     easing: el.dataset.easing ?? 'expo-out',

@@ -30,33 +30,48 @@ test.describe('seção Sobre reformulada', () => {
     test.describe(vp.name, () => {
       test.use({ viewport: { width: vp.width, height: vp.height } });
 
-      test('duas colunas: quote ao lado do selo (desktop) / empilhado (mobile)', async ({
+      test('duas colunas fixas em qualquer largura (nunca empilha)', async ({ page }) => {
+        await gotoHome(page);
+        const data = await page.evaluate(() => {
+          const grid = document.querySelector(
+            '#sobre-content > div.grid',
+          ) as HTMLElement | null;
+          if (!grid) return null;
+          const cs = getComputedStyle(grid);
+          return {
+            display: cs.display,
+            cols: cs.gridTemplateColumns.split(' ').filter((c) => c !== '').length,
+            children: grid.children.length,
+          };
+        });
+        expect(data).not.toBeNull();
+        expect(data!.display).toBe('grid');
+        expect(data!.cols).toBe(2);
+        expect(data!.children).toBe(2);
+      });
+
+      test('retrato à esquerda com informações ao lado (nunca abaixo)', async ({
         page,
       }) => {
         await gotoHome(page);
         const data = await page.evaluate(() => {
-          const root = document.querySelector('#sobre-content');
-          const circle = document.querySelector('[data-bp-end] .bp-end-circle');
-          const quote = document.querySelector('#sobre-content blockquote');
-          if (!root || !circle || !quote) return null;
-          const cs = getComputedStyle(root);
-          const cr = circle.getBoundingClientRect();
-          const qr = quote.getBoundingClientRect();
+          const portrait = document.querySelector('#sobre-portrait');
+          const info = document.querySelector('#sobre-portrait + div');
+          if (!portrait || !info) return null;
+          const pr = portrait.getBoundingClientRect();
+          const ir = info.getBoundingClientRect();
+          const dl = info.querySelector('dl');
           return {
-            display: cs.display,
-            direction: cs.flexDirection,
-            quoteLeft: qr.left,
-            circleRight: cr.right,
+            infoRight: ir.right,
+            portraitRight: pr.right,
+            infoTopOverlap: ir.top < pr.bottom,
+            dlCount: dl ? dl.querySelectorAll(':scope > div').length : 0,
           };
         });
         expect(data).not.toBeNull();
-        expect(data!.display).toBe('flex');
-        if (vp.name === 'desktop') {
-          expect(data!.direction).toBe('row');
-          expect(data!.quoteLeft).toBeGreaterThanOrEqual(data!.circleRight - TOLERANCE_PX);
-        } else {
-          expect(data!.direction).toBe('column');
-        }
+        // Informações ao lado (à direita) e com topo dentro da área da foto.
+        expect(data!.infoRight).toBeGreaterThan(data!.portraitRight - TOLERANCE_PX);
+        expect(data!.infoTopOverlap).toBe(true);
       });
 
       test('sem overflow horizontal', async ({ page }) => {
@@ -89,53 +104,86 @@ test.describe('seção Sobre reformulada', () => {
         }
       });
 
-      test('conteúdo: quote, cite, bio (2 parágrafos), timeline, stack, detalhes e contato', async ({
+      test('conteúdo: role/stack/location na coluna 01, frase, bio, social; timeline na coluna 02', async ({
         page,
       }) => {
         await gotoHome(page);
+
+        const info = page.locator('#sobre-portrait + div dl');
+        await expect(info.locator(':scope > div')).toHaveCount(3);
+        await expect(info.getByText('Full Stack Developer')).toBeVisible();
+        await expect(info.getByText('Python · TypeScript · C · ESP32 · React')).toBeVisible();
+        await expect(info.getByText('Pelotas, Rio Grande do Sul, Brasil')).toBeVisible();
+
         const quote = page.locator('#sobre-content blockquote p');
         await expect(quote).not.toHaveText('');
         await expect(page.locator('#sobre-content blockquote cite')).toContainText(
           'Anderson Carvalho',
         );
 
-        await expect(page.locator('#sobre-content div.space-y-4 p')).toHaveCount(2);
+        await expect(page.locator('#sobre-content footer').getByText('GitHub')).toBeVisible();
+        await expect(page.locator('#sobre-content footer').getByText('+55 53 98100-4874')).toBeVisible();
 
         const entries = page.locator('#sobre-content ol[aria-label] > li');
         await expect(entries).toHaveCount(7);
-        await expect(entries.first().locator('p').first()).toContainText('Pós-graduação');
-        await expect(entries.nth(1).locator('p').first()).toContainText('Software Developer');
+        await expect(entries.first().locator('h3')).toContainText('Pós-graduação');
+        await expect(entries.first()).toContainText('Universidade Católica');
+        await expect(entries.first()).toContainText('Especialização em IA e ML');
+      });
 
-        await expect(page.locator('#sobre-content details')).toHaveCount(4);
-        await expect(page.locator('#sobre-content details summary').first()).toContainText(
-          'Detalhes',
+      test('timeline: anos, período, empresa e resumo de 1 linha por item', async ({
+        page,
+      }) => {
+        await gotoHome(page);
+        const data = await page.evaluate(() => {
+          const ol = document.querySelector('#sobre-content ol[aria-label]');
+          if (!ol) return null;
+          const items = Array.from(ol.querySelectorAll(':scope > li'));
+          return items.map((li) => {
+            const year = li.querySelector('p.font-mono')?.textContent?.trim() ?? '';
+            const role = li.querySelector('h3')?.textContent?.trim() ?? '';
+            const period = li.querySelector('p.uppercase')?.textContent?.trim() ?? '';
+            const summary = li.querySelector(':scope > div:nth-child(2) > p:last-of-type')?.textContent?.trim() ?? '';
+            return { year, role, period, summary };
+          });
+        });
+        expect(data).not.toBeNull();
+        expect(data!.length).toBe(7);
+        expect(data![0].year).toBe('2026');
+        expect(data![0].period).toBe('maio de 2026 — maio de 2027');
+        expect(data![0].summary).toContain('Especialização em IA e ML');
+        expect(data![5].year).toBe('2012');
+        for (const item of data!) {
+          expect(item.summary).not.toHaveLength(0);
+        }
+      });
+
+      test('header da coluna 02 usa o intervalo real dos dados (2007—2027)', async ({
+        page,
+      }) => {
+        await gotoHome(page);
+        await expect(page.locator('#sobre-content section:nth-child(2)')).toContainText(
+          '2007—2027',
         );
-        await expect(page.locator('#sobre-content details').first()).toContainText('Frontend');
-        await expect(page.locator('#sobre-content details').first()).toContainText(
-          'Embedded & IoT',
+        await expect(page.locator('#sobre-content section:nth-child(2)')).toContainText(
+          'Trajetória',
         );
-
-        await expect(page.locator('#sobre-content li.border')).toHaveCount(61);
-
-        await expect(page.locator('#sobre-content dl > div')).toHaveCount(6);
-
-        await expect(page.locator('#sobre-content footer').getByText('Pelotas')).toBeVisible();
-        await expect(page.locator('#sobre-content footer').getByText('+55')).toBeVisible();
       });
 
       test('localização: rótulos em inglês em /en/ (fatos permanecem em pt)', async ({
         page,
       }) => {
         await gotoHome(page, '/en/');
+        await expect(page.locator('#sobre-portrait + div dl').getByText('Role')).toBeVisible();
+        await expect(
+          page.locator('#sobre-portrait + div dl').getByText('Main stack'),
+        ).toBeVisible();
         await expect(page.locator('#sobre-content blockquote p')).toContainText(
           'I build for the web',
         );
         await expect(page.locator('#sobre-content ol[aria-label]')).toHaveAttribute(
           'aria-label',
           'Timeline',
-        );
-        await expect(page.locator('#sobre-content details summary').first()).toContainText(
-          'Details',
         );
         await expect(page.locator('#sobre-content ol[aria-label] > li').first()).toContainText(
           'Pós-graduação',

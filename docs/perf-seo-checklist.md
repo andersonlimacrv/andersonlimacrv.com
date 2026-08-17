@@ -9,7 +9,7 @@ com o baseline salvo em `docs/audit-baseline.json`.
 ```sh
 npm run build          # build de produção
 npm run check          # diagnóstico Astro (0 erros)
-npm run test:e2e       # 70 testes Playwright (desktop/mobile, wireframe blueprint)
+npm run test:e2e       # 76 testes Playwright (desktop/mobile, wireframe blueprint)
 node scripts/audit.mjs # build + métricas + comparação vs baseline
 ```
 
@@ -22,12 +22,15 @@ node scripts/audit.mjs # build + métricas + comparação vs baseline
 - [x] Zero warnings do Lightning CSS no build.
 - [x] `font-display: swap` em todas as fontes.
 - [x] OG dedicada 1200×630 derivada de `me.png` (webp), com width/height/alt.
+- [x] Seção Sobre em duas colunas fixas (desktop/mobile) sem overflow horizontal.
+- [x] Morph do retrato com diâmetro final responsivo (`--morph-final-size`),
+      lido pelo JS e pelos wireframes blueprint em vez de constante fixa.
 
 | Métrica | Baseline | Atual | Δ |
 | --- | --- | --- | --- |
 | Arquivos dist/ | 42 | 39 | −3 |
-| Peso raw | 640.9 KB | 837.3 KB | +196.4 KB |
-| Peso gzip | 411.1 KB | 422.3 KB | +11.2 KB |
+| Peso raw | 640.9 KB | 882.4 KB | +241.5 KB |
+| Peso gzip | 411.1 KB | 423.4 KB | +12.3 KB |
 | Fontes | 13 | 6 | −7 |
 
 ## SEO on-page

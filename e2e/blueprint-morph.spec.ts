@@ -5,8 +5,13 @@ const VIEWPORTS = [
   { name: 'mobile', width: 390, height: 844 },
 ] as const;
 
+// Diâmetro final responsivo do morph (--morph-final-size no :root).
+const FINAL_SIZE_BY_VIEWPORT: Record<(typeof VIEWPORTS)[number]['name'], number> = {
+  desktop: 160,
+  mobile: 64,
+};
+
 const TOLERANCE_PX = 3;
-const FINAL_SIZE_PX = 160;
 
 async function gotoHome(page: Page) {
   await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
@@ -88,17 +93,19 @@ test.describe('wireframe blueprint do morph da imagem', () => {
 
       test('raio atual anotado sobre a imagem (r 80px)', async ({ page }) => {
         await gotoHome(page);
+        const radius = FINAL_SIZE_BY_VIEWPORT[vp.name] / 2;
         const label = await page
           .locator('[data-bp-wireframe].bp-start .bp-ghost-r-label')
           .first()
           .textContent();
-        expect(label?.trim()).toMatch(/^r\s*80px$/);
+        expect(label?.trim()).toMatch(new RegExp(`^r\\s*${radius}px$`));
       });
 
       test('start: círculo-fantasma centralizado + 4 traços cardeais + rótulo no quadrante', async ({
         page,
       }) => {
         await gotoHome(page);
+        const sc = FINAL_SIZE_BY_VIEWPORT[vp.name] / 160;
         const data = await page.evaluate(() => {
           const sel = '[data-bp-wireframe].bp-start';
           const ghost = document.querySelector(`${sel} .bp-ghost`);
@@ -149,12 +156,12 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         expect(Math.abs(d.ghostCenterX - d.rectCenterX)).toBeLessThanOrEqual(TOLERANCE_PX);
         expect(d.ghostBottomDist).toBeLessThanOrEqual(16);
         expect(d.tickTop.w).toBeLessThanOrEqual(2);
-        expect(d.tickTop.h).toBeGreaterThan(10);
+        expect(d.tickTop.h).toBeGreaterThan(10 * sc);
         expect(d.tickBottom.w).toBeLessThanOrEqual(2);
-        expect(d.tickBottom.h).toBeGreaterThan(10);
-        expect(d.tickRight.w).toBeGreaterThan(10);
+        expect(d.tickBottom.h).toBeGreaterThan(10 * sc);
+        expect(d.tickRight.w).toBeGreaterThan(10 * sc);
         expect(d.tickRight.h).toBeLessThanOrEqual(2);
-        expect(d.rLineW).toBeGreaterThan(10);
+        expect(d.rLineW).toBeGreaterThan(10 * sc);
         expect(Math.abs(d.rLineCenterY - d.ghostCenterY)).toBeLessThanOrEqual(2);
         expect(d.labelInsideGhost).toBe(true);
         expect(d.labelBottomLeft).toBe(true);
@@ -166,6 +173,7 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         page,
       }) => {
         await gotoHome(page);
+        const sc = FINAL_SIZE_BY_VIEWPORT[vp.name] / 160;
         const data = await page.evaluate(() => {
           const sel = '[data-bp-wireframe].bp-start';
           const ghost = document.querySelector(`${sel} .bp-ghost`);
@@ -231,7 +239,7 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         const inners = [d.r.inner, d.s.inner, d.xy.inner];
         expect(Math.max(...inners) - Math.min(...inners)).toBeLessThanOrEqual(2);
         expect(d.a.inner).toBeLessThan(d.r.inner);
-        expect(d.a.inner).toBeGreaterThanOrEqual(4);
+        expect(d.a.inner).toBeGreaterThanOrEqual(4 * sc);
       });
 
       test('start: valores ao vivo atualizam durante o morph', async ({ page }) => {
@@ -312,6 +320,7 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         page,
       }) => {
         await gotoHome(page);
+        const finalSize = FINAL_SIZE_BY_VIEWPORT[vp.name];
         const data = await page.evaluate((finalSize) => {
           const legend = document.querySelector('[data-bp-board] .bp-legend');
           if (!legend) return null;
@@ -323,7 +332,7 @@ test.describe('wireframe blueprint do morph da imagem', () => {
             hasD: legend.querySelector('[data-bp="d"]') !== null,
             hasXy: /x.*y/.test(text),
           };
-        }, FINAL_SIZE_PX);
+        }, finalSize);
         expect(data).not.toBeNull();
         const d = data!;
         expect(d.hasFigName).toBe(true);
@@ -337,17 +346,19 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         page,
       }) => {
         await gotoHome(page);
-        const data = await page.evaluate(() => {
+        const finalSize = FINAL_SIZE_BY_VIEWPORT[vp.name];
+        const data = await page.evaluate((finalSize) => {
           const circle = document.querySelector('[data-bp-end] .bp-end-circle');
-          const target = document.querySelector('#sobre-content');
+          const target = document.querySelector('#sobre-portrait');
           if (!circle || !target) return null;
           const cr = circle.getBoundingClientRect();
           const tr = target.getBoundingClientRect();
+          const r = finalSize / 2;
           const expectedLeft = Math.min(
-            Math.max(0, tr.width * 0.06 - 80),
-            tr.width - 160,
+            Math.max(0, -r),
+            tr.width - finalSize,
           );
-          const expectedTop = Math.min(Math.max(0, -80), tr.height - 160);
+          const expectedTop = Math.min(Math.max(0, -r), tr.height - finalSize);
           return {
             left: cr.left - tr.left,
             top: cr.top - tr.top,
@@ -355,10 +366,10 @@ test.describe('wireframe blueprint do morph da imagem', () => {
             expectedLeft,
             expectedTop,
           };
-        });
+        }, finalSize);
         expect(data).not.toBeNull();
         const d = data!;
-        expect(Math.abs(d.width - FINAL_SIZE_PX)).toBeLessThanOrEqual(TOLERANCE_PX);
+        expect(Math.abs(d.width - finalSize)).toBeLessThanOrEqual(TOLERANCE_PX);
         expect(Math.abs(d.left - d.expectedLeft)).toBeLessThanOrEqual(TOLERANCE_PX);
         expect(Math.abs(d.top - d.expectedTop)).toBeLessThanOrEqual(TOLERANCE_PX);
       });

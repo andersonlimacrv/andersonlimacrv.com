@@ -82,6 +82,13 @@ export const ui = {
     aboutFactsTitle: "Detalhes",
     aboutContactTitle: "Contato",
     aboutDetailsLabel: "Detalhes",
+    aboutProfileColumn: "Perfil",
+    aboutTrajectoryColumn: "Trajetória",
+    aboutNameTitle: "Nome",
+    aboutRoleTitle: "Role",
+    aboutMainStackTitle: "Stack principal",
+    aboutLocationTitle: "Localização",
+    aboutBioTitle: "Sobre mim",
     projects: [
       {
         title: "andersonlimacrv.com",
@@ -171,6 +178,13 @@ export const ui = {
     aboutFactsTitle: "Detalles",
     aboutContactTitle: "Contacto",
     aboutDetailsLabel: "Detalles",
+    aboutProfileColumn: "Perfil",
+    aboutTrajectoryColumn: "Trayectoria",
+    aboutNameTitle: "Nombre",
+    aboutRoleTitle: "Rol",
+    aboutMainStackTitle: "Stack principal",
+    aboutLocationTitle: "Ubicación",
+    aboutBioTitle: "Sobre mí",
     projects: [
       {
         title: "andersonlimacrv.com",
@@ -260,6 +274,13 @@ export const ui = {
     aboutFactsTitle: "Details",
     aboutContactTitle: "Contact",
     aboutDetailsLabel: "Details",
+    aboutProfileColumn: "Profile",
+    aboutTrajectoryColumn: "Trajectory",
+    aboutNameTitle: "Name",
+    aboutRoleTitle: "Role",
+    aboutMainStackTitle: "Main stack",
+    aboutLocationTitle: "Location",
+    aboutBioTitle: "About me",
     projects: [
       {
         title: "andersonlimacrv.com",

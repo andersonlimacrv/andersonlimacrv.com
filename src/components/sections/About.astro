@@ -4,7 +4,7 @@ import SectionHeading from '../ui/SectionHeading.astro';
 import BlueprintMorphEnd from '../blueprint/BlueprintMorphEnd.astro';
 import portrait from '../../assets/me.png';
 import { authorName, socialLinks } from '../../lib/site';
-import { profile, getExperienceFor } from '../../data/profile';
+import { profile } from '../../data/profile';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
 import TargetHover from '../ui/TargetHover.astro';
 
@@ -15,24 +15,27 @@ interface Props {
 const locale = Astro.props.locale ?? defaultLocale;
 const t = ui[locale];
 
-const phone = `+55 ${profile.hero.contact.phone.slice(0, 2)} ${profile.hero.contact.phone.slice(2, 7)}-${profile.hero.contact.phone.slice(7)}`;
-
-const groupLabels = {
-  frontend: 'Frontend',
-  backend: 'Backend',
-  embeddedAndIot: 'Embedded & IoT',
-} as const;
-
-const groupKeys = ['frontend', 'backend', 'embeddedAndIot'] as const;
-
 const socials = [
   { label: 'GitHub', href: socialLinks.github, external: true },
   { label: 'LinkedIn', href: socialLinks.linkedin, external: true },
   { label: 'Email', href: `mailto:${socialLinks.email}`, external: false },
 ];
 
-const arrowSvg =
-  '<svg class="group-arrow transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+const phoneRaw = profile.hero.contact.phone; // '53981004874'
+const phoneDisplay = `+55 ${phoneRaw.slice(0, 2)} ${phoneRaw.slice(2, 7)}-${phoneRaw.slice(7)}`;
+
+// Intervalo real da trajetória a partir dos períodos (min–max de anos).
+// "presente" conta como o ano corrente.
+const currentYear = new Date().getFullYear();
+const years = profile.careerJourney.map((entry) => {
+  const nums = (entry.period.match(/\d{4}/g) ?? []).map(Number);
+  const start = nums[0];
+  const end = entry.period.includes('presente') ? currentYear : (nums[nums.length - 1] ?? start);
+  return { start, end };
+});
+const yearStart = Math.min(...years.map((y) => y.start));
+const yearEnd = Math.max(...years.map((y) => y.end));
+const yearRange = `${yearStart}—${yearEnd}`;
 ---
 
 <SectionHeading
@@ -41,153 +44,701 @@ const arrowSvg =
   id="sobre"
   eyebrow={t.sections.about.eyebrow}
 >
-  <div id="sobre-content" class="relative flex flex-col lg:flex-row lg:flex-wrap lg:items-stretch">
-    <BlueprintMorphEnd src={portrait} finalX={0.06} finalY={0} />
+  <div
+    id="sobre-content"
+    class="relative"
+  >
 
-    <div class="flex min-w-0 flex-col pt-44 lg:w-[min(40vw,55%)] lg:shrink-0 lg:pt-0 lg:pl-44 lg:pr-12">
-      <Reveal>
-        <blockquote class="font-serif text-2xl italic leading-snug tracking-tight text-foreground sm:text-3xl">
-          <p>{t.aboutQuote}</p>
-          <cite class="mt-4 block font-mono text-xs not-italic uppercase tracking-[0.16em] text-muted-foreground">
-            {authorName}
-          </cite>
-        </blockquote>
-      </Reveal>
+    <!-- =========================================================
+         ABOUT — duas colunas permanentes (desktop e mobile)
+         01 — Perfil (retrato + informações ao lado)
+         02 — Trajetória (timeline contínua)
+         ========================================================= -->
 
-      <Reveal delay={60} class="mt-8 border-t border-border pt-8">
-        <div class="space-y-4 text-lg leading-relaxed text-muted-foreground">
-          {t.aboutBio.map((paragraph) => (
-            <p>{paragraph}</p>
-          ))}
-        </div>
-      </Reveal>
+    <div
+      class="
+        grid
+        grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]
+        divide-x
+        divide-border
+        border-t
+        border-border
+      "
+    >
 
-      <Reveal delay={120} class="mt-8 border-t border-border pt-8">
-        <div class="flex flex-col gap-4">
-          <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-            {t.aboutFactsTitle}
+      <!-- =======================================================
+           COLUNA 01 — PERFIL
+           ======================================================= -->
+
+      <section
+        class="
+          min-w-0
+          pr-3
+          sm:pr-6
+          lg:pr-10
+        "
+      >
+
+        <!-- LABEL -->
+
+        <div
+          class="
+            flex
+            items-center
+            justify-between
+            border-b
+            border-border
+            py-4
+          "
+        >
+          <p
+            class="
+              font-mono
+              text-[9px]
+              uppercase
+              tracking-[0.2em]
+              text-muted-foreground
+              sm:text-[10px]
+            "
+          >
+            {t.aboutProfileColumn}
           </p>
-          <dl class="flex flex-col">
-            {profile.about.map((item) => (
-              <div class="flex flex-col gap-1 border-t border-border py-3 first:border-t-0">
-                <dt class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground/80">
-                  {item.label}
+
+          <span
+            class="
+              font-mono
+              text-[8px]
+              tracking-[0.15em]
+              text-muted-foreground/50
+              sm:text-[9px]
+            "
+          >
+            01
+          </span>
+        </div>
+
+
+        <!-- =====================================================
+             FOTO + INFORMAÇÕES
+             Sempre lado a lado (nunca abaixo da foto)
+             ===================================================== -->
+
+        <div
+          class="
+            grid
+            grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]
+            items-start
+            gap-3
+            py-4
+            sm:gap-5
+            sm:py-8
+          "
+        >
+
+          <!-- FOTO (alvo do morph) -->
+
+          <div
+            id="sobre-portrait"
+            class="
+              relative
+              aspect-square
+              min-w-0
+              mt-5
+            "
+          >
+            <BlueprintMorphEnd
+              src={portrait}
+              finalSize={160}
+              finalX={0}
+              finalY={0}
+            />
+          </div>
+
+
+          <!-- INFORMAÇÕES -->
+
+          <div class="min-w-0">
+            <dl
+              class="
+                mt-1
+                space-y-3
+                sm:space-y-4
+              "
+            >
+
+              <div>
+                <dt
+                  class="
+                    font-mono
+                    text-[7px]
+                    uppercase
+                    tracking-[0.18em]
+                    text-muted-foreground/60
+                    sm:text-[9px]
+                  "
+                >
+                  {t.aboutRoleTitle}
                 </dt>
-                <dd class="text-sm leading-relaxed text-muted-foreground">{item.value}</dd>
+
+                <dd
+                  class="
+                    mt-1
+                    text-[9px]
+                    font-medium
+                    leading-snug
+                    text-foreground
+                    sm:text-xs
+                  "
+                >
+                  {profile.hero.title.split(' · ').map((part) => (
+                    <span class="block">{part}</span>
+                  ))}
+                </dd>
               </div>
-            ))}
-          </dl>
+
+
+              <!-- STACK PRINCIPAL -->
+
+              <div>
+                <dt
+                  class="
+                    font-mono
+                    text-[7px]
+                    uppercase
+                    tracking-[0.18em]
+                    text-muted-foreground/60
+                    sm:text-[9px]
+                  "
+                >
+                  {t.aboutMainStackTitle}
+                </dt>
+
+                <dd
+                  class="
+                    mt-1
+                    font-mono
+                    text-[8px]
+                    leading-relaxed
+                    text-muted-foreground
+                    sm:text-[10px]
+                  "
+                >
+                  {profile.hero.mainStack}
+                </dd>
+              </div>
+
+
+              <!-- LOCALIZAÇÃO -->
+
+              <div>
+                <dt
+                  class="
+                    font-mono
+                    text-[7px]
+                    uppercase
+                    tracking-[0.18em]
+                    text-muted-foreground/60
+                    sm:text-[9px]
+                  "
+                >
+                  {t.aboutLocationTitle}
+                </dt>
+
+                <dd
+                  class="
+                    mt-1
+                    font-mono
+                    text-[8px]
+                    leading-relaxed
+                    text-muted-foreground
+                    sm:text-[10px]
+                  "
+                >
+                  {profile.hero.location}
+                </dd>
+              </div>
+
+            </dl>
+          </div>
+
         </div>
-      </Reveal>
 
-      <Reveal delay={180} class="mt-8 border-t border-border pt-8">
-        <footer class="flex flex-col gap-4">
-          <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-            {t.aboutContactTitle}
-          </p>
-          <p class="font-mono text-xs text-muted-foreground">{profile.hero.location}</p>
-          <p class="font-mono text-xs text-muted-foreground">{phone}</p>
-          <nav class="flex flex-col" aria-label={t.aboutContactTitle}>
-            {socials.map((social) => (
-              <a
-                href={social.href}
-                {...(social.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                class="group-link cursor-target transition-micro flex min-h-11 items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
-              >
-                {social.label}
-                <Fragment set:html={arrowSvg} />
-              </a>
-            ))}
-          </nav>
-        </footer>
-      </Reveal>
-    </div>
 
-    <div class="flex min-w-0 flex-1 flex-col border-t border-border pt-10 lg:border-l lg:border-t-0 lg:pt-0 lg:pl-12">
-      <Reveal>
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-          {t.aboutTimelineLabel}
-        </p>
-        <ol class="mt-2 flex flex-col" aria-label={t.aboutTimelineLabel}>
-          {profile.careerJourney.map((entry) => {
-            const exp = getExperienceFor(entry.company, entry.role);
-            const highlights = exp?.highlights;
-            return (
-              <li class="border-t border-border py-6 first:border-t-0">
-                <div class="flex flex-col gap-1.5">
-                  <p class="font-sans text-lg font-semibold leading-snug tracking-[-0.01em] text-foreground">
-                    {entry.role}
-                  </p>
-                  <p class="text-sm text-muted-foreground">{entry.company}</p>
-                  <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                    {entry.period}
-                  </p>
-                </div>
-                {highlights && (
-                  <details class="group mt-4">
-                    <summary class="flex list-none cursor-pointer items-center justify-between gap-2 border border-border px-3 py-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground transition-micro hover:text-foreground [&::-webkit-details-marker]:hidden">
-                      {t.aboutDetailsLabel}
-                      <span class="transition-transform duration-200 group-open:rotate-45" aria-hidden="true">+</span>
-                    </summary>
-                    {Array.isArray(highlights) ? (
-                      <ul class="mt-4 flex flex-col gap-1.5 border-l border-border pl-4">
-                        {highlights.map((h) => (
-                          <li class="text-sm leading-relaxed text-muted-foreground">{h}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div class="mt-4 flex flex-col gap-4">
-                        {groupKeys.map((key) => {
-                          const items = highlights[key];
-                          if (!items) return null;
-                          return (
-                            <div>
-                              <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                                {groupLabels[key]}
-                              </p>
-                              <ul class="mt-1.5 flex flex-col gap-1.5 border-l border-border pl-4">
-                                {items.map((h) => (
-                                  <li class="text-sm leading-relaxed text-muted-foreground">{h}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </details>
-                )}
-              </li>
-            );
-          })}
-        </ol>
-      </Reveal>
-    </div>
+        <!-- =====================================================
+             FRASE
+             ===================================================== -->
 
-    <Reveal delay={240} class="mt-8 w-full border-t border-border pt-8 lg:basis-full">
-      <div class="flex flex-col gap-4">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
-          {t.aboutStackTitle}
-        </p>
-        <div class="flex flex-col gap-x-8 gap-y-6 sm:flex-row sm:flex-wrap">
-          {profile.techStack.map((group) => (
-            <div class="min-w-0 w-full sm:w-1/2 lg:w-1/3">
-              <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground/80">
-                {group.label}
+        <Reveal
+          class="
+            border-t
+            border-border
+            py-6
+            sm:py-7
+          "
+        >
+          <div
+            class="
+              relative
+              border
+              border-dashed
+              border-border
+              px-4
+              py-5
+              sm:px-6
+              sm:py-6
+            "
+          >
+
+            <!-- blueprint corner -->
+
+            <span
+              aria-hidden="true"
+              class="
+                absolute
+                -left-px
+                -top-px
+                h-3
+                w-3
+                border-l
+                border-t
+                border-foreground
+              "
+            ></span>
+
+            <span
+              aria-hidden="true"
+              class="
+                absolute
+                -bottom-px
+                -right-px
+                h-3
+                w-3
+                border-b
+                border-r
+                border-foreground
+              "
+            ></span>
+
+
+            <blockquote
+              class="
+                font-serif
+                text-sm
+                italic
+                leading-relaxed
+                tracking-tight
+                text-foreground
+                sm:text-lg
+              "
+            >
+              <p>
+                {t.aboutQuote}
               </p>
-              <ul class="mt-2 flex flex-wrap gap-1.5">
-                {group.items.map((tag) => (
-                  <li class="border border-border px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
-                    {tag}
-                  </li>
+
+            </blockquote>
+
+          </div>
+        </Reveal>
+
+
+        <!-- =====================================================
+             SOBRE MIM
+             ===================================================== -->
+
+        <Reveal
+          delay={60}
+          class="
+            border-t
+            border-border
+            py-6
+            sm:py-7
+          "
+        >
+
+          <div
+            class="
+              flex
+              items-baseline
+              justify-between
+              gap-3
+            "
+          >
+            <p
+              class="
+                font-mono
+                text-[9px]
+                uppercase
+                tracking-[0.18em]
+                text-muted-foreground
+                sm:text-[10px]
+              "
+            >
+              {t.aboutBioTitle}
+            </p>
+
+            <span
+              class="
+                font-mono
+                text-[8px]
+                text-muted-foreground/40
+              "
+            >
+              01/02
+            </span>
+          </div>
+
+
+          <div
+            class="
+              mt-4
+              max-w-xl
+              space-y-3
+            "
+          >
+            {t.aboutBio.map((paragraph) => (
+              <p
+                class="
+                  text-[10px]
+                  leading-relaxed
+                  text-muted-foreground
+                  sm:text-xs
+                "
+              >
+                {paragraph}
+              </p>
+            ))}
+          </div>
+
+        </Reveal>
+
+
+        <!-- =====================================================
+             SOCIAL / CONTATO — fim da coluna
+             ===================================================== -->
+
+        <Reveal
+          delay={200}
+          class="
+            mt-8
+            border-t
+            border-border
+            pt-8
+          "
+        >
+          <footer
+            class="
+              flex
+              flex-col
+              gap-6
+              lg:flex-row
+              lg:items-start
+              lg:justify-between
+            "
+          >
+            <div class="flex flex-col gap-2">
+              <p
+                class="
+                  font-mono
+                  text-xs
+                  uppercase
+                  tracking-[0.16em]
+                  text-muted-foreground
+                "
+              >
+                {t.aboutContactTitle}
+              </p>
+
+              <nav
+                class="flex flex-col"
+                aria-label={t.aboutContactTitle}
+              >
+                {socials.map((social) => (
+                  <a
+                    href={social.href}
+                    {...(social.external
+                      ? { target: '_blank', rel: 'noopener noreferrer' }
+                      : {})}
+                    class="
+                      group-link
+                      cursor-target
+                      transition-micro
+                      flex
+                      min-h-11
+                      items-center
+                      gap-2
+                      font-mono
+                      text-sm
+                      uppercase
+                      tracking-[0.16em]
+                      text-muted-foreground
+                      hover:text-foreground
+                    "
+                  >
+                    {social.label}
+                  </a>
                 ))}
-              </ul>
+              </nav>
             </div>
-          ))}
+
+            <div class="flex flex-col gap-1.5">
+              <p class="font-mono text-xs text-muted-foreground">
+                {phoneDisplay}
+              </p>
+              <p class="font-mono text-xs text-muted-foreground">
+                {profile.hero.location}
+              </p>
+            </div>
+          </footer>
+        </Reveal>
+
+      </section>
+
+
+      <!-- =======================================================
+           COLUNA 02 — TRAJETÓRIA
+           ======================================================= -->
+
+      <section
+        class="
+          min-w-0
+          pl-3
+          sm:pl-6
+          lg:pl-10
+        "
+      >
+
+        <!-- HEADER -->
+
+        <div
+          class="
+            flex
+            items-center
+            justify-between
+            border-b
+            border-border
+            py-4
+          "
+        >
+
+          <p
+            class="
+              font-mono
+              text-[9px]
+              uppercase
+              tracking-[0.2em]
+              text-muted-foreground
+              sm:text-[10px]
+            "
+          >
+            {t.aboutTrajectoryColumn}
+          </p>
+
+          <span
+            class="
+              font-mono
+              text-[8px]
+              tracking-[0.15em]
+              text-muted-foreground/50
+              sm:text-[9px]
+            "
+          >
+            {yearRange}
+          </span>
+
         </div>
-      </div>
-    </Reveal>
+
+
+        <!-- =====================================================
+             TIMELINE — linha contínua, anos como pontos fixos
+             ===================================================== -->
+
+        <div
+          class="
+            relative
+            py-6
+            sm:py-8
+          "
+        >
+
+          <!--
+            Linha vertical contínua: percorre toda a trajetória
+            (permanência). O ano de cada item é um ponto fixo nela.
+          -->
+
+          <span
+            aria-hidden="true"
+            class="
+              absolute
+              bottom-0
+              left-[2.9rem]
+              top-0
+              w-px
+              bg-border
+              sm:left-[3.75rem]
+            "
+          ></span>
+
+
+          <ol
+            class="relative flex flex-col"
+            aria-label={t.aboutTimelineLabel}
+          >
+
+            {profile.careerJourney.map((entry) => {
+
+              const year = entry.period.match(/\d{4}/)?.[0] ?? '';
+              const ongoing = entry.period.includes('presente');
+
+              return (
+                <li
+                  class="
+                    relative
+                    grid
+                    grid-cols-[3.2rem_minmax(0,1fr)]
+                    gap-3
+                    pb-7
+                    last:pb-0
+                    sm:grid-cols-[4.1rem_minmax(0,1fr)]
+                    sm:gap-5
+                    sm:pb-8
+                  "
+                >
+
+                  <!-- ANO (ponto fixo na linha) -->
+
+                  <div class="relative">
+                    <p
+                      class="
+                        pt-0.5
+                        pr-4
+                        text-right
+                        font-mono
+                        text-[9px]
+                        font-medium
+                        tracking-[0.12em]
+                        text-foreground
+                        sm:pr-6
+                        sm:text-xs
+                      "
+                    >
+                      {year}
+                    </p>
+
+                    <!-- MARCADOR na linha: concluído = preenchido; em andamento = vazio -->
+
+                    <span
+                      aria-hidden="true"
+                      class={`
+                        absolute
+                        left-[calc(2.9rem-0.3125rem)]
+                        top-1
+                        h-2.5
+                        w-2.5
+                        border
+                        border-foreground
+                        sm:left-[calc(3.75rem-0.3125rem)]
+                        ${ongoing ? 'bg-background' : 'bg-foreground'}
+                      `}
+                    ></span>
+                  </div>
+
+
+                  <!-- EXPERIÊNCIA -->
+
+                  <div
+                    class="
+                      relative
+                      min-w-0
+                      border-b
+                      border-border
+                      pb-6
+                      last:border-b-0
+                    "
+                  >
+
+                    <!-- CARGO / FORMAÇÃO -->
+
+                    <h3
+                      class="
+                        text-[10px]
+                        font-semibold
+                        leading-snug
+                        tracking-[-0.01em]
+                        text-foreground
+                        sm:text-sm
+                      "
+                    >
+                      {entry.role}
+                    </h3>
+
+
+                    <!-- EMPRESA -->
+
+                    <p
+                      class="
+                        mt-1
+                        text-[9px]
+                        leading-relaxed
+                        text-muted-foreground
+                        sm:text-xs
+                      "
+                    >
+                      {entry.company}
+                    </p>
+
+
+                    <!-- PERÍODO -->
+
+                    <p
+                      class="
+                        mt-2
+                        font-mono
+                        text-[7px]
+                        uppercase
+                        tracking-[0.13em]
+                        text-muted-foreground/60
+                        sm:text-[9px]
+                      "
+                    >
+                      {entry.period}
+                    </p>
+
+
+                    <!-- DESCRIÇÃO DE 1 LINHA -->
+
+                    <p
+                      class="
+                        mt-2
+                        text-[9px]
+                        leading-relaxed
+                        text-muted-foreground
+                        sm:text-[11px]
+                      "
+                    >
+                      {entry.summary}
+                    </p>
+
+                  </div>
+
+                </li>
+              );
+            })}
+
+          </ol>
+
+        </div>
+
+      </section>
+
+    </div>
+
   </div>
+
+
+  <!-- ===========================================================
+       TARGET HOVER
+       =========================================================== -->
+
   <TargetHover
     hoverDuration={0.2}
     parallaxOn={true}
@@ -196,4 +747,5 @@ const arrowSvg =
     borderWidth={2}
     offset={8}
   />
+
 </SectionHeading>

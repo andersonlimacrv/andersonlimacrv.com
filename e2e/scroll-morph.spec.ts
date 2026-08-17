@@ -5,7 +5,12 @@ const VIEWPORTS = [
   { name: 'mobile', width: 390, height: 844 },
 ] as const;
 
-const FINAL_SIZE_PX = 160;
+// Diâmetro final responsivo do morph (--morph-final-size no :root).
+const FINAL_SIZE_BY_VIEWPORT: Record<(typeof VIEWPORTS)[number]['name'], number> = {
+  desktop: 160,
+  mobile: 64,
+};
+
 const TOLERANCE_PX = 3;
 
 type MorphState = {
@@ -39,7 +44,7 @@ async function gotoHome(page: Page) {
 async function morphState(page: Page): Promise<MorphState> {
   return page.evaluate(() => {
     const img = document.querySelector<HTMLElement>('[data-scroll-morph] img');
-    const target = document.querySelector<HTMLElement>('#sobre-content');
+    const target = document.querySelector<HTMLElement>('#sobre-portrait');
     if (!img || !target) throw new Error('morph elements not found');
     const r = img.getBoundingClientRect();
     const tr = target.getBoundingClientRect();
@@ -75,7 +80,7 @@ async function scrollTo(page: Page, y: number) {
 async function morphScrollRange(page: Page): Promise<{ start: number; end: number }> {
   return page.evaluate(() => {
     const img = document.querySelector('[data-scroll-morph] img') as HTMLElement;
-    const target = document.querySelector('#sobre-content') as HTMLElement;
+    const target = document.querySelector('#sobre-portrait') as HTMLElement;
     const innerH = window.innerHeight;
     const imgTop = img.getBoundingClientRect().top + window.scrollY;
     const targetTop = target.getBoundingClientRect().top + window.scrollY;
@@ -115,12 +120,13 @@ test.describe('morph do retrato hero', () => {
         page,
       }) => {
         await gotoHome(page);
+        const finalSize = FINAL_SIZE_BY_VIEWPORT[vp.name];
         const initial = await morphState(page);
         const { start, end } = await morphScrollRange(page);
         const mid = start + (end - start) * 0.5;
         await scrollTo(page, mid);
         const s = await morphState(page);
-        expect(s.img.width).toBeGreaterThan(FINAL_SIZE_PX);
+        expect(s.img.width).toBeGreaterThan(finalSize);
         expect(s.img.width).toBeLessThan(initial.img.width - TOLERANCE_PX);
         expect(s.transform).not.toContain('scale(1');
       });
@@ -129,6 +135,7 @@ test.describe('morph do retrato hero', () => {
         page,
       }) => {
         await gotoHome(page);
+        const finalSize = FINAL_SIZE_BY_VIEWPORT[vp.name];
         const initial = await morphState(page);
         const { start, end } = await morphScrollRange(page);
         const mid = start + (end - start) * 0.5;
@@ -143,7 +150,7 @@ test.describe('morph do retrato hero', () => {
 
         await scrollTo(page, Number.MAX_SAFE_INTEGER);
         const done = await morphState(page);
-        expect(Math.abs(done.img.width - FINAL_SIZE_PX)).toBeLessThanOrEqual(
+        expect(Math.abs(done.img.width - finalSize)).toBeLessThanOrEqual(
           TOLERANCE_PX,
         );
         expect(done.img.left).toBeGreaterThanOrEqual(
@@ -161,14 +168,15 @@ test.describe('morph do retrato hero', () => {
         );
       });
 
-      test('círculo final (160px) dentro de #sobre-content (horizontalmente contido, centro vertical alinhado)', async ({
+      test('círculo final (160px) dentro do retrato (horizontalmente contido, centro vertical alinhado)', async ({
         page,
       }) => {
         await gotoHome(page);
+        const finalSize = FINAL_SIZE_BY_VIEWPORT[vp.name];
         const { end } = await morphScrollRange(page);
         await scrollTo(page, end);
         const s = await morphState(page);
-        expect(Math.abs(s.img.width - FINAL_SIZE_PX)).toBeLessThanOrEqual(
+        expect(Math.abs(s.img.width - finalSize)).toBeLessThanOrEqual(
           TOLERANCE_PX,
         );
         expect(s.img.left).toBeGreaterThanOrEqual(s.target.left - TOLERANCE_PX);
@@ -201,7 +209,8 @@ test.describe('prefers-reduced-motion', () => {
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.waitForTimeout(100);
     const s = await morphState(page);
-    expect(Math.abs(s.img.width - FINAL_SIZE_PX)).toBeLessThanOrEqual(
+    // Viewport default do describe: 1280×720 → final 160px.
+    expect(Math.abs(s.img.width - FINAL_SIZE_BY_VIEWPORT.desktop)).toBeLessThanOrEqual(
       TOLERANCE_PX,
     );
   });

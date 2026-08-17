@@ -4,10 +4,9 @@ interface Props {
 }
 
 const { finalSize = 160 } = Astro.props;
-const radius = finalSize / 2;
 ---
 
-<div class="bp-wireframe bp-start" data-bp-wireframe aria-hidden="true" style={`--bp-final-size: ${finalSize}px`}>
+<div class="bp-wireframe bp-start" data-bp-wireframe aria-hidden="true" style={`--bp-final-size: var(--morph-final-size, ${finalSize}px)`}>
   <div class="bp-rect">
     <svg class="bp-corners" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
       <path class="bp-corner" d="M 2 7 V 2 H 7" />
@@ -22,7 +21,7 @@ const radius = finalSize / 2;
       <span class="bp-ghost-tick bp-ghost-tick-top" aria-hidden="true"></span>
       <span class="bp-ghost-tick bp-ghost-tick-bottom" aria-hidden="true"></span>
       <span class="bp-ghost-tick bp-ghost-tick-right" aria-hidden="true"></span>
-      <b class="bp-ghost-r-label" aria-hidden="true">r {radius}px</b>
+      <b class="bp-ghost-r-label" data-bp="rlabel" aria-hidden="true">r —</b>
       <b class="bp-ghost-q bp-ghost-q-a" data-bp="a" data-bp-live aria-hidden="true">—</b>
       <b class="bp-ghost-q bp-ghost-q-s" data-bp="s" data-bp-live aria-hidden="true">—</b>
       <b class="bp-ghost-q bp-ghost-q-xy" data-bp="xy" data-bp-live aria-hidden="true">0 · 0</b>
@@ -47,6 +46,9 @@ const radius = finalSize / 2;
     /* Tinta clara constante (= --foreground do dark-mode) usada enquanto a
        imagem cobre o wireframe. No dark-mode coincide com o --foreground. */
     --bp-ink-covered: oklch(0.967 0 0);
+    /* Escala proporcional dos rótulos de cota (morph-measure.ts define no root:
+       160px → 1). Herdada pelo .bp-ghost. */
+    --bp-scale: 1;
   }
 
   /* Enquanto a imagem cobre o wireframe (classe bp-covered alternada via JS
@@ -96,7 +98,10 @@ const radius = finalSize / 2;
     vector-effect: non-scaling-stroke;
   }
 
-  /* Círculo final (estado END) como fantasma tracejado sobre o retângulo */
+  /* Círculo final (estado END) como fantasma tracejado sobre o retângulo.
+     Escala proporcional --bp-scale: tipografia e offsets dos rótulos de cota
+     acompanham o diâmetro responsivo (--bp-final-size), mantendo a leitura
+     geométrica constante em qualquer viewport. */
   .bp-ghost {
     position: absolute;
     left: 50%;
@@ -107,6 +112,8 @@ const radius = finalSize / 2;
     border: 1px dashed var(--bp-line-strong);
     border-radius: 9999px;
     background-color: color-mix(in oklab, var(--foreground) 4%, transparent);
+    /* --bp-scale herdado do root (.bp-wireframe). */
+    font-size: calc(0.625rem * var(--bp-scale));
   }
 
   .bp-ghost-cross {
@@ -131,45 +138,45 @@ const radius = finalSize / 2;
   /* Traços de cota nos 4 pontos cardeais do círculo-fantasma (extensão do
      círculo): esquerda, superior, inferior e direita. Mesmo estilo/tamanho
      do traço do r (1rem horizontal). O rótulo r 80px fica no centro do
-     círculo. */
+     círculo. Tamanhos escalam com --bp-scale. */
   .bp-ghost-tick {
     position: absolute;
-    width: 1rem;
+    width: calc(1rem * var(--bp-scale));
     height: 0;
     border-top: 1px solid var(--bp-line-strong);
   }
 
   .bp-ghost-tick-top {
     left: 50%;
-    top: -1rem;
+    top: calc(-1rem * var(--bp-scale));
     translate: -50% 0;
     rotate: 90deg;
   }
 
   .bp-ghost-tick-bottom {
     left: 50%;
-    bottom: -1rem;
+    bottom: calc(-1rem * var(--bp-scale));
     translate: -50% 0;
     rotate: 90deg;
   }
 
   .bp-ghost-tick-right {
     top: 50%;
-    right: -1.5rem;
+    right: calc(-1.5rem * var(--bp-scale));
     translate: 0 -50%;
   }
 
   /* Linha de cota do raio à esquerda do círculo-fantasma, na altura do centro */
   .bp-ghost-r {
     position: absolute;
-    left: calc(50% - var(--bp-final-size, 160px) / 2 - 1.5rem);
+    left: calc(50% - var(--bp-final-size, 160px) / 2 - 1.5rem * var(--bp-scale));
     bottom: calc(0.5rem + var(--bp-final-size, 160px) / 2);
     translate: 0 50%;
   }
 
   .bp-ghost-r-line {
     display: block;
-    width: 1rem;
+    width: calc(1rem * var(--bp-scale));
     height: 0;
     border-top: 1px solid var(--bp-line-strong);
   }
@@ -184,28 +191,28 @@ const radius = finalSize / 2;
     translate: 0 -50%;
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.625rem;
+    font-size: calc(0.625rem * var(--bp-scale));
     letter-spacing: 0.04em;
     color: var(--foreground);
     white-space: nowrap;
   }
 
   .bp-ghost-r-label {
-    right: calc(50% + 0.75rem);
+    right: calc(50% + 0.75rem * var(--bp-scale));
     top: 59%;
     text-align: right;
   }
 
   .bp-ghost-q-a {
-    right: calc(50% + 0.5rem);
+    right: calc(50% + 0.5rem * var(--bp-scale));
     top: 41%;
     text-align: right;
-    font-size: 0.5625rem;
+    font-size: calc(0.5625rem * var(--bp-scale));
   }
 
   .bp-ghost-q-s,
   .bp-ghost-q-xy {
-    left: calc(50% + 0.75rem);
+    left: calc(50% + 0.75rem * var(--bp-scale));
     text-align: left;
   }
 
@@ -215,7 +222,7 @@ const radius = finalSize / 2;
 
   .bp-ghost-q-xy {
     top: 59%;
-    font-size: 0.5625rem;
+    font-size: calc(0.5625rem * var(--bp-scale));
     line-height: 1.2;
     white-space: pre-line;
   }

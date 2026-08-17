@@ -1,37 +1,41 @@
 ## Why
 
-A seção Sobre atual é esparsa (1 parágrafo, sem identidade), o texto colide com o círculo da imagem no canto e não usa o perfil real (dados existem em `add-data.json`). O usuário quer uma reforma completa: **duas colunas** — esquerda (~40% da tela) com **quote em cima e descrição embaixo**; direita com uma **timeline minimalista** de empregos/títulos/estudos — num visual **extremo geométrico** (linhas finas formando retângulos, padrão de UI mantido), mantendo a imagem do hero intocada e limpando CSS morto.
+A seção Sobre precisa refletir o novo desenho do usuário: **duas colunas fixas** (desktop e mobile — no mobile as larguras reduzem proporcionalmente, sem nunca empilhar). À esquerda, o **retrato P&B com marcações blueprint** e as **informações pessoais ao lado da foto (nunca abaixo)**: Nome, cargo, stack principal e localização, curtos e alinhados. À direita, uma **timeline vertical contínua** com os anos como pontos fixos na linha e a **duração destacada visualmente**. A estética Engineering Blueprint (grid rigorosa, divisores finos, tipografia técnica, espaçamento uniforme) permanece.
+
+O usuário editou `About.astro` manualmente (quebrou a compilação) e pediu: corrigir o arquivo atual, rodar para visualizar e adequar o código ao spec.
 
 ## What Changes
 
-- **Layout duas colunas via flex** (nunca grid) em `#sobre-content`: esquerda `lg:w-[40%]` (quote + descrição), direita `flex-1` (timeline). Divisores geométricos: `border-l` vertical entre colunas, `border-t` entre blocos/itens/rodapé.
-- **Imagem como selo no canto superior-esquerdo**: ponto de aterrissagem do morph vira `finalX=0.06`/`finalY=0.10` (Hero + `bp-end`); a imagem do hero em si não é tocada.
-- **Conteúdo completo** a partir de `src/data/profile.ts` (fonte única, fatos em pt, sem campos `OUTDATED_*`): timeline mesclada de `careerJourney` (mais recente → antigo) com `experienceDetails` como `<details>` expansível; chips = grupos de `techStack`; bloco de detalhes = itens de `about`; rodapé com `hero.location` + links sociais (com `cursor-target`/TargetHover); `hero.bio`/`hero.title` enriquecem o JSON-LD Person.
-- **Rótulos localizados** em pt/es/en (quote, títulos de bloco); dados factuais ficam em pt.
-- **Limpeza de CSS não utilizado** (regras custom mortas em `global.css`/componentes) sem tocar na estrutura geral.
+- **Duas colunas fixas em `#sobre-content`**: grid `grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]` com `divide-x` + `border-t`/`divide-border`. No mobile as colunas **permanecem lado a lado** (larguras reduzem; padding `pr-3`/`pl-3`, `sm:pr-6/pl-6`, `lg:pr-10/pl-10`), nunca empilham.
+- **Coluna 01 — Perfil**: label "Perfil" + `01`; box do retrato (`id="sobre-portrait"`, `aspect-square`, alvo do morph, `BlueprintMorphEnd finalX=0/finalY=0`) com um `dl` ao lado (nunca abaixo): **Nome** (`hero.name`), **Role** (`hero.title`), **Stack principal** (`hero.mainStack`), **Localização** (`hero.location`). Depois: **frase** (`blockquote` serif + `<cite>`), **"Sobre mim"** (`aboutBio`, 2 parágrafos) e **social/contato** no fim da coluna (GitHub/LinkedIn/Email com `cursor-target`/TargetHover + telefone `+55` + localização).
+- **Coluna 02 — Trajetória**: label "Trajetória" + intervalo real dos dados (header `yearRange` = min–max dos anos dos períodos; `presente` conta como o ano corrente). **Timeline vertical contínua**: linha `w-px` percorrendo toda a coluna; cada item de `careerJourney` tem o **ano como ponto fixo** na linha (marcador), cargo/formação (`h3`), empresa, período em mono e **descrição de 1 linha** (`summary`). Marcação temporal (início / trajetória / atual) e marcação técnica inferior (`AC / ABOUT / 01`).
+- **Morph alinhado ao retrato**: o alvo do morph vira `#sobre-portrait` (`Hero.astro` `target="#sobre-portrait"`, `finalX=0`, `finalY=0`). Diâmetro final responsivo via `--morph-final-size` no `:root` (64px base, 104px ≥640, 128px ≥768, 160px ≥1024); JS do morph (`scroll-morph.ts`) e wireframes blueprint (`morph-measure.ts`, `BlueprintMorphEnd/Start/Board`) leem a var, com a prop como fallback.
+- **Dados**: `profile.ts` ganha `hero.mainStack` e `TimelineEntry.summary` (7 entradas preenchidas). Fatos em pt; rótulos localizados (pt/es/en).
 
 ## Capabilities
 
 ### New Capabilities
-- `about-section`: seção Sobre em duas colunas (quote+descrição ~40% à esquerda; timeline minimalista à direita), dividida por linhas geométricas, com selo da imagem no canto superior-esquerdo, timeline expandível, chips de stack, bloco de detalhes, rodapé de localização/contato e hover de mira (TargetHover).
+<!-- Nenhuma nova — a capability `about-section` já existe no delta deste change. -->
 
 ### Modified Capabilities
-<!-- Nenhuma capability principal existente (specs/ está vazio). O delta `blueprint-morph-wireframe` do change `redesign-engineering-blueprint` documenta o ponto de aterrissagem (0.15/0.5) e será atualizado para o novo selo (0.06/0.10) por coerência. -->
+- `about-section`: duas colunas fixas (perfil + trajetória), informações ao lado da foto, timeline com anos fixos e barra de duração, intervalo real no header.
+- `blueprint-morph-wireframe` (delta do change `redesign-engineering-blueprint`): alvo do morph e diâmetro final responsivos (`#sobre-portrait`, `--morph-final-size`); rótulos de cota escalam com o diâmetro (`--bp-scale`).
 
 ## Non-goals
 
-- Não alterar o hero (a imagem em si, o morph clip/scale) — apenas o ponto de aterrissagem do círculo dentro de `#sobre-content`.
-- Não mexer nas demais seções (Projetos, Blog, Contato) nem no design system global (tokens, cores, tipografia).
+- Não empilhar as colunas no mobile (a decisão do usuário é manter lado a lado).
+- Não alterar as demais seções (Projetos, Blog, Contato) nem o design system global (tokens, cores, tipografia).
 - Não traduzir os dados factuais (cargos/períodos/stack) — ficam em pt; só rótulos/quote são localizados.
-- Não remover CSS em uso nem alterar estilos de outras seções (a limpeza é só de regras comprovadamente mortas).
+- Não remover CSS em uso nem alterar estilos de outras seções.
 
 ## Impact
 
-- `src/data/profile.ts` (novo): tipos + dados de `add-data.json` (filtrado).
-- `src/components/sections/About.astro`: layout duas colunas + timeline + chips + detalhes + rodapé.
-- `src/components/sections/Hero.astro`: `finalX`/`finalY` do morph e da legenda do board.
-- `src/components/blueprint/BlueprintMorphEnd.astro` (via props): novo `finalX`/`finalY`.
-- `src/i18n/ui.ts`: rótulos/quote novos (pt/es/en); `src/components/pages/HomePage.astro`: JSON-LD enriquecido.
-- `src/styles/global.css` + `<style>` de componentes: remoção de CSS morto.
-- `e2e/about-section.spec.ts` (reescrito), `e2e/blueprint-morph.spec.ts` (constantes de geometria).
-- `add-data.json`: removido após migração confirmada.
+- `src/components/sections/About.astro`: reescrito (duas colunas fixas, info ao lado da foto, timeline contínua com barra de duração, header com intervalo real).
+- `src/data/profile.ts`: `hero.mainStack`, `TimelineEntry.summary`.
+- `src/i18n/ui.ts`: novos rótulos (colunas, Nome/Role/Stack/Location, bio, duração).
+- `src/styles/global.css`: `--morph-final-size` responsivo.
+- `src/components/ui/scroll-morph.ts`, `src/components/blueprint/morph-measure.ts`, `BlueprintMorphEnd.astro`, `BlueprintMorphStart.astro`, `BlueprintMorphBoard.astro`: tamanho final responsivo + escala de rótulos (`--bp-scale`).
+- `src/components/sections/Hero.astro`: alvo `#sobre-portrait`, `finalX=0`, `finalY=0`.
+- `e2e/about-section.spec.ts`: reescrito (duas colunas, info ao lado, timeline, header, /en/).
+- `e2e/blueprint-morph.spec.ts`, `e2e/scroll-morph.spec.ts`: alvo/parâmetros/tamanho final responsivos.
+- `docs/perf-seo-checklist.md` + `docs/audit*.md`: atualizados.

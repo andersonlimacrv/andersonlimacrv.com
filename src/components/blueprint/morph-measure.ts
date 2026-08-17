@@ -11,12 +11,23 @@ interface Wireframe {
   img: HTMLElement | null;
 }
 
-const FINAL_SIZE = 160;
+const DEFAULT_FINAL_SIZE = 160;
 let wireframes: Wireframe[] = [];
 let bound = false;
 
 function fmt(value: number, digits = 0): string {
   return Number.isFinite(value) ? value.toFixed(digits) : '—';
+}
+
+// Diâmetro final responsivo: lê --morph-final-size (definido no :root) e cai
+// para 160px quando ausente — mesma fonte do JS do morph.
+function finalSizeOf(root: HTMLElement): number {
+  const raw = getComputedStyle(root).getPropertyValue('--morph-final-size').trim();
+  if (raw) {
+    const value = Number.parseFloat(raw);
+    if (Number.isFinite(value) && value > 0) return value;
+  }
+  return DEFAULT_FINAL_SIZE;
 }
 
 function neutralRect(el: HTMLElement): DOMRect {
@@ -49,11 +60,14 @@ function fill(wf: Wireframe): void {
   const w = r.width;
   const h = r.height;
   const d = Math.hypot(w, h);
-  const s = FINAL_SIZE / Math.max(1, Math.min(w, h));
-  const radius = FINAL_SIZE / 2;
+  const finalSize = finalSizeOf(wf.root);
+  const s = finalSize / Math.max(1, Math.min(w, h));
+  const radius = finalSize / 2;
 
   wf.root.style.setProperty('--bp-w', `${w}px`);
   wf.root.style.setProperty('--bp-h', `${h}px`);
+  // Escala adimensional para rótulos de cota do ghost (160px → 1).
+  wf.root.style.setProperty('--bp-scale', String(finalSize / DEFAULT_FINAL_SIZE));
 
   const values: Record<string, string> = {
     w: `${fmt(w)}px`,
@@ -62,7 +76,8 @@ function fill(wf: Wireframe): void {
     a: `${fmt(w * h)}px²`,
     s: fmt(s, 3),
     r: `${radius}px`,
-    df: `${FINAL_SIZE}px`,
+    rlabel: `r ${radius}px`,
+    df: `${finalSize}px`,
     af: `${fmt(Math.PI * radius * radius)}px²`,
     c: `${fmt(2 * Math.PI * radius)}px`,
   };

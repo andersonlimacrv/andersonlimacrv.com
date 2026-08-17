@@ -1,39 +1,72 @@
 ## Context
 
-A seção Sobre atual (`src/components/sections/About.astro`) foi reformulada para `flex flex-col lg:flex-row` com spacer de 256px reservando o círculo (posição `finalX=0.15`/`finalY=0.5`), quote serif + bio em 2 parágrafos + chips + bloco "agora". O usuário redefiniu o desenho: **duas colunas** (esquerda ~40% quote+descrição; direita timeline minimalista), **imagem como selo no topo-esquerdo**, **extremo geométrico** (linhas formando retângulos), e **todos os campos** de `add-data.json` no projeto. `container-site` é cravado em 1024px (`--container-5xl`). `#sobre-content` deve continuar fora de `[data-reveal]` (teste `contentNotRevealed` + transform do Reveal desalinha o anel).
+A reforma da seção Sobre foi redefinida pelo usuário: em vez de colunas que empilham no mobile, **duas colunas fixas** (desktop e mobile). O usuário editou `About.astro` manualmente e o arquivo quebrou a compilação; o pedido é corrigir o arquivo atual, rodar para visualizar e adequar o código ao spec. `container-site` continua em 1024px; `#sobre-content` continua fora de `[data-reveal]`. O alvo do morph muda de `#sobre-content` para o box do retrato `#sobre-portrait`, com `finalX=0`/`finalY=0`.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Duas colunas via flex (nunca grid) com divisores de linha (`border`) — visual geométrico/minimalista no padrão de UI do site.
-- Selo: apenas o ponto de aterrissagem do morph muda (`finalX=0.06`, `finalY=0.10`); imagem do hero e clamp intactos.
-- Dados factuais em `src/data/profile.ts` (fonte única, pt, sem `OUTDATED_*`); rótulos/quote localizados.
-- Limpeza de CSS morto comprovado, sem tocar no restante.
+- Duas colunas fixas (grid `0.92fr / 1.08fr`) em desktop E mobile — no mobile reduzem padding/larguras, nunca empilham.
+- Coluna 01: retrato (`#sobre-portrait`) + informações (Nome/Role/Stack/Location) **ao lado da foto, nunca abaixo**; frase, bio e social/contato em seguida.
+- Coluna 02: timeline vertical contínua com anos como pontos fixos e barra de duração proporcional; header com intervalo real dos dados.
+- Morph do retrato com diâmetro final responsivo (`--morph-final-size`), alvo `#sobre-portrait`.
+- Dados em `src/data/profile.ts` (fonte única, pt); rótulos localizados.
 
 **Non-Goals:**
-- Alterar hero (imagem/clip/scale), outras seções, design system, `TargetHover.astro`.
-- Traduzir dados factuais.
+- Empilhar colunas no mobile.
+- Alterar outras seções, design system, `TargetHover.astro`.
 
 ## Decisions
 
-### 1. Duas colunas flex + divisores geométricos
-`#sobre-content` = `flex flex-col lg:flex-row lg:flex-wrap lg:items-stretch`. Coluna esquerda `lg:w-[min(40vw,55%)] lg:shrink-0` (≈40% da tela; limite 55% do container para telas grandes) com citação + descrição + bloco de detalhes + rodapé; coluna direita `lg:flex-1` com a timeline. Abaixo das colunas, **faixa de stack em largura total** (`lg:basis-full`, grupos em `flex-wrap` com `lg:w-1/3`). Divisores: `border-l` na coluna da direita (desktop), `border-t` entre blocos/itens/rodapé; cor `--border` existente — sem novos tokens. Alternativa (grid) rejeitada por instrução do usuário ("sempre flex").
+### 1. Diagrama das duas colunas
 
-### 2. Selo da imagem (finalX=0.06, finalY=0)
-O círculo pousa **colado no topo-esquerdo**: com `finalY=0`, `top = max(0, −80) = 0` para qualquer altura — estável no desktop e no mobile (sem depender da altura da seção). `left = max(0, 0.06*1024−80) = 0` → selo em `x:0–160px`, `y:0–160px`. Para evitar sobreposição: desktop → coluna esquerda com `lg:pl-44` (176px) para o texto ficar à direita do selo; mobile → coluna com `pt-44` para começar abaixo do selo. Alterar `finalX/finalY` em: `Hero.astro` (ScrollMorphPortrait data-* + BlueprintMorphBoard/legenda x·y), `About.astro` (BlueprintMorphEnd). Constantes dos e2e (`blueprint-morph.spec.ts`) atualizadas para 0.06/0.
+```
+┌─ § Sobre ─────────────────────────────────────────────────────────┐
+│  ┌───────────────────────┬─────────────────────────────────────  │
+│  │ COL 01 — PERFIL    01 │ COL 02 — TRAJETÓRIA   2007—2027      │
+│  │ ──────────────────────│─────────────────────────────────────  │
+│  │ ┌────┐ ┌────────────┐ │  2026 ● Pós-graduação IA/ML          │
+│  │ │ FOTO│ │ Nome       │ │        Universidade Católica de     │
+│  │ │ (BP)│ │ Role       │ │        maio 2026 — maio 2027        │
+│  │ │     │ │ Stack princ│ │        Especialização em IA e ML…   │
+│  │ │     │ │ Localização│ │  2022 ● Software Developer (CESS)   │
+│  │ └────┘ └────────────┘ │  2007 ● Curso Técnico (IFSUL) …      │
+│  │ “Frase em serif”      │  início — trajetória — atual         │
+│  │ Sobre mim (bio)       │  AC / ABOUT / 01                     │
+│  │ [GitHub][LinkedIn][Email] │                                  │
+│  │ +55 53 98100-4874     │                                      │
+│  └───────────────────────┴─────────────────────────────────────  │
+└───────────────────────────────────────────────────────────────────┘
+```
 
-### 3. Dados — `src/data/profile.ts`
-Tipos `Profile`, `AboutItem`, `TechGroup`, `TimelineEntry`, `ExperienceDetail`. Fonte única em pt extraída de `add-data.json`, filtrando `OUTDATED_*`. `careerJourney` ordenado do mais recente para o mais antigo (por período inicial desc; "presente" como agora). `experienceDetails` indexados por empresa para casar com a timeline. `education` fica disponível (já representado na timeline mesclada). `hero.bio`/`hero.title` → JSON-LD Person (`HomePage.astro`).
+### 2. Grid fixo e responsividade
+`#sobre-content > div` = `grid grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] divide-x divide-border border-t border-border`. As colunas NUNCA empilham: no mobile a largura relativa é mantida (0.92/1.08) e o `gap` vem do padding das colunas (`pr-3`/`pl-3` → `sm:pr-6/pl-6` → `lg:pr-10/pl-10`). Cada coluna tem `min-w-0` para permitir encolher sem overflow.
 
-### 4. Expansão da timeline com `<details>`
-Cada item com `experienceDetails` usa `<details><summary>` nativo (sem JS, acessível, respeita reduced-motion). Highlights agrupados por frontend/backend/IoT quando o item tem objetos; senão lista plana. Visual mono/minimalista, separado por linhas.
+### 3. Coluna 01 — Perfil
+Label mono "Perfil" + `01` (border-b). Depois `grid grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] items-start gap-3 sm:gap-5`:
+- FOTO: `#sobre-portrait` (`relative aspect-square min-w-0`) com `BlueprintMorphEnd src finalSize=160 finalX=0 finalY=0` — é o alvo do morph.
+- INFORMAÇÕES (`dl`, 4 itens `space-y-4 sm:space-y-5`): Nome (`hero.name`), Role (`hero.title`), Stack principal (`hero.mainStack`), Localização (`hero.location`); `dt` mono minúsculo + `dd`.
+Depois, separados por `border-t`: **frase** (`blockquote` serif itálico + `<cite>` `authorName`), **"Sobre mim"** (`aboutBio` 2 parágrafos + marcação `01/02`), **social/contato** (footer: 3 links `cursor-target` GitHub/LinkedIn/Email + `+55` formatado de `hero.contact.phone` + `hero.location`).
 
-### 5. Limpeza de CSS não utilizado
-Inventariar regras custom de `global.css` e `<style>` de componentes; para cada seletor, greppar uso real em `src/` (e `e2e/`). Remover apenas os mortos comprovados (ex.: `.bp-legend-rule` definido sem elemento; `.rail-left` pode ficar órfão se o rodapé substituir o aside). Tailwind v4 já purga utilities — foco só nos blocos custom. Validar com build + e2e completo + auditoria (peso do CSS não deve subir).
+### 4. Coluna 02 — Trajetória
+Header (border-b): label "Trajetória" + `yearRange` (`min`/`max` dos anos dos períodos; `presente` → ano corrente). Timeline: `div.relative` com linha `span.w-px` vertical contínua em `left-[2.9rem]` (`sm:left-[3.75rem]`); `ol[aria-label]` com 7 `li` (`grid grid-cols-[3.2rem_minmax(0,1fr)]`): coluna do **ano** (mono, `text-right`, ponto fixo) + **marcador** na linha (quadrado `border-foreground` + centro preenchido), coluna da experiência com `h3` cargo, `p` empresa, `p` período (mono uppercase) e `p` **summary** de 1 linha. Fim: marcação temporal `yearStart — trajetória — atual` e marcação `AC / ABOUT / 01`.
+
+### 5. Morph alinhado ao retrato + tamanho responsivo
+- Alvo muda para `#sobre-portrait` (`Hero.astro`: `ScrollMorphPortrait target="#sobre-portrait" finalX=0 finalY=0`; `BlueprintMorphBoard finalX=0 finalY=0`; `About.astro` `BlueprintMorphEnd finalX=0 finalY=0`).
+- `--morph-final-size` no `:root` (global.css): 64px base, 104px ≥640, 128px ≥768, 160px ≥1024 (media queries aninhadas no `:root`, padrão já usado em `.container-site`).
+- `scroll-morph.ts`: `readFinalSize(el)` lê a var (fallback `data-final-size`); recomputa em `measure()` no resize.
+- `BlueprintMorphEnd.astro`: `resolvedSize = var(--morph-final-size, {finalSize}px)`; clamp via `calc` com a var.
+- `BlueprintMorphBoard.astro`/`BlueprintMorphStart.astro`: `--bp-final-size: var(--morph-final-size, ...)`; legenda do board usa spans `data-bp` (df/r/af/c) preenchidos por `morph-measure.ts` (que lê `--morph-final-size` via `finalSizeOf`).
+- Rótulos de cota do ghost escalam com o diâmetro: `--bp-scale` (adimensional, `finalSize/160`, definido por `morph-measure.ts`) multiplica font-size e offsets.
+
+### 6. Telefone
+`phoneRaw = '53981004874'` → display `+55 {slice(0,2)} {slice(2,7)}-{slice(7)}` = `+55 53 98100-4874`.
+
+### 7. Intervalo real da trajetória
+`yearRange = min(início) — max(fim)` dos períodos de `careerJourney`; "presente" = ano corrente. Com os dados atuais: **2007—2027** (IFSUL 2007 → Pós-graduação termina maio/2027).
 
 ## Risks / Trade-offs
 
-- [Selo sobrepõe texto em larguras intermediárias] → container fixo em 1024px torna a matemática estável; `lg:pl-44`/`pt-40` cobrem; ajuste fino na revisão visual.
-- [Efeito visual das linhas] → cor `--border` (oklch 0.92) sobre fundo branco pode ser sutil; se preciso, aumentar para `--bp-line` no desktop — decidir na revisão visual, sem mudar tokens.
-- [Conteúdo factual em pt para en/es] → dados factuais ficam em pt por decisão do usuário; rótulos localizados.
-- [Mudança de geometria quebra e2e existentes] → atualizar as constantes de `blueprint-morph.spec.ts` (0.15/0.5 → 0.06/0.10) e reescrever `about-section.spec.ts` na Fase 1.
+- [Rótulos de cota não cabem no ghost 64px (mobile)] → `--bp-scale` escala tipografia/offsets proporcionalmente; testes usam a mesma escala.
+- [Coluna 01 estreita no mobile pode espremer a dl] → `minmax(0,0.95fr)`/`minmax(0,1.05fr)` + fontes reduzidas (`text-[7px]`→`sm:text-[9px]` etc.) garantem legibilidade sem overflow.
+- [Peso HTML varia] → auditoria revalida na Fase D; `summary` é campo novo no `profile.ts`.
+- [Conteúdo factual em pt para en/es] → dados factuais em pt por decisão do usuário; rótulos localizados.

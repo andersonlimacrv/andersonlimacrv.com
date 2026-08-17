@@ -6,9 +6,6 @@ interface Props {
 }
 
 const { finalSize = 160, finalX = 0.15, finalY = 0.5 } = Astro.props;
-const radius = finalSize / 2;
-const areaFinal = Math.round(Math.PI * radius * radius);
-const circumference = Math.round(2 * Math.PI * radius);
 ---
 
 <div
@@ -16,7 +13,7 @@ const circumference = Math.round(2 * Math.PI * radius);
   data-bp-wireframe
   data-bp-board
   aria-hidden="true"
-  style={`--bp-final-size: ${finalSize}px`}
+  style={`--bp-final-size: var(--morph-final-size, ${finalSize}px)`}
 >
   <!-- Quadriculado atrás da foto: grade 8×8 em toda a área delimitada pelas
        cantoneiras, bem mais transparente (aspecto de área hachurada). -->
@@ -54,19 +51,19 @@ const circumference = Math.round(2 * Math.PI * radius);
         <dt class="bp-group-title">Final</dt>
         <div class="bp-group-row">
           <dt>D</dt>
-          <dd>{finalSize}px</dd>
+          <dd data-bp="df">—</dd>
         </div>
         <div class="bp-group-row">
           <dt>r</dt>
-          <dd>{radius}px</dd>
+          <dd data-bp="r">—</dd>
         </div>
         <div class="bp-group-row">
           <dt>A = πr²</dt>
-          <dd>{areaFinal}px²</dd>
+          <dd data-bp="af">—</dd>
         </div>
         <div class="bp-group-row">
           <dt>C = 2πr</dt>
-          <dd>{circumference}px</dd>
+          <dd data-bp="c">—</dd>
         </div>
       </div>
       <div class="bp-group">
