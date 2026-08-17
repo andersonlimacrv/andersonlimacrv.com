@@ -66,14 +66,13 @@ const shareText = encodeURIComponent(title);
   <JsonLd slot="head" schema={blogPostingJsonLd} />
   <JsonLd slot="head" schema={breadcrumbJsonLd} />
 
-  <article class="container-site pb-16 pt-12 sm:pt-16">
+  <article class="mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8 pb-16 pt-12 sm:pt-16">
     <header class="mx-auto mb-10 max-w-[70ch]">
       <p class="mb-4">
         <a
           href={`${baseUrl}/blog`}
-          class="group-link transition-micro inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+          class="cursor-target transition-micro inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
         >
-          <svg class="group-arrow rotate-180 transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           {t.backToBlog}
         </a>
       </p>
@@ -115,13 +114,13 @@ const shareText = encodeURIComponent(title);
             href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`}
             target="_blank"
             rel="noopener noreferrer"
-            class="transition-micro flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+            class="cursor-target transition-micro flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
           >
             {t.shareX}
           </a>
           <a
             href={`mailto:?subject=${shareText}&body=${shareUrl}`}
-            class="transition-micro flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+            class="cursor-target transition-micro flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
           >
             {t.shareEmail}
           </a>

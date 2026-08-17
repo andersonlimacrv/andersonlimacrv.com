@@ -553,18 +553,6 @@ html {
 /* Utilities — editorial                                               */
 /* ------------------------------------------------------------------ */
 
-.container-site {
-  width: 100%;
-  max-width: var(--container-5xl);
-  margin-inline: auto;
-  padding-inline: 1rem;
-  @media (min-width: 640px) {
-    padding-inline: 1.5rem;
-  }
-  @media (min-width: 768px) {
-    padding-inline: 2rem;
-  }
-}
 
 /* Reveal on scroll — elemento entra visível no HTML (sem JS continua ok);
    o script adiciona .reveal-present no <html> e o observer liga .is-visible
@@ -685,13 +673,6 @@ html {
     transform 0.18s ease-out,
     color 0.18s ease-out,
     border-color 0.18s ease-out;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .group-link:hover .group-arrow,
-  .group-link:focus-visible .group-arrow {
-    transform: translate(4px);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

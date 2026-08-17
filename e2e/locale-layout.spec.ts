@@ -74,7 +74,7 @@ test.describe('estabilidade entre idiomas', () => {
   }) => {
     for (const { path } of LOCALES) {
       await gotoHome(page, path);
-      const hero = page.locator('section.container-site').first();
+      const hero = page.locator('section#hero').first();
       await expect(hero).toBeVisible();
 
       for (const selector of ['h1.hero-name', 'p.mt-6', 'figure']) {

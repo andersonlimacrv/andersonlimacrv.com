@@ -28,7 +28,7 @@ const navLinks = [
     <a
       href={logoHref}
       aria-label={t.logoLabel}
-      class="transition-micro flex min-h-11 shrink-0 items-center px-2 font-mono text-lg font-bold uppercase tracking-[0.16em] text-foreground hover:text-muted-foreground"
+      class="cursor-target transition-micro flex min-h-11 shrink-0 items-center px-2 font-mono text-lg font-bold uppercase tracking-[0.16em] text-foreground hover:text-muted-foreground"
     >
       AC<span class="text-primary">.</span>
     </a>
@@ -37,7 +37,7 @@ const navLinks = [
       {navLinks.map((link) => (
         <a
           href={link.href}
-          class={`transition-micro flex min-h-11 w-24 items-center justify-center whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] ${
+          class={`cursor-target transition-micro flex min-h-11 w-24 items-center justify-center whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] ${
             pathname === homeHref
               ? 'text-foreground hover:text-muted-foreground'
               : 'text-muted-foreground hover:text-foreground'
@@ -91,7 +91,7 @@ const navLinks = [
       {navLinks.map((link) => (
         <a
           href={link.href}
-          class={`transition-micro flex min-h-11 items-center whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] ${
+          class={`cursor-target transition-micro flex min-h-11 items-center whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] ${
             pathname === homeHref
               ? 'text-foreground hover:text-muted-foreground'
               : 'text-muted-foreground hover:text-foreground'

@@ -17,27 +17,12 @@ const href = `${baseUrl}/blog/${getPostSlug(post)}`;
 <article class="h-full">
   <a
     href={href}
-    class="group-link transition-micro flex h-full min-h-11 flex-col gap-3 border border-border p-5 hover:border-primary/50"
+    class="cursor-target transition-micro flex h-full min-h-11 flex-col gap-3 border border-border p-5"
   >
     <span class="flex items-center justify-between gap-3">
       <time class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground" datetime={data.pubDate.toISOString()}>
         {formatDate(data.pubDate, locale)}
       </time>
-      <svg
-        class="group-arrow shrink-0 transition-transform"
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M5 12h14" />
-        <path d="m12 5 7 7-7 7" />
-      </svg>
     </span>
     <span class="line-clamp-2 font-sans text-lg font-semibold leading-snug tracking-tight">
       {data.title}

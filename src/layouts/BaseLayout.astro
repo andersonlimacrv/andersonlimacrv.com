@@ -5,6 +5,7 @@ import { getImage } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import TargetHover from '../components/ui/TargetHover.astro';
 import { siteUrl, siteName } from '../lib/site';
 import { defaultLocale, languages, localeNames, ogLocales, translatePath, ui, type Locale } from '../i18n/ui';
 import portrait from '../assets/me.png';
@@ -152,6 +153,14 @@ const ogImageMeta = image === portraitOg.src
       <slot />
     </main>
     <Footer locale={locale} />
+    <TargetHover
+      hoverDuration={0.2}
+      parallaxOn={true}
+      parallaxStrength={7}
+      cornerSize={12}
+      borderWidth={2}
+      offset={8}
+    />
     <div class="screen-fade screen-fade-bottom" aria-hidden="true" />
   </body>
 </html>

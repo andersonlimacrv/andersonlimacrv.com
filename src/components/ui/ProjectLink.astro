@@ -14,25 +14,10 @@ const { title, description, url, tags = [], external = true } = Astro.props;
   href={url}
   target={external ? '_blank' : undefined}
   rel={external ? 'noopener noreferrer' : undefined}
-  class="group-link transition-micro flex min-h-11 flex-col gap-2 border border-border p-5 hover:border-primary/50"
+  class="cursor-target transition-micro flex min-h-11 flex-col gap-2 border border-border p-5"
 >
   <span class="flex items-center justify-between gap-3">
     <span class="font-sans text-lg font-semibold tracking-tight">{title}</span>
-    <svg
-      class="group-arrow shrink-0 transition-transform"
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M5 12h14" />
-      <path d="m12 5 7 7-7 7" />
-    </svg>
   </span>
   {description && <span class="text-sm text-muted-foreground">{description}</span>}
   {tags.length > 0 && (
