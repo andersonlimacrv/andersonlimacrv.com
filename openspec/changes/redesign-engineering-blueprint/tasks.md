@@ -1,3 +1,5 @@
+> **Status:** Concluída. A Fase 5 ("Próximas partes") é **backlog** — itens 5.1–5.3 postergados para novas changes dedicadas (anotações manuscritas de `handwrite/`, wireframes das demais seções e animações de scroll). O escopo desta change (Fases 1–4: fundação, reversão da tentativa anterior, wireframe do morph e validação) está 100% entregue.
+
 ## 1. Fundação (concluída)
 
 - [x] 1.1 Criar `src/data/projects.ts` (3 projetos tipados, fonte única) — mantido
@@ -31,8 +33,8 @@
 - [x] 4.2 `npm run test:e2e` → 60 testes (board/raio/cantoneiras-cruz/opacidade + círculo-fantasma/traços cardeais/rótulo no quadrante + rótulos nos 4 quadrantes com valores ao vivo e alinhamento simétrico + flip de tinta clara `bp-covered` enquanto a imagem cobre)
 - [x] 4.3 `node scripts/audit.mjs` → payload mínimo (gzip ~400 KB)
 
-## 5. Próximas partes (postergadas)
+## 5. Próximas partes (postergadas — backlog, fora do escopo desta change)
 
-- [ ] 5.1 Anotações manuscritas a partir de `src/components/handwrite/`
-- [ ] 5.2 Wireframes das demais seções (Projetos, Blog, Contato)
-- [ ] 5.3 Animações de scroll / reveals progressivos
+- [ ] 5.1 Anotações manuscritas a partir de `src/components/handwrite/` _(backlog — nova change)_
+- [ ] 5.2 Wireframes das demais seções (Projetos, Blog, Contato) _(backlog — nova change)_
+- [ ] 5.3 Animações de scroll / reveals progressivos _(backlog — nova change)_
