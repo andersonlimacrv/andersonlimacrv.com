@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import { getReadingTime, formatDate, getPostSlug } from '../lib/posts';
-import { siteUrl, authorName } from '../lib/site';
+import { siteUrl, authorName } from '../data/site';
 import { defaultLocale, ui, type Locale } from '../i18n/ui';
 
 interface Props {
@@ -57,7 +57,7 @@ const shareText = encodeURIComponent(title);
 ---
 
 <BaseLayout
-  title={`${title} — Anderson Carvalho`}
+  title={`${title} — ${authorName}`}
   description={description}
   type="article"
   image={data.cover ?? undefined}

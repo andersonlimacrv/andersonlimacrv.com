@@ -1,11 +1,15 @@
 ---
+import { defaultLocale, ui, type Locale } from '../../i18n/ui';
+
 interface Props {
   finalSize?: number;
   finalX?: number;
   finalY?: number;
+  locale?: Locale;
 }
 
-const { finalSize = 160, finalX = 0.15, finalY = 0.5 } = Astro.props;
+const { finalSize = 160, finalX = 0.15, finalY = 0.5, locale = defaultLocale } = Astro.props;
+const t = ui[locale];
 ---
 
 <div
@@ -23,13 +27,13 @@ const { finalSize = 160, finalX = 0.15, finalY = 0.5 } = Astro.props;
        revelada quando o morph leva a imagem para #sobre-content. -->
   <div class="bp-legend">
     <div class="bp-legend-head">
-      <span class="bp-legend-name">IMG01</span>
-      <span class="bp-legend-tag">MORPH — EVOLUÇÃO</span>
+      <span class="bp-legend-name">{t.blueprint.figName}</span>
+      <span class="bp-legend-tag">{t.blueprint.morphTag}</span>
     </div>
     <div class="bp-legend-body">
     <dl class="bp-data">
       <div class="bp-group">
-        <dt class="bp-group-title">Inicial</dt>
+        <dt class="bp-group-title">{t.blueprint.initial}</dt>
         <div class="bp-group-row">
           <dt>W</dt>
           <dd data-bp="w">—</dd>
@@ -48,7 +52,7 @@ const { finalSize = 160, finalX = 0.15, finalY = 0.5 } = Astro.props;
         </div>
       </div>
       <div class="bp-group">
-        <dt class="bp-group-title">Final</dt>
+        <dt class="bp-group-title">{t.blueprint.final}</dt>
         <div class="bp-group-row">
           <dt>D</dt>
           <dd data-bp="df">—</dd>
@@ -67,7 +71,7 @@ const { finalSize = 160, finalX = 0.15, finalY = 0.5 } = Astro.props;
         </div>
       </div>
       <div class="bp-group">
-        <dt class="bp-group-title">Posição</dt>
+        <dt class="bp-group-title">{t.blueprint.position}</dt>
         <div class="bp-group-row">
           <dt>x·y</dt>
           <dd>{Math.round(finalX * 100)}% · {Math.round(finalY * 100)}%</dd>

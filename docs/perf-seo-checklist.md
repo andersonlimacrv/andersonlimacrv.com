@@ -9,7 +9,7 @@ com o baseline salvo em `docs/audit-baseline.json`.
 ```sh
 npm run build          # build de produção
 npm run check          # diagnóstico Astro (0 erros)
-npm run test:e2e       # 81 testes Playwright (desktop/mobile, wireframe blueprint, scrollbar)
+npm run test:e2e       # 86 testes Playwright (desktop/mobile, blueprint, scrollbar, fonte de dados)
 node scripts/audit.mjs # build + métricas + comparação vs baseline
 ```
 
@@ -28,12 +28,17 @@ node scripts/audit.mjs # build + métricas + comparação vs baseline
 - [x] Scrollbar global fina (8px) com cores derivadas de `--muted-foreground`/
       `--foreground`; tema claro/escuro automático via tokens; `prefers-reduced-motion`
       desativa a transição do hover.
+- [x] Dados factuais com fonte única em `src/data/site.ts` (nome, email, redes,
+      números de seção, ano do eyebrow); `src/i18n/ui.ts` contém apenas tradução.
+- [x] Navegação por âncora: troca de idioma preserva o fragmento (`/es/#contato` →
+      `/pt/#contato`); clique em âncora na própria página rola sem transição
+      (respeita `prefers-reduced-motion`).
 
 | Métrica | Baseline | Atual | Δ |
 | --- | --- | --- | --- |
 | Arquivos dist/ | 42 | 39 | −3 |
-| Peso raw | 640.9 KB | 932.4 KB | +291.5 KB |
-| Peso gzip | 411.1 KB | 442.8 KB | +31.7 KB |
+| Peso raw | 640.9 KB | 877.0 KB | +236.1 KB |
+| Peso gzip | 411.1 KB | 432.5 KB | +21.4 KB |
 | Fontes | 13 | 6 | −7 |
 | CSS externo (linhas global.css) | 706 | 687 | −19 |
 | `group-link`/`group-arrow` (regras) | 2 | 0 | −2 |

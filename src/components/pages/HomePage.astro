@@ -9,9 +9,9 @@ import Projects from '../sections/Projects.astro';
 import Blog from '../sections/Blog.astro';
 import Contact from '../sections/Contact.astro';
 import portrait from '../../assets/me.png';
-import { siteUrl, socialLinks, authorName } from '../../lib/site';
+import { siteUrl, site, socialLinks, authorName } from '../../data/site';
 import { profile } from '../../data/profile';
-import { defaultLocale, ui, type Locale } from '../../i18n/ui';
+import { defaultLocale, translateTitle, ui, type Locale } from '../../i18n/ui';
 
 interface Props {
   locale?: Locale;
@@ -43,14 +43,14 @@ const personJsonLd = {
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'Anderson Carvalho',
+  name: site.name,
   url: siteUrl,
   inLanguage: locale,
 };
 ---
 
 <BaseLayout
-  title={t.meta.homeTitle}
+  title={translateTitle(t.meta.homeTitle)}
   description={t.meta.homeDescription}
   locale={locale}
 >

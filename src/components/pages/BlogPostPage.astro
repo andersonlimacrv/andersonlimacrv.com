@@ -3,14 +3,15 @@ import { render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 import PostCard from '../ui/PostCard.astro';
 import { getPublishedPosts, getRelatedPosts, type BlogPost } from '../../lib/posts';
-import type { Locale } from '../../i18n/ui';
+import { defaultLocale, ui, type Locale } from '../../i18n/ui';
 
 interface Props {
   post: BlogPost;
   locale: Locale;
 }
 
-const { post, locale } = Astro.props;
+const { post, locale = defaultLocale } = Astro.props;
+const t = ui[locale];
 const allPosts = await getPublishedPosts(locale);
 const related = getRelatedPosts(post, allPosts, 3);
 const { Content } = await render(post);
@@ -21,7 +22,7 @@ const { Content } = await render(post);
   {related.length > 0 && (
     <aside class="mt-14 border-t border-border pt-10">
       <h2 class="mb-6 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
-        {locale === 'en' ? 'Also read' : locale === 'es' ? 'También lee' : 'Leia também'}
+        {t.relatedPosts}
       </h2>
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {related.map((relatedPost) => (

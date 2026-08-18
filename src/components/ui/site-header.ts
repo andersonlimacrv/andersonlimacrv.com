@@ -114,6 +114,26 @@ function handleKeyDown(event: KeyboardEvent) {
   if (event.key === 'Escape' && isOpen()) closeMenu();
 }
 
+function handleAnchorClick(event: Event) {
+  const link = (event.target as Element).closest<HTMLAnchorElement>('a[href*="#"]');
+  if (!link || !header?.contains(link)) return;
+  const href = link.getAttribute('href') ?? '';
+  const [pathPart, hash] = href.split('#');
+  if (!hash) return;
+  const currentPath = location.pathname.replace(/\/+$/, '') || '/';
+  const targetPath = (pathPart || '/').replace(/\/+$/, '') || '/';
+  if (targetPath !== currentPath) return;
+  event.preventDefault();
+  const target = document.getElementById(hash);
+  if (!target) return;
+  if (reduced) {
+    target.scrollIntoView();
+  } else {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  history.replaceState(null, '', `${targetPath === '/' ? '' : targetPath}/#${hash}`);
+}
+
 // Imports do módulo são re-executados a cada page-load (o header persiste via
 // view transition) — listeners de DOM são amarrados apenas uma vez por header.
 function bind() {
@@ -125,6 +145,7 @@ function bind() {
   document.addEventListener('keydown', onActivity);
   toggle?.addEventListener('click', () => (isOpen() ? closeMenu() : openMenu()));
   menuLinks.forEach((link) => link.addEventListener('click', () => closeMenu()));
+  document.addEventListener('click', handleAnchorClick);
   document.addEventListener('pointerdown', handlePointerDown);
   document.addEventListener('keydown', handleKeyDown);
   onActivity();

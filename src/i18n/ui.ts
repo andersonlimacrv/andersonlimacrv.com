@@ -1,4 +1,5 @@
 import { postMap } from './postMap';
+import { site } from '../data/site';
 
 export const languages = {
   pt: 'Português',
@@ -40,24 +41,25 @@ export const ui = {
       toLight: "Ativar tema claro",
       title: "Alternar tema",
     },
-    heroEyebrow: "Perfil / 2026",
+    heroEyebrow: "Perfil",
     heroSubtitle:
       "Desenvolvedor de software que acredita em interfaces rápidas, legíveis e com personalidade — a tecnologia a serviço da clareza.",
     figCaption: "AndersonLimaCRV",
-    ogImageAlt: "Anderson Carvalho — Desenvolvedor",
+    portraitAlt: "Retrato em preto e branco de",
+    ogImageAlt: "{name} — Desenvolvedor",
     meta: {
-      homeTitle: "Anderson Carvalho — Desenvolvedor",
+      homeTitle: "{name} — Desenvolvedor",
       homeDescription:
         "Desenvolvedor de software. Este é o meu espaço na web: projetos, pensamentos e um mini-blog sobre tecnologia e design.",
-      blogTitle: "Blog — Anderson Carvalho",
+      blogTitle: "Blog — {name}",
       blogDescription:
         "Mini-blog sobre desenvolvimento, tecnologia e design editorial para a web.",
     },
     sections: {
-      about: { number: "01", title: "Sobre", eyebrow: "Sobre" },
-      projects: { number: "02", title: "Projetos", eyebrow: "Trabalho" },
-      blog: { number: "03", title: "Blog", eyebrow: "Escritos" },
-      contact: { number: "04", title: "Contato", eyebrow: "Fale comigo" },
+      about: { title: "Sobre", eyebrow: "Sobre" },
+      projects: { title: "Projetos", eyebrow: "Trabalho" },
+      blog: { title: "Blog", eyebrow: "Escritos" },
+      contact: { title: "Contato", eyebrow: "Fale comigo" },
     },
     aboutQuote:
       "Faço web pensando em quem lê: rápida para carregar, clara para entender e com personalidade para lembrar.",
@@ -89,22 +91,27 @@ export const ui = {
     aboutMainStackTitle: "Stack principal",
     aboutLocationTitle: "Localização",
     aboutBioTitle: "Sobre mim",
+    blueprint: {
+      figName: "IMG01",
+      morphTag: "MORPH — EVOLUÇÃO",
+      initial: "Inicial",
+      final: "Final",
+      position: "Posição",
+    },
     projects: [
       {
-        title: "andersonlimacrv.com",
         description: "Este site — portfólio e mini-blog em Astro.",
       },
       {
-        title: "GitHub",
         description: "Código aberto, experimentos e projetos pessoais.",
       },
       {
-        title: "LinkedIn",
         description: "Trajetória profissional e rede de contatos.",
       },
     ],
     blogComingSoon: "Em breve, os primeiros posts.",
     viewAllPosts: "Ver todos os posts",
+    relatedPosts: "Leia também",
     contactParagraph:
       "Se você quer conversar sobre projetos, tecnologia ou apenas trocar uma ideia, meu e-mail está sempre aberto.",
     blogLabel: "Blog",
@@ -136,24 +143,25 @@ export const ui = {
       toLight: "Activar tema claro",
       title: "Cambiar tema",
     },
-    heroEyebrow: "Perfil / 2026",
+    heroEyebrow: "Perfil",
     heroSubtitle:
       "Desarrollador de software que cree en interfaces rápidas, legibles y con personalidad: la tecnología al servicio de la claridad.",
     figCaption: "AndersonLimaCRV",
-    ogImageAlt: "Anderson Carvalho — Desarrollador",
+    portraitAlt: "Retrato en blanco y negro de",
+    ogImageAlt: "{name} — Desarrollador",
     meta: {
-      homeTitle: "Anderson Carvalho — Desarrollador",
+      homeTitle: "{name} — Desarrollador",
       homeDescription:
         "Desarrollador de software. Este es mi espacio en la web: proyectos, pensamientos y un mini-blog sobre tecnología y diseño.",
-      blogTitle: "Blog — Anderson Carvalho",
+      blogTitle: "Blog — {name}",
       blogDescription:
         "Mini-blog sobre desarrollo, tecnología y diseño editorial para la web.",
     },
     sections: {
-      about: { number: "01", title: "Sobre mí", eyebrow: "Sobre mí" },
-      projects: { number: "02", title: "Proyectos", eyebrow: "Trabajo" },
-      blog: { number: "03", title: "Blog", eyebrow: "Escritos" },
-      contact: { number: "04", title: "Contacto", eyebrow: "Hablemos" },
+      about: { title: "Sobre mí", eyebrow: "Sobre mí" },
+      projects: { title: "Proyectos", eyebrow: "Trabajo" },
+      blog: { title: "Blog", eyebrow: "Escritos" },
+      contact: { title: "Contacto", eyebrow: "Hablemos" },
     },
     aboutQuote:
       "Hago web pensando en quien lee: rápida de cargar, clara de entender y con personalidad para recordar.",
@@ -185,22 +193,27 @@ export const ui = {
     aboutMainStackTitle: "Stack principal",
     aboutLocationTitle: "Ubicación",
     aboutBioTitle: "Sobre mí",
+    blueprint: {
+      figName: "IMG01",
+      morphTag: "MORPH — EVOLUCIÓN",
+      initial: "Inicial",
+      final: "Final",
+      position: "Posición",
+    },
     projects: [
       {
-        title: "andersonlimacrv.com",
         description: "Este sitio: portafolio y mini-blog en Astro.",
       },
       {
-        title: "GitHub",
         description: "Código abierto, experimentos y proyectos personales.",
       },
       {
-        title: "LinkedIn",
         description: "Trayectoria profesional y red de contactos.",
       },
     ],
     blogComingSoon: "Pronto llegará el primer post.",
     viewAllPosts: "Ver todos los posts",
+    relatedPosts: "También lee",
     contactParagraph:
       "Si quieres hablar de proyectos, tecnología o simplemente intercambiar una idea, mi correo siempre está abierto.",
     blogLabel: "Blog",
@@ -232,24 +245,25 @@ export const ui = {
       toLight: "Switch to light theme",
       title: "Toggle theme",
     },
-    heroEyebrow: "Profile / 2026",
+    heroEyebrow: "Profile",
     heroSubtitle:
       "Software developer who believes in fast, legible interfaces with personality — technology at the service of clarity.",
     figCaption: "AndersonLimaCRV",
-    ogImageAlt: "Anderson Carvalho — Developer",
+    portraitAlt: "Black and white portrait of",
+    ogImageAlt: "{name} — Developer",
     meta: {
-      homeTitle: "Anderson Carvalho — Developer",
+      homeTitle: "{name} — Developer",
       homeDescription:
         "Software developer. This is my corner of the web: projects, thoughts and a mini-blog about technology and design.",
-      blogTitle: "Blog — Anderson Carvalho",
+      blogTitle: "Blog — {name}",
       blogDescription:
         "Mini-blog about development, technology and editorial design for the web.",
     },
     sections: {
-      about: { number: "01", title: "About", eyebrow: "About" },
-      projects: { number: "02", title: "Projects", eyebrow: "Work" },
-      blog: { number: "03", title: "Blog", eyebrow: "Writings" },
-      contact: { number: "04", title: "Contact", eyebrow: "Get in touch" },
+      about: { title: "About", eyebrow: "About" },
+      projects: { title: "Projects", eyebrow: "Work" },
+      blog: { title: "Blog", eyebrow: "Writings" },
+      contact: { title: "Contact", eyebrow: "Get in touch" },
     },
     aboutQuote:
       "I build for the web with readers in mind: fast to load, clear to understand, and with a personality you remember.",
@@ -281,22 +295,27 @@ export const ui = {
     aboutMainStackTitle: "Main stack",
     aboutLocationTitle: "Location",
     aboutBioTitle: "About me",
+    blueprint: {
+      figName: "IMG01",
+      morphTag: "MORPH — EVOLUTION",
+      initial: "Initial",
+      final: "Final",
+      position: "Position",
+    },
     projects: [
       {
-        title: "andersonlimacrv.com",
         description: "This site — portfolio and mini-blog in Astro.",
       },
       {
-        title: "GitHub",
         description: "Open source, experiments and personal projects.",
       },
       {
-        title: "LinkedIn",
         description: "Professional track record and network.",
       },
     ],
     blogComingSoon: "First posts coming soon.",
     viewAllPosts: "View all posts",
+    relatedPosts: "Also read",
     contactParagraph:
       "If you'd like to talk about projects, technology or just exchange ideas, my inbox is always open.",
     blogLabel: "Blog",
@@ -331,4 +350,8 @@ export function translatePath(path: string, target: Locale): string {
   }
   if (target === defaultLocale) return clean || '/';
   return `/${target}${clean === '' ? '/' : clean}`;
+}
+
+export function translateTitle(template: string, name: string = site.name): string {
+  return template.replace(/\{name\}/g, name);
 }

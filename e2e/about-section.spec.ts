@@ -182,7 +182,7 @@ test.describe('seção Sobre reformulada', () => {
         );
       });
 
-      test('localização: rótulos em inglês em /en/ (fatos permanecem em pt)', async ({
+      test('localização: rótulos e trajetória em inglês em /en/', async ({
         page,
       }) => {
         await gotoHome(page, '/en/');
@@ -198,7 +198,7 @@ test.describe('seção Sobre reformulada', () => {
           'Timeline',
         );
         await expect(page.locator('#sobre-content ol[aria-label] > li').first()).toContainText(
-          'Pós-graduação',
+          'Postgraduate',
         );
       });
     });
