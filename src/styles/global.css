@@ -377,8 +377,6 @@ html {
   padding-inline: clamp(0.75rem, 1.75vw, 1.5rem);
 }
 
-/* Logo à esquerda, nav centralizada, ações alinhadas à direita.
-   Espaçamento lateral (gap entre colunas) domina sobre o vertical. */
 .site-toolbar > a {
   justify-self: start;
 }
@@ -403,7 +401,6 @@ html {
   gap: 0.75rem;
 }
 
-/* Botão hambúrguer — visível apenas no mobile (<768px) */
 .site-menu-toggle {
   display: none;
   cursor: pointer;
@@ -441,7 +438,6 @@ html {
   transform: rotate(-45deg) translateY(-5px);
 }
 
-/* Nav mobile — bloco separado dentro da toolbox, colapsado por padrão */
 .site-menu {
   display: none;
 }
@@ -497,10 +493,6 @@ html {
   }
 }
 
-/* ------------------------------------------------------------------ */
-/* Seletor de idioma — select nativo no esquema do site                */
-/* ------------------------------------------------------------------ */
-
 .site-locale-wrap {
   position: relative;
   display: inline-flex;
@@ -549,9 +541,6 @@ html {
   translate: 0 -50%;
 }
 
-/* ------------------------------------------------------------------ */
-/* Scrollbar — fina, derivada dos tokens, claro/escuro automático     */
-/* ------------------------------------------------------------------ */
 
 html {
   scrollbar-width: thin;
@@ -584,14 +573,6 @@ html {
   }
 }
 
-/* ------------------------------------------------------------------ */
-/* Utilities — editorial                                               */
-/* ------------------------------------------------------------------ */
-
-
-/* Reveal on scroll — elemento entra visível no HTML (sem JS continua ok);
-   o script adiciona .reveal-present no <html> e o observer liga .is-visible
-   quando entra na viewport. Reduz/desliga transição via prefers-reduced-motion. */
 .reveal-present [data-reveal] {
   opacity: 0;
   transform: translateY(14px);
@@ -623,7 +604,6 @@ html {
   top: 1rem;
 }
 
-/* Posts */
 .post-content {
   max-width: var(--measure);
   font-size: var(--text-lead);

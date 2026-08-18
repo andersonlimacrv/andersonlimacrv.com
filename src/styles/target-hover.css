@@ -1,0 +1,77 @@
+/* TargetHover — Estilos para os corners e animação ao hover
+   Isolado em arquivo separado para evitar conflitos com transition-micro
+   e permitir reinicialização sem rerenderizar componente */
+
+.target-hover-corner {
+  position: absolute;
+  width: var(--target-corner-size);
+  height: var(--target-corner-size);
+
+  border-color: currentColor;
+  border-style: solid;
+  border-width: var(--target-border-width);
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  will-change: transform, opacity;
+
+  transition:
+    opacity var(--target-hover-duration) ease,
+    transform var(--target-hover-duration) cubic-bezier(0.22, 1, 0.36, 1);
+
+  z-index: 20;
+}
+
+.target-hover-corner--tl {
+  top: calc(var(--target-offset) * -1);
+  left: calc(var(--target-offset) * -1);
+
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.target-hover-corner--tr {
+  top: calc(var(--target-offset) * -1);
+  right: calc(var(--target-offset) * -1);
+
+  border-left: 0;
+  border-bottom: 0;
+}
+
+.target-hover-corner--br {
+  right: calc(var(--target-offset) * -1);
+  bottom: calc(var(--target-offset) * -1);
+
+  border-left: 0;
+  border-top: 0;
+}
+
+.target-hover-corner--bl {
+  bottom: calc(var(--target-offset) * -1);
+  left: calc(var(--target-offset) * -1);
+
+  border-right: 0;
+  border-top: 0;
+}
+
+.cursor-target {
+  position: relative;
+}
+
+.cursor-target.is-target-hovering .target-hover-corner {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .target-hover-corner {
+    transition: opacity 0.15s ease;
+  }
+}
+
+@media (max-width: 768px) {
+  .target-hover-corner {
+    display: none;
+  }
+}
