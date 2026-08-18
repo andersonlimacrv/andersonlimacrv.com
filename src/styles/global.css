@@ -550,6 +550,41 @@ html {
 }
 
 /* ------------------------------------------------------------------ */
+/* Scrollbar — fina, derivada dos tokens, claro/escuro automático     */
+/* ------------------------------------------------------------------ */
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--muted-foreground);
+  transition: background-color 0.18s ease-out;
+}
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::-webkit-scrollbar-thumb {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* Utilities — editorial                                               */
 /* ------------------------------------------------------------------ */
 

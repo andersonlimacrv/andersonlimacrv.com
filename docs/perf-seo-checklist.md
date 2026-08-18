@@ -9,7 +9,7 @@ com o baseline salvo em `docs/audit-baseline.json`.
 ```sh
 npm run build          # build de produção
 npm run check          # diagnóstico Astro (0 erros)
-npm run test:e2e       # 76 testes Playwright (desktop/mobile, wireframe blueprint)
+npm run test:e2e       # 81 testes Playwright (desktop/mobile, wireframe blueprint, scrollbar)
 node scripts/audit.mjs # build + métricas + comparação vs baseline
 ```
 
@@ -25,6 +25,9 @@ node scripts/audit.mjs # build + métricas + comparação vs baseline
 - [x] Seção Sobre em duas colunas fixas (desktop/mobile) sem overflow horizontal.
 - [x] Morph do retrato com diâmetro final responsivo (`--morph-final-size`),
       lido pelo JS e pelos wireframes blueprint em vez de constante fixa.
+- [x] Scrollbar global fina (8px) com cores derivadas de `--muted-foreground`/
+      `--foreground`; tema claro/escuro automático via tokens; `prefers-reduced-motion`
+      desativa a transição do hover.
 
 | Métrica | Baseline | Atual | Δ |
 | --- | --- | --- | --- |
