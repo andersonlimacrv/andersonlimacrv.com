@@ -32,7 +32,7 @@ test.describe('seção Sobre reformulada', () => {
     test.describe(vp.name, () => {
       test.use({ viewport: { width: vp.width, height: vp.height } });
 
-      test('layout: perfil acima da trajetória no mobile, lado a lado no desktop', async ({
+      test('layout: trajetória sempre abaixo do perfil (coluna única)', async ({
         page,
       }) => {
         await gotoHome(page);
@@ -42,16 +42,20 @@ test.describe('seção Sobre reformulada', () => {
           ) as HTMLElement | null;
           if (!grid) return null;
           const cs = getComputedStyle(grid);
+          const sections = Array.from(grid.querySelectorAll(':scope > section'));
+          const order = sections.map((s) => s.getAttribute('data-col'));
           return {
             display: cs.display,
             flexDirection: cs.flexDirection,
-            sections: grid.querySelectorAll(':scope > section').length,
+            sections: sections.length,
+            order,
           };
         });
         expect(data).not.toBeNull();
         expect(data!.display).toBe('flex');
         expect(data!.sections).toBe(2);
-        expect(data!.flexDirection).toBe(vp.name === 'desktop' ? 'row' : 'column');
+        expect(data!.flexDirection).toBe('column');
+        expect(data!.order).toEqual(['perfil', 'trajetoria']);
       });
 
       test('retrato à esquerda com informações ao lado (nunca abaixo)', async ({
@@ -132,41 +136,47 @@ test.describe('seção Sobre reformulada', () => {
         await expect(page.locator('#sobre-content footer').getByText('WhatsApp')).toBeVisible();
         await expect(page.locator('#sobre-content footer').getByText('+55 53 98100-4874')).toHaveCount(0);
 
-        // Trajetória clean: 7 rows (4 work + 3 education) cada com Company / Role, badge e period
-        const entries = page.locator('#sobre-content ul[aria-label] > li');
+        // Trajetória clean: 7 rows separadas em Trabalho (4) + Formação (3)
+        const entries = page.locator('#sobre-content section[data-col="trajetoria"] li');
         await expect(entries).toHaveCount(7);
-        await expect(entries.first()).toContainText('Universidade Católica');
+        await expect(entries.first()).toContainText('CESS');
+        // Headings de seção Trabalho / Formação visíveis
+        await expect(page.locator('#trajectory-work-title')).toHaveText('Trabalho');
+        await expect(page.locator('#trajectory-edu-title')).toHaveText('Formação');
         // Sem summary longo, sem linha vertical
         await expect(entries.first()).not.toContainText('Especialização em IA e ML aplicada');
         await expect(page.locator('#sobre-content section[data-col="trajetoria"] .cross-mark')).toHaveCount(0);
+        // Trabalho 4 + Formação 3
+        await expect(page.locator('ul[aria-label="Trabalho"] > li')).toHaveCount(4);
+        await expect(page.locator('ul[aria-label="Formação"] > li')).toHaveCount(3);
       });
 
-      test('trajetória clean: lista única com Company / Role, badge e period, sem linha vertical ou yearRange', async ({
+      test('trajetória clean: duas listas Trabalho/Formação com Company / Role e period, sem linha vertical ou yearRange', async ({
         page,
       }) => {
         await gotoHome(page);
         const data = await page.evaluate(() => {
-          const ul = document.querySelector('#sobre-content ul[aria-label]') as HTMLElement | null;
-          if (!ul) return null;
-          const items = Array.from(ul.querySelectorAll(':scope > li'));
-          return items.map((li) => {
-            const text = li.textContent ?? '';
-            const badge = li.querySelector('span.rounded-lg')?.textContent?.trim() ?? '';
+          const workUl = document.querySelector('ul[aria-label="Trabalho"]') as HTMLElement | null;
+          const eduUl = document.querySelector('ul[aria-label="Formação"]') as HTMLElement | null;
+          if (!workUl || !eduUl) return null;
+          const workItems = Array.from(workUl.querySelectorAll(':scope > li')).map((li) => {
             const period = li.querySelector('span.trajectory-period')?.textContent?.trim() ?? '';
-            const companyRole = li.querySelector('span.min-w-0')?.textContent?.trim() ?? text.slice(0, 60);
-            return { text, badge, period, companyRole };
+            const companyRole = li.querySelector('span.min-w-0')?.textContent?.trim() ?? '';
+            return { period, companyRole, kind: 'work' };
           });
+          const eduItems = Array.from(eduUl.querySelectorAll(':scope > li')).map((li) => {
+            const period = li.querySelector('span.trajectory-period')?.textContent?.trim() ?? '';
+            const companyRole = li.querySelector('span.min-w-0')?.textContent?.trim() ?? '';
+            return { period, companyRole, kind: 'education' };
+          });
+          return { workItems, eduItems };
         });
         expect(data).not.toBeNull();
-        expect(data!.length).toBe(7);
-        // Badges localizados pt: 4 Trabalho + 3 Formação
-        const trabalho = data!.filter((d) => d.badge === 'Trabalho').length;
-        const formacao = data!.filter((d) => d.badge === 'Formação').length;
-        expect(trabalho).toBe(4);
-        expect(formacao).toBe(3);
-        // Primeiro deve ser 2026 (Pós)
-        expect(data![0].period).toContain('2026');
-        expect(data![0].companyRole).toContain('Universidade Católica');
+        expect(data!.workItems.length).toBe(4);
+        expect(data!.eduItems.length).toBe(3);
+        // Primeiro trabalho deve ser CESS 2022 — presente (mais recente work)
+        expect(data!.workItems[0].period).toContain('2022');
+        expect(data!.workItems[0].companyRole).toContain('CESS');
         // Sem yearRange e sem linha vertical / CrossMark
         const hasYearRange = await page.evaluate(() =>
           document.body.textContent?.includes('2007—2027') ?? false,
@@ -183,11 +193,13 @@ test.describe('seção Sobre reformulada', () => {
           document.querySelectorAll('section[data-col="trajetoria"] .cross-mark').length,
         );
         expect(hasCrossMark).toBe(0);
-        for (const item of data!) {
-          expect(item.badge).not.toHaveLength(0);
+        for (const item of [...data!.workItems, ...data!.eduItems]) {
           expect(item.period).not.toHaveLength(0);
           expect(item.companyRole).not.toHaveLength(0);
         }
+        // Headings existem
+        await expect(page.locator('#trajectory-work-title')).toHaveText('Trabalho');
+        await expect(page.locator('#trajectory-edu-title')).toHaveText('Formação');
       });
 
       test('header da coluna 02 mantém Trajetória sem intervalo', async ({
@@ -211,21 +223,14 @@ test.describe('seção Sobre reformulada', () => {
         await expect(page.locator('#sobre-content blockquote p')).toContainText(
           'I build for the web',
         );
-        await expect(page.locator('#sobre-content ul[aria-label]')).toHaveAttribute(
-          'aria-label',
-          'Timeline',
-        );
-        await expect(page.locator('#sobre-content ul[aria-label] > li').first()).toContainText(
+        await expect(page.locator('#trajectory-work-title')).toHaveText('Work');
+        await expect(page.locator('#trajectory-edu-title')).toHaveText('Education');
+        await expect(page.locator('ul[aria-label="Work"] > li').first()).toContainText('CESS');
+        await expect(page.locator('ul[aria-label="Education"] > li').first()).toContainText(
           'Universidade Católica',
         );
-        // badges em inglês
-        const badgesEn = await page.evaluate(() =>
-          Array.from(document.querySelectorAll('#sobre-content ul[aria-label] > li span.rounded-lg')).map(
-            (el) => el.textContent?.trim() ?? '',
-          ),
-        );
-        expect(badgesEn.filter((b) => b === 'Work').length).toBe(4);
-        expect(badgesEn.filter((b) => b === 'Education').length).toBe(3);
+        await expect(page.locator('ul[aria-label="Work"] > li')).toHaveCount(4);
+        await expect(page.locator('ul[aria-label="Education"] > li')).toHaveCount(3);
       });
     });
   }

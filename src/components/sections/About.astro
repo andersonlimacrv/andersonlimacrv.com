@@ -36,10 +36,10 @@ const socials = [
   >
 
     <!-- =========================================================
-         ABOUT — duas colunas permanentes (desktop e mobile)
-         01 — Perfil (retrato + informações ao lado)
-         02 — Trajetória (timeline contínua)
-         ========================================================= -->
+          ABOUT — coluna única: Perfil acima, Trajetória abaixo
+          01 — Perfil (retrato + informações ao lado)
+          02 — Trajetória (lista clean com badges)
+          ========================================================= -->
 
     <div
       class="
@@ -50,25 +50,16 @@ const socials = [
         divide-border
         border-t
         border-border
-        lg:flex-row
-        lg:divide-x
-        lg:divide-y-0
       "
     >
 
       <!-- =======================================================
-           COLUNA 01 — PERFIL
-           ======================================================= -->
+            BLOCO 01 — PERFIL
+            ======================================================= -->
 
       <section
         data-col="perfil"
-        class="
-          min-w-0
-          basis-full
-          pr-0
-          lg:basis-[46%]
-          lg:pr-10
-        "
+        class="min-w-0 basis-full"
       >
 
         <!-- LABEL -->
@@ -121,7 +112,8 @@ const socials = [
             flex
             items-start
             gap-3
-            pt-3
+            py-6
+            sm:py-8
           "
         >
 
@@ -265,8 +257,8 @@ const socials = [
           class="
             border-t
             border-border
-            py-4
-            sm:py-5
+            py-6
+            sm:py-8
           "
         >
           <div
@@ -343,8 +335,8 @@ const socials = [
           class="
             border-t
             border-border
-            py-4
-            sm:py-5
+            py-6
+            sm:py-8
           "
         >
 
@@ -403,10 +395,10 @@ const socials = [
         <Reveal
           delay={200}
           class="
-            mt-6
             border-t
             border-border
-            pt-6
+            py-6
+            sm:py-8
           "
         >
           <footer
@@ -467,18 +459,12 @@ const socials = [
 
 
       <!-- =======================================================
-           COLUNA 02 — TRAJETÓRIA
-           ======================================================= -->
+            BLOCO 02 — TRAJETÓRIA (sempre abaixo do Perfil)
+            ======================================================= -->
 
       <section
         data-col="trajetoria"
-        class="
-          min-w-0
-          basis-full
-          pl-0
-          lg:basis-[54%]
-          lg:pl-10
-        "
+        class="min-w-0 basis-full"
       >
 
         <!-- HEADER -->
