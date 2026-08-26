@@ -108,7 +108,7 @@ test.describe('seção Sobre reformulada', () => {
         }
       });
 
-      test('conteúdo: role/stack/location na coluna 01, frase, bio, social; timeline na coluna 02', async ({
+      test('conteúdo: role/stack/location na coluna 01, frase, bio, social; trajectory na coluna 02', async ({
         page,
       }) => {
         await gotoHome(page);
@@ -132,54 +132,72 @@ test.describe('seção Sobre reformulada', () => {
         await expect(page.locator('#sobre-content footer').getByText('WhatsApp')).toBeVisible();
         await expect(page.locator('#sobre-content footer').getByText('+55 53 98100-4874')).toHaveCount(0);
 
-        const entries = page.locator('#sobre-content ol[aria-label] > li');
-        await expect(entries).toHaveCount(6);
-        await expect(entries.first().locator('h3')).toContainText('Pós-graduação');
+        // Trajetória clean: 7 rows (4 work + 3 education) cada com Company / Role, badge e period
+        const entries = page.locator('#sobre-content ul[aria-label] > li');
+        await expect(entries).toHaveCount(7);
         await expect(entries.first()).toContainText('Universidade Católica');
-        await expect(entries.first()).toContainText('Especialização em IA e ML');
+        // Sem summary longo, sem linha vertical
+        await expect(entries.first()).not.toContainText('Especialização em IA e ML aplicada');
+        await expect(page.locator('#sobre-content section[data-col="trajetoria"] .cross-mark')).toHaveCount(0);
       });
 
-      test('timeline: agrupada por ano, período ao lado do ano, empresa e resumo de 1 linha por item', async ({
+      test('trajetória clean: lista única com Company / Role, badge e period, sem linha vertical ou yearRange', async ({
         page,
       }) => {
         await gotoHome(page);
         const data = await page.evaluate(() => {
-          const ol = document.querySelector('#sobre-content ol[aria-label]');
-          if (!ol) return null;
-          const items = Array.from(ol.querySelectorAll(':scope > li'));
+          const ul = document.querySelector('#sobre-content ul[aria-label]') as HTMLElement | null;
+          if (!ul) return null;
+          const items = Array.from(ul.querySelectorAll(':scope > li'));
           return items.map((li) => {
-            const year = li.querySelector('p.font-mono')?.textContent?.trim() ?? '';
-            const roles = Array.from(li.querySelectorAll('h3')).map((n) => n.textContent?.trim() ?? '');
-            const period = li.querySelector('p.uppercase')?.textContent?.trim() ?? '';
-            const summary = li.querySelector(':scope > div:nth-child(2) > div:first-of-type > p:last-of-type')?.textContent?.trim() ?? '';
-            return { year, roles, period, summary };
+            const text = li.textContent ?? '';
+            const badge = li.querySelector('span.rounded-lg')?.textContent?.trim() ?? '';
+            const period = li.querySelector('span.trajectory-period')?.textContent?.trim() ?? '';
+            const companyRole = li.querySelector('span.min-w-0')?.textContent?.trim() ?? text.slice(0, 60);
+            return { text, badge, period, companyRole };
           });
         });
         expect(data).not.toBeNull();
-        expect(data!.length).toBe(6);
-        expect(data![0].year).toBe('2026');
-        expect(data![0].period).toBe('maio de 2026 — maio de 2027');
-        expect(data![0].summary).toContain('Especialização em IA e ML');
-        expect(data![0].roles).toHaveLength(1);
-        expect(data![1].year).toBe('2022');
-        expect(data![1].roles).toHaveLength(2);
-        expect(data![1].period).toBe('dezembro de 2022 — presente');
-        expect(data![5].year).toBe('2007');
+        expect(data!.length).toBe(7);
+        // Badges localizados pt: 4 Trabalho + 3 Formação
+        const trabalho = data!.filter((d) => d.badge === 'Trabalho').length;
+        const formacao = data!.filter((d) => d.badge === 'Formação').length;
+        expect(trabalho).toBe(4);
+        expect(formacao).toBe(3);
+        // Primeiro deve ser 2026 (Pós)
+        expect(data![0].period).toContain('2026');
+        expect(data![0].companyRole).toContain('Universidade Católica');
+        // Sem yearRange e sem linha vertical / CrossMark
+        const hasYearRange = await page.evaluate(() =>
+          document.body.textContent?.includes('2007—2027') ?? false,
+        );
+        // yearRange foi removido da trajetória; pode ainda existir em outro lugar? Verifica especificamente na coluna
+        const trajetoriaText = await page.locator('section[data-col="trajetoria"]').textContent();
+        expect(trajetoriaText).not.toContain('2007—2027');
+        expect(hasYearRange).toBe(false);
+        const hasVerticalLine = await page.evaluate(() =>
+          !!document.querySelector('section[data-col="trajetoria"] span.w-px.bg-border'),
+        );
+        expect(hasVerticalLine).toBe(false);
+        const hasCrossMark = await page.evaluate(() =>
+          document.querySelectorAll('section[data-col="trajetoria"] .cross-mark').length,
+        );
+        expect(hasCrossMark).toBe(0);
         for (const item of data!) {
-          expect(item.summary).not.toHaveLength(0);
+          expect(item.badge).not.toHaveLength(0);
+          expect(item.period).not.toHaveLength(0);
+          expect(item.companyRole).not.toHaveLength(0);
         }
       });
 
-      test('header da coluna 02 usa o intervalo real dos dados (2007—2027)', async ({
+      test('header da coluna 02 mantém Trajetória sem intervalo', async ({
         page,
       }) => {
         await gotoHome(page);
-        await expect(page.locator('#sobre-content section[data-col="trajetoria"]')).toContainText(
-          '2007—2027',
-        );
-        await expect(page.locator('#sobre-content section[data-col="trajetoria"]')).toContainText(
-          'Trajetória',
-        );
+        const trajetoria = page.locator('#sobre-content section[data-col="trajetoria"]');
+        await expect(trajetoria).not.toContainText('2007—2027');
+        await expect(trajetoria).toContainText('Trajetória');
+        await expect(trajetoria.getByText('02', { exact: true })).toBeVisible();
       });
 
       test('localização: rótulos e trajetória em inglês em /en/', async ({
@@ -193,13 +211,21 @@ test.describe('seção Sobre reformulada', () => {
         await expect(page.locator('#sobre-content blockquote p')).toContainText(
           'I build for the web',
         );
-        await expect(page.locator('#sobre-content ol[aria-label]')).toHaveAttribute(
+        await expect(page.locator('#sobre-content ul[aria-label]')).toHaveAttribute(
           'aria-label',
           'Timeline',
         );
-        await expect(page.locator('#sobre-content ol[aria-label] > li').first()).toContainText(
-          'Postgraduate',
+        await expect(page.locator('#sobre-content ul[aria-label] > li').first()).toContainText(
+          'Universidade Católica',
         );
+        // badges em inglês
+        const badgesEn = await page.evaluate(() =>
+          Array.from(document.querySelectorAll('#sobre-content ul[aria-label] > li span.rounded-lg')).map(
+            (el) => el.textContent?.trim() ?? '',
+          ),
+        );
+        expect(badgesEn.filter((b) => b === 'Work').length).toBe(4);
+        expect(badgesEn.filter((b) => b === 'Education').length).toBe(3);
       });
     });
   }

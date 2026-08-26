@@ -2,12 +2,11 @@
 import Reveal from '../ui/Reveal.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import BlueprintMorphEnd from '../blueprint/BlueprintMorphEnd.astro';
+import TrajectoryClean from './TrajectoryClean.astro';
 import portrait from '../../assets/me.png';
 import { site, socialLinks } from '../../data/site';
 import { profile } from '../../data/profile';
-import { getTimeline } from '../../data/timeline';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
-import CrossMark from '../ui/CrossMark.astro';
 
 interface Props {
   locale?: Locale;
@@ -15,7 +14,6 @@ interface Props {
 
 const locale = Astro.props.locale ?? defaultLocale;
 const t = ui[locale];
-const timeline = getTimeline(locale);
 
 const socials = [
   { label: 'GitHub', href: socialLinks.github, external: true },
@@ -24,35 +22,6 @@ const socials = [
   { label: 'WhatsApp', href: socialLinks.whatsapp, external: true },
   { label: 'Email', href: `mailto:${socialLinks.email}`, external: false },
 ];
-
-// Intervalo real da trajetória a partir dos períodos (min–max de anos).
-// "current" conta como o ano corrente.
-const currentYear = new Date().getFullYear();
-const years = timeline.careerJourney.map((entry) => {
-  const nums = (entry.period.match(/\d{4}/g) ?? []).map(Number);
-  const start = nums[0];
-  const end = entry.current ? currentYear : (nums[nums.length - 1] ?? start);
-  return { start, end };
-});
-const yearStart = Math.min(...years.map((y) => y.start));
-const yearEnd = Math.max(...years.map((y) => y.end));
-const yearRange = `${yearStart}—${yearEnd}`;
-
-// Agrupa os itens da trajetória por ano de início.
-// Mesmo ano → um único ponto fixo na linha (ex.: 2022).
-const careerGroups = timeline.careerJourney.reduce<{
-  year: string;
-  entries: typeof timeline.careerJourney;
-}[]>((acc, entry) => {
-  const year = entry.period.match(/\d{4}/)?.[0] ?? '';
-  const last = acc[acc.length - 1];
-  if (last && last.year === year) {
-    last.entries.push(entry);
-  } else {
-    acc.push({ year, entries: [entry] });
-  }
-  return acc;
-}, []);
 ---
 
 <SectionHeading
@@ -554,221 +523,8 @@ const careerGroups = timeline.careerJourney.reduce<{
         </div>
 
 
-        <!-- =====================================================
-             TIMELINE — linha contínua, anos como pontos fixos
-             ===================================================== -->
-
-        <div
-          class="
-            relative
-            py-6
-            sm:py-8
-          "
-        >
-
-          <span
-            class="
-              absolute
-              right-0
-              top-2
-              font-mono
-              text-[8px]
-              tracking-[0.15em]
-              text-muted-foreground/40
-              sm:text-[9px]
-            "
-          >
-            {yearRange}
-          </span>
-
-          <!--
-            Linha vertical contínua: percorre toda a trajetória
-            (permanência). O ano de cada item é um ponto fixo nela.
-          -->
-
-          <span
-            aria-hidden="true"
-            class="
-              absolute
-              bottom-0
-              left-[2.9rem]
-              top-0
-              w-px
-              bg-border
-              sm:left-[3.75rem]
-            "
-          ></span>
-
-          <!-- T no topo: travessa horizontal sobre o topo da linha vertical -->
-
-          <CrossMark
-            variant="t-top"
-            size={10}
-            class="absolute left-[2.9rem] top-0 -translate-x-1/2 -translate-y-1/2 sm:left-[3.75rem]"
-          />
-
-          <!-- T no fim: travessa horizontal no fim da linha vertical -->
-
-          <CrossMark
-            variant="t-bottom"
-            size={10}
-            class="absolute left-[2.9rem] bottom-0 -translate-x-1/2 translate-y-1/2 sm:left-[3.75rem]"
-          />
-
-
-          <ol
-            class="relative flex flex-col"
-            aria-label={t.aboutTimelineLabel}
-          >
-
-            {careerGroups.map((group) => {
-
-              const ongoing = group.entries.some((e) => e.current);
-
-              return (
-                <li
-                  class="
-                    relative
-                    flex
-                    gap-3
-                    pb-7
-                    last:pb-0
-                    sm:gap-5
-                    sm:pb-8
-                  "
-                >
-
-                  <!-- ANO (ponto fixo na linha) -->
-
-                  <div class="relative w-[3.2rem] shrink-0 sm:w-[4.1rem]">
-                    <p
-                      class="
-                        pt-0.5
-                        pr-4
-                        text-right
-                        font-mono
-                        text-[9px]
-                        font-medium
-                        tracking-[0.12em]
-                        text-foreground
-                        sm:pr-6
-                        sm:text-xs
-                      "
-                    >
-                      {group.year}
-                    </p>
-
-                    <!-- MARCADOR na linha: concluído = preenchido; em andamento = vazio -->
-
-                    <span
-                      aria-hidden="true"
-                      class={`
-                        absolute
-                        left-[calc(2.9rem-0.3125rem)]
-                        top-1
-                        h-2.5
-                        w-2.5
-                        border
-                        border-foreground
-                        sm:left-[calc(3.75rem-0.3125rem)]
-                        ${ongoing ? 'bg-background' : 'bg-foreground'}
-                      `}
-                    ></span>
-                  </div>
-
-
-                  <!-- EXPERIÊNCIA(S) DO ANO -->
-
-                  <div
-                    class="
-                      relative
-                      min-w-0
-                      flex-1
-                    "
-                  >
-
-                    {group.entries.map((entry) => (
-                      <div
-                        class="
-                          border-b
-                          border-border
-                          pb-6
-                          last:border-b-0
-                          last:pb-0
-                        "
-                      >
-
-                        <!-- PERÍODO (data ao lado do ano) -->
-
-                        <p
-                          class="
-                            pt-0.5
-                            font-mono
-                            text-[7px]
-                            uppercase
-                            tracking-[0.13em]
-                            text-muted-foreground/60
-                            sm:text-[9px]
-                          "
-                        >
-                          {entry.period}
-                        </p>
-
-                        <!-- CARGO / FORMAÇÃO -->
-
-                        <h3
-                          class="
-                            mt-2
-                            text-[10px]
-                            font-semibold
-                            leading-snug
-                            tracking-[-0.01em]
-                            text-foreground
-                            sm:text-sm
-                          "
-                        >
-                          {entry.role}
-                        </h3>
-
-                        <!-- EMPRESA -->
-
-                        <p
-                          class="
-                            mt-1
-                            text-[9px]
-                            leading-relaxed
-                            text-muted-foreground
-                            sm:text-xs
-                          "
-                        >
-                          {entry.company}
-                        </p>
-
-                        <!-- DESCRIÇÃO DE 1 LINHA -->
-
-                        <p
-                          class="
-                            mt-2
-                            text-[9px]
-                            leading-relaxed
-                            text-muted-foreground
-                            sm:text-[11px]
-                          "
-                        >
-                          {entry.summary}
-                        </p>
-
-                      </div>
-                    ))}
-
-                  </div>
-
-                </li>
-              );
-            })}
-
-          </ol>
-
+        <div class="py-6 sm:py-8">
+          <TrajectoryClean locale={locale} />
         </div>
 
       </section>

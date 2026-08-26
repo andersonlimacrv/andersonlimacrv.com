@@ -91,6 +91,8 @@ export const ui = {
     aboutMainStackTitle: "Stack principal",
     aboutLocationTitle: "Localização",
     aboutBioTitle: "Sobre mim",
+    aboutBadgeWork: "Trabalho",
+    aboutBadgeEducation: "Formação",
     blueprint: {
       figName: "IMG01",
       morphTag: "MORPH — EVOLUÇÃO",
@@ -193,6 +195,8 @@ export const ui = {
     aboutMainStackTitle: "Stack principal",
     aboutLocationTitle: "Ubicación",
     aboutBioTitle: "Sobre mí",
+    aboutBadgeWork: "Trabajo",
+    aboutBadgeEducation: "Formación",
     blueprint: {
       figName: "IMG01",
       morphTag: "MORPH — EVOLUCIÓN",
@@ -295,6 +299,8 @@ export const ui = {
     aboutMainStackTitle: "Main stack",
     aboutLocationTitle: "Location",
     aboutBioTitle: "About me",
+    aboutBadgeWork: "Work",
+    aboutBadgeEducation: "Education",
     blueprint: {
       figName: "IMG01",
       morphTag: "MORPH — EVOLUTION",

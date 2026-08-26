@@ -1,0 +1,111 @@
+---
+import type { Locale } from '../../i18n/ui';
+import { ui, defaultLocale } from '../../i18n/ui';
+import { getTimeline } from '../../data/timeline';
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? defaultLocale;
+const t = ui[locale];
+const timeline = getTimeline(locale);
+
+// Merge careerJourney (trabalho) + education (formação) em lista única
+// careerJourney já ordenado mais recente → mais antigo; education idem.
+// Mantém ordem cronológica desc: intercala por extração de ano do period.
+type Row = {
+  company: string;
+  role: string;
+  period: string;
+  kind: 'work' | 'education';
+  year: number;
+};
+
+function extractYear(period: string): number {
+  const m = period.match(/\d{4}/);
+  return m ? Number(m[0]) : 0;
+}
+
+function isEducationRole(role: string): boolean {
+  const r = role.toLowerCase();
+  return (
+    r.includes('pós') ||
+    r.includes('posgrado') ||
+    r.includes('postgraduate') ||
+    r.includes('cst') ||
+    r.includes('curso técnico') ||
+    r.includes('integrated technical')
+  );
+}
+
+// Filtra careerJourney para apenas work (evita duplicar formações que já estão em education)
+const workRows: Row[] = timeline.careerJourney
+  .filter((e) => !isEducationRole(e.role))
+  .map((e) => ({
+    company: e.company,
+    role: e.role,
+    period: e.period,
+    kind: 'work' as const,
+    year: extractYear(e.period),
+  }));
+
+const eduRows: Row[] = timeline.education.map((e) => ({
+  company: e.institution,
+  role: e.degree,
+  period: e.period,
+  kind: 'education' as const,
+  year: extractYear(e.period),
+}));
+
+function formatPeriodShort(period: string): string {
+  // Extrai anos e "presente/present" para compatar no mobile
+  const years = period.match(/\d{4}/g) || [];
+  const hasPresent = /presente|present/i.test(period);
+  if (years.length === 0) return period;
+  if (hasPresent) return `${years[0]} — ${period.match(/presente|present/i)?.[0] ?? 'present'}`;
+  if (years.length === 1) return years[0];
+  // dois anos
+  return `${years[0]} — ${years[years.length - 1]}`;
+}
+
+// Lista única 7 rows (4 work + 3 education), ordenada por ano desc
+const rows = [...workRows, ...eduRows].sort((a, b) => {
+  if (b.year !== a.year) return b.year - a.year;
+  if (a.kind !== b.kind) return a.kind === 'work' ? -1 : 1;
+  return 0;
+});
+---
+
+<ul
+  aria-label={t.aboutTimelineLabel}
+  class="flex flex-col"
+>
+  {
+    rows.map((row) => (
+      <li class="flex items-center justify-between gap-2 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/30">
+        <span class="min-w-0 flex-1 truncate">
+          <span class="font-sans text-[12px] font-medium leading-snug tracking-tight text-foreground sm:text-[13px]">
+            {row.company}
+          </span>
+          <span class="mx-1 text-muted-foreground/60">/</span>
+          <span class="font-sans text-[12px] leading-snug text-muted-foreground sm:text-[13px]">
+            {row.role}
+          </span>
+        </span>
+
+        <span class="flex shrink-0 items-center gap-2 sm:gap-3">
+          <span class="rounded-lg border border-border px-2 py-0.5 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground">
+            {row.kind === 'work' ? t.aboutBadgeWork : t.aboutBadgeEducation}
+          </span>
+          <span
+            class="trajectory-period font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:text-xs whitespace-nowrap"
+            title={row.period}
+          >
+            {formatPeriodShort(row.period)}
+          </span>
+        </span>
+      </li>
+    ))
+  }
+</ul>
