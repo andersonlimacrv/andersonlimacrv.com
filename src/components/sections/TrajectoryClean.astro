@@ -2,6 +2,7 @@
 import type { Locale } from '../../i18n/ui';
 import { ui, defaultLocale } from '../../i18n/ui';
 import { getTimeline } from '../../data/timeline';
+import Subtitle from '../ui/Subtitle.astro';
 
 interface Props {
   locale?: Locale;
@@ -64,30 +65,25 @@ function formatPeriodShort(period: string): string {
 }
 ---
 
-<div class="flex flex-col gap-8">
+<div class="flex flex-col gap-8 sm:gap-10">
   <!-- Trabalho -->
   <section aria-labelledby="trajectory-work-title">
-    <h3
-      id="trajectory-work-title"
-      class="mb-3 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground sm:text-[10px]"
-    >
-      {t.aboutBadgeWork}
-    </h3>
+    <Subtitle label={t.aboutBadgeWork} as="h3" id="trajectory-work-title" class="mb-3" />
     <ul aria-label={t.aboutBadgeWork} class="flex flex-col">
       {
         workRows.map((row) => (
-          <li class="flex items-center justify-between gap-2 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/30">
+          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/30">
             <span class="min-w-0 flex-1 truncate">
               <span class="font-sans text-[12px] font-medium leading-snug tracking-tight text-foreground sm:text-[13px]">
-                {row.company}
+                {row.role}
               </span>
               <span class="mx-1 text-muted-foreground/60">/</span>
               <span class="font-sans text-[12px] leading-snug text-muted-foreground sm:text-[13px]">
-                {row.role}
+                {row.company}
               </span>
             </span>
             <span
-              class="trajectory-period shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:text-xs whitespace-nowrap"
+              class="trajectory-period shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:text-xs whitespace-nowrap sm:text-right"
               title={row.period}
             >
               {formatPeriodShort(row.period)}
@@ -100,27 +96,22 @@ function formatPeriodShort(period: string): string {
 
   <!-- Formação -->
   <section aria-labelledby="trajectory-edu-title">
-    <h3
-      id="trajectory-edu-title"
-      class="mb-3 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground sm:text-[10px]"
-    >
-      {t.aboutBadgeEducation}
-    </h3>
+    <Subtitle label={t.aboutBadgeEducation} as="h3" id="trajectory-edu-title" class="mb-3" />
     <ul aria-label={t.aboutBadgeEducation} class="flex flex-col">
       {
         eduRows.map((row) => (
-          <li class="flex items-center justify-between gap-2 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/30">
+          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/30">
             <span class="min-w-0 flex-1 truncate">
               <span class="font-sans text-[12px] font-medium leading-snug tracking-tight text-foreground sm:text-[13px]">
-                {row.company}
+                {row.role}
               </span>
               <span class="mx-1 text-muted-foreground/60">/</span>
               <span class="font-sans text-[12px] leading-snug text-muted-foreground sm:text-[13px]">
-                {row.role}
+                {row.company}
               </span>
             </span>
             <span
-              class="trajectory-period shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:text-xs whitespace-nowrap"
+              class="trajectory-period shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:text-xs whitespace-nowrap sm:text-right"
               title={row.period}
             >
               {formatPeriodShort(row.period)}

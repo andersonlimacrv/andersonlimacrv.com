@@ -3,6 +3,7 @@ import Reveal from '../ui/Reveal.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import BlueprintMorphEnd from '../blueprint/BlueprintMorphEnd.astro';
 import TrajectoryClean from './TrajectoryClean.astro';
+import Subtitle from '../ui/Subtitle.astro';
 import portrait from '../../assets/me.png';
 import { site, socialLinks } from '../../data/site';
 import { profile } from '../../data/profile';
@@ -75,18 +76,7 @@ const socials = [
             py-4
           "
         >
-          <p
-            class="
-              font-mono
-              text-[9px]
-              uppercase
-              tracking-[0.2em]
-              text-muted-foreground
-              sm:text-[10px]
-            "
-          >
-            {t.aboutProfileColumn}
-          </p>
+          <Subtitle label={t.aboutProfileColumn} variant="strong" size="sm" />
 
           <span
             class="
@@ -136,7 +126,6 @@ const socials = [
               finalX={0}
               finalY={0}
             />
-            <p class="mt-40 lg:mt-46 px-3">{site.name}</p>
           </div>
 
 
@@ -152,18 +141,7 @@ const socials = [
             >
 
               <div>
-                <dt
-                  class="
-                    font-mono
-                    text-[7px]
-                    uppercase
-                    tracking-[0.18em]
-                    text-muted-foreground/60
-                    sm:text-[9px]
-                  "
-                >
-                  {t.aboutRoleTitle}
-                </dt>
+                <Subtitle label={t.aboutRoleTitle} as="dt" />
 
                 <dd
                   class="
@@ -185,18 +163,7 @@ const socials = [
               <!-- STACK PRINCIPAL -->
 
               <div>
-                <dt
-                  class="
-                    font-mono
-                    text-[7px]
-                    uppercase
-                    tracking-[0.18em]
-                    text-muted-foreground/60
-                    sm:text-[9px]
-                  "
-                >
-                  {t.aboutMainStackTitle}
-                </dt>
+                <Subtitle label={t.aboutMainStackTitle} as="dt" />
 
                 <dd
                   class="
@@ -216,18 +183,7 @@ const socials = [
               <!-- LOCALIZAÇÃO -->
 
               <div>
-                <dt
-                  class="
-                    font-mono
-                    text-[7px]
-                    uppercase
-                    tracking-[0.18em]
-                    text-muted-foreground/60
-                    sm:text-[9px]
-                  "
-                >
-                  {t.aboutLocationTitle}
-                </dt>
+                <Subtitle label={t.aboutLocationTitle} as="dt" />
 
                 <dd
                   class="
@@ -348,19 +304,7 @@ const socials = [
               gap-3
             "
           >
-            <p
-              class="
-                font-mono
-                text-[7px]
-                uppercase
-                tracking-[0.18em]
-                text-muted-foreground/60
-                sm:text-[9px]
-              "
-            >
-              {t.aboutBioTitle}
-            </p>
-
+            <Subtitle label={t.aboutBioTitle} />
           </div>
 
 
@@ -409,18 +353,7 @@ const socials = [
             "
           >
             <div class="flex flex-col gap-2">
-              <p
-                class="
-                  font-mono
-                  text-[7px]
-                  uppercase
-                  tracking-[0.18em]
-                  text-muted-foreground/60
-                  sm:text-[9px]
-                "
-              >
-                {t.aboutContactTitle}
-              </p>
+              <Subtitle label={t.aboutContactTitle} />
 
               <nav
                 class="flex flex-col"
@@ -480,19 +413,7 @@ const socials = [
             py-4
           "
         >
-
-          <p
-            class="
-              font-mono
-              text-[9px]
-              uppercase
-              tracking-[0.2em]
-              text-muted-foreground
-              sm:text-[10px]
-            "
-          >
-            {t.aboutTrajectoryColumn}
-          </p>
+          <Subtitle label={t.aboutTrajectoryColumn} variant="strong" size="sm" />
 
           <span
             class="
@@ -505,9 +426,7 @@ const socials = [
           >
             02
           </span>
-
         </div>
-
 
         <div class="py-6 sm:py-8">
           <TrajectoryClean locale={locale} />
