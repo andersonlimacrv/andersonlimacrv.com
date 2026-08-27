@@ -72,9 +72,9 @@ function formatPeriodShort(period: string): string {
     <ul aria-label={t.aboutBadgeWork} class="flex flex-col">
       {
         workRows.map((row) => (
-          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/30">
+          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
             <span class="min-w-0 flex-1 truncate">
-              <span class="font-sans text-[12px] font-medium leading-snug tracking-tight text-foreground sm:text-[13px]">
+              <span class="font-sans leading-snug tracking-tight text-foreground lg:text-[16px] text-sm font-semibold">
                 {row.role}
               </span>
               <span class="mx-1 text-muted-foreground/60">/</span>
@@ -100,9 +100,9 @@ function formatPeriodShort(period: string): string {
     <ul aria-label={t.aboutBadgeEducation} class="flex flex-col">
       {
         eduRows.map((row) => (
-          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/30">
+          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
             <span class="min-w-0 flex-1 truncate">
-              <span class="font-sans text-[12px] font-medium leading-snug tracking-tight text-foreground sm:text-[13px]">
+              <span class="font-sans font-medium leading-snug tracking-tight text-foreground lg:text-[16px] text-sm font-semibold">
                 {row.role}
               </span>
               <span class="mx-1 text-muted-foreground/60">/</span>

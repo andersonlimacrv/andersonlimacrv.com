@@ -62,7 +62,7 @@ Timeline: `div.relative py-6 sm:py-8` com:
 - As colunas Perfil/Trajetória do About são `<section data-col="perfil"|"trajetoria">` (não anônimas) — evita landmarks ambíguos.
 
 ### 7. Redução de CSS externo
-- `.container-site` migrado para utilitários Tailwind (`mx-auto w-full max-w-5xl px-4 sm:px-6 md:px-8`) em todos os usos (SectionHeading, Hero, Footer, PostLayout, BlogIndexPage); a regra CSS foi apagada.
+- `.container-site` migrado para utilitários Tailwind (`mx-auto w-full max-w-6xl px-4 sm:px-6 md:px-8`) em todos os usos (SectionHeading, Hero, Footer, PostLayout, BlogIndexPage); a regra CSS foi apagada.
 - `.group-link:hover .group-arrow` apagada (−6 linhas).
 - `global.css`: 706 → ~687 linhas. Permanece em CSS: `@font-face`, tokens `:root`/`.dark`, `@theme inline`, base global, `.site-header`/`.site-nav`/`.site-menu` (dependem de classes de estado JS), `.site-locale-*` (regra `:has()` complexa), `.skip-link`, `.post-content` (scoped markdown), `reveal-present`, `transition-micro` (utility), `prefers-reduced-motion` global.
 

@@ -25,7 +25,7 @@ Todas as páginas e componentes existem. Ver proposal.md - Why. Prompt §9 defin
 
 **Header mobile** — No mobile: botão hambúrguer (`.site-menu-toggle`, touch target ≥44px) na área de ações; ao abrir, a toolbox cresce (altura animada) e a nav aparece empilhada num bloco separado (`.site-menu`) dentro da mesma toolbox. Fecha por: clique no hambúrguer, `Escape`, clique fora, clique num link ou troca de idioma (`astro:page-load`). Animação via CSS transitions (`max-height`/`opacity`) + Web Animations API (stagger nos links) — sem bibliotecas (GSAP rejeitado: peso). `prefers-reduced-motion` pula as animações. Desktop (≥768px): nav inline. Alternativa anterior: `<details>` nativo (substituída — hambúrguer animado mantém o visual da toolbox e comporta stagger).
 
-**Container fluido** — `mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8` centralizado em utility `.container-site` (global.css) — evitar repetição em cada página. Razão: gutter consistente.
+**Container fluido** — `mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8` centralizado em utility `.container-site` (global.css) — evitar repetição em cada página. Razão: gutter consistente.
 
 **Touch targets** — Links/CTAs com `min-h-11` e `py-3` em mobile via classe base; `:focus-visible` garantido (accessibility).
 

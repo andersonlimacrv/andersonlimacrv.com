@@ -1,6 +1,6 @@
 ## 1. Fundação responsiva
 
-- [x] 1.1 Criar utility `.container-site` em `global.css` (`mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8`) e aplicar em todas as páginas/seções
+- [x] 1.1 Criar utility `.container-site` em `global.css` (`mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8`) e aplicar em todas as páginas/seções
 - [x] 1.2 Auditar `index.astro`, blog pages e componentes: remover classes desktop-first onde quebram mobile-first; garantir `min-w-0` em grids
 - [x] 1.3 Garantir `scroll-margin-top` nas seções âncora (compensar header sticky)
 

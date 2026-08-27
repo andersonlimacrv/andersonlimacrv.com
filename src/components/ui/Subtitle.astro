@@ -25,7 +25,7 @@ interface Props {
 const { label, as: Tag = 'p', variant = 'muted', size = 'xs', id, class: className } = Astro.props as Props;
 
 const base = 'font-mono uppercase';
-const sizeClass = size === 'sm' ? 'text-[9px] sm:text-[10px] tracking-[0.2em]' : 'text-[7px] sm:text-[9px] tracking-[0.18em]';
+const sizeClass = size === 'sm' ? 'text-[10px] sm:text-[12px] tracking-[0.2em]' : 'text-[9px] sm:text-[11px] tracking-[0.18em]';
 const color = variant === 'muted' ? 'text-muted-foreground/60' : 'text-muted-foreground';
 ---
 
