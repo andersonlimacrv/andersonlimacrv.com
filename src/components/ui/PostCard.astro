@@ -14,30 +14,39 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
 const href = `${baseUrl}/blog/${getPostSlug(post)}`;
 ---
 
-<article class="h-full">
+<article>
   <a
     href={href}
-    class="cursor-target transition-micro flex h-full min-h-11 flex-col gap-3 border border-border p-5"
+    class="cursor-target group transition-micro grid min-h-11 grid-cols-1 gap-x-10 gap-y-3 py-6 sm:grid-cols-[1fr_auto] sm:items-start sm:py-8"
   >
-    <span class="flex items-center justify-between gap-3">
-      <time class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground" datetime={data.pubDate.toISOString()}>
+    <span class="flex min-w-0 flex-col gap-2">
+      <span
+        class="transition-micro font-sans text-xl font-semibold leading-snug tracking-tight group-hover:text-primary sm:text-2xl"
+      >
+        {data.title}
+      </span>
+      <span class="line-clamp-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
+        {data.description}
+      </span>
+    </span>
+    <span class="flex flex-col items-start gap-3 sm:items-end">
+      <time
+        class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground"
+        datetime={data.pubDate.toISOString()}
+      >
         {formatDate(data.pubDate, locale)}
       </time>
+      {data.tags.length > 0 && (
+        <span class="flex flex-wrap gap-2 sm:justify-end">
+          {data.tags.map((tag) => (
+            <span
+              class="border border-border px-2 py-0.5 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              {tag}
+            </span>
+          ))}
+        </span>
+      )}
     </span>
-    <span class="line-clamp-2 font-sans text-lg font-semibold leading-snug tracking-tight">
-      {data.title}
-    </span>
-    <span class="line-clamp-3 text-sm text-muted-foreground">
-      {data.description}
-    </span>
-    {data.tags.length > 0 && (
-      <span class="mt-auto flex flex-wrap gap-2 pt-1">
-        {data.tags.map((tag) => (
-          <span class="rounded-lg border border-border px-2 py-0.5 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground">
-            {tag}
-          </span>
-        ))}
-      </span>
-    )}
   </a>
 </article>

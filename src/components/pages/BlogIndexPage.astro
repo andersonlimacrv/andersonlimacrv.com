@@ -51,7 +51,7 @@ const breadcrumbJsonLd = {
 
     {posts.length > 0 ? (
       <Reveal>
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col divide-y divide-border">
           {posts.map((post) => (
             <PostCard post={post} locale={locale} />
           ))}
