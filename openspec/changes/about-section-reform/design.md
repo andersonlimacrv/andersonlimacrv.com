@@ -1,17 +1,17 @@
 ## Context
 
-A seção Sobre foi reformulada em **duas colunas** (Perfil à esquerda, Trajetória à direita). Em telas pequenas (mobile/tablet) as colunas **empilham**: Perfil acima, Trajetória abaixo. Em `lg` (≥1024px) ficam lado a lado via flex. O alvo do morph é o box do retrato `#sobre-portrait`, com `finalX=0`/`finalY=0` e diâmetro final responsivo (`--morph-final-size`). Os fatos vivem em `src/data/profile.ts` (fonte única, pt); rótulos localizados em `src/i18n/ui.ts`.
+A seção Sobre foi reformulada em **coluna única** (Perfil acima, Trajetória abaixo, sempre empilhadas). O alvo do morph continua `#sobre-portrait` (`finalX=0`/`finalY=0`, `--morph-final-size` responsivo). `TrajectoryClean` junta `careerJourney` filtrado (work 4) + `education` (3) em 7 rows `Role / Company` com `Subtitle` headings. `max-w-6xl` e `Subtitle` reutilizável padronizam tipografia. Fatos em `src/data/timeline.ts` e `src/data/profile.ts` (fonte única, pt); rótulos localizados em `src/i18n/ui.ts`.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Coluna 01 (Perfil): retrato (`#sobre-portrait`) + informações (Role/Stack principal/Localização) ao lado da foto, nunca abaixo; depois frase, "Sobre mim" e "Redes sociais".
-- Coluna 02 (Trajetória): timeline vertical contínua, **agrupada por ano** (mesmo ano → um ponto fixo na linha), com a **data primeiro ao lado do ano** e o marcador preenchido (concluído) ou vazio (em andamento).
+- Bloco 01 (Perfil): retrato (`#sobre-portrait` `basis-[20%] md:basis-[30%] h-40 ml-14`) + `dl` ao lado, nunca abaixo; depois frase, "Sobre mim" e "Redes sociais" com `Subtitle` e `py-6 sm:py-8` padronizado.
+- Bloco 02 (Trajetória clean): duas listas `Trabalho` (4) e `Formação` (3) `Role / Company` com `period` curto `trajectory-period`, `Subtitle` headings, sem `summary`/`yearRange`/linha vertical.
 - Morph do retrato com diâmetro final responsivo, alvo `#sobre-portrait`.
 - Hover de links padronizado no site todo via `TargetHover` global e classe `.cursor-target`.
 - Seções e subsessões etiquetadas semanticamente (`aria-labelledby` nos headings).
-- Linhas retas com marcadores de cruz (`T` no topo/fim da linha vertical da timeline).
-- Layout minimalista, simétrico, com flex (não grid) e responsividade consistente.
+- Layout minimalista em coluna única, com flex e `max-w-6xl`, e `HomePage` com grid elástico vertical segmentado entre horizontais.
+- Responsividade sem overflow em 390/768/1024/1280.
 
 **Non-Goals:**
 - Empilhar a foto acima das informações no mobile (foto+informações sempre lado a lado).
@@ -20,29 +20,22 @@ A seção Sobre foi reformulada em **duas colunas** (Perfil à esquerda, Trajet�
 
 ## Decisions
 
-### 1. Layout das duas colunas (flex, não grid)
-`#sobre-content > div` = `relative flex flex-col divide-y divide-border border-t border-border lg:flex-row lg:divide-x lg:divide-y-0`. Cada `<section>` das colunas tem `basis-full lg:basis-[46%]`/`lg:basis-[54%]` e `min-w-0`. Inversão de colunas não ocorre; no mobile Perfil acima de Trajetória (ordem do DOM).
+### 1. Layout em coluna única (sempre empilhado)
+`#sobre-content > div` = `relative flex flex-col divide-y divide-border border-t border-border` (sem `lg:flex-row`). Cada `<section>` tem `min-w-0 basis-full` (sem `lg:basis`). Ordem fixa Perfil acima, Trajetória abaixo, em qualquer viewport. `max-w-6xl` em `SectionHeading`/`Hero`/`About`/`Footer` etc. com `Subtitle` reutilizável.
 
-### 2. Coluna 01 — Perfil
-Header `relative flex items-center justify-between border-b border-border py-4`: label "Perfil" (`aboutProfileColumn`) à esquerda + `01` à direita. Depois bloco **foto + informações**:
-- `flex items-start gap-3 sm:gap-5` (foto à esquerda, dl à direita).
-- FOTO: `#sobre-portrait` (`relative aspect-square min-w-0 shrink-0 basis-[47.5%] mt-5`) com `BlueprintMorphEnd src finalSize=160 finalX=0 finalY=0`.
-- INFORMAÇÕES (`dl` `flex-1`, **3 itens** `space-y-3 sm:space-y-4`): Role (`hero.title` quebrado em 3 `span class="block"` — "Engenheiro de Software", "Enterpreneur", "Arquiteto de Soluções"), Stack principal (`hero.mainStack`), Localização (`hero.location`). `dt` mono minúsculo `text-[7px] sm:text-[9px]`; `dd` normal.
+### 2. Bloco 01 — Perfil
+Header `relative flex items-center justify-between border-b border-border py-4`: `Subtitle` "Perfil" `variant strong size sm` + `01` à direita. Depois foto + informações:
+- `flex items-start gap-3 py-6 sm:py-8` (foto à esquerda, dl à direita) — `py` padronizado.
+- FOTO: `#sobre-portrait` (`relative aspect-square min-w-0 shrink-0 basis-[20%] md:basis-[30%] h-40 ml-14 md:ml-6 mt-6`) com `BlueprintMorphEnd src finalSize=160 finalX=0 finalY=0` — menor para legibilidade, h-40 fixo.
+- INFORMAÇÕES (`dl` `flex-1`, **3 itens** `space-y-3 sm:space-y-4`): Role/Stack/Localização via `Subtitle` `as="dt"` (`aboutRoleTitle` etc.) + `dd` normal. `Subtitle` `text-[9px] sm:text-[11px]` (aumentado de 7/9).
 
-Depois, separados por `border-t`:
-- **Frase**: `blockquote` serif itálico em caixa `border border-dashed` com cantoneiras blueprint (spans `border-l border-t` / `border-b border-r` `border-foreground`), sem `<cite>`.
-- **"Sobre mim"**: rótulo no mesmo padrão dos `dt` + `aboutBio` (parágrafos `text-[10px] sm:text-xs`).
-- **"Redes sociais"** (rótulo `aboutContactTitle` localizado "Redes sociais"/"Redes sociales"/"Social media"): `<nav flex flex-col>` com 5 links — GitHub, LinkedIn, Instagram, WhatsApp, Email — cada `<a class="cursor-target ... border-b border-border py-2.5 ... hover:border-foreground hover:text-foreground">`. Sem telefone e sem localização nesse bloco (são redundantes com a dl).
+Depois, separados por `border-t py-6 sm:py-8` (padronizado):
+- **Frase**: `blockquote` serif itálico em caixa `border border-dashed` com cantoneiras blueprint, sem `<cite>`.
+- **"Sobre mim"**: `Subtitle` `aboutBioTitle` + `aboutBio` parágrafos `text-[10px] sm:text-xs`.
+- **"Redes sociais"**: `Subtitle` `aboutContactTitle` + `<nav flex flex-col>` 5 links `cursor-target border py-2.5 hover:text-foreground`.
 
-### 3. Coluna 02 — Trajetória
-Header (mesmo padrão da coluna 01): "Trajetória" + `02`; o intervalo real `yearRange` (ex.: `2007—2027`) aparece como rótulo mono `absolute right-0 top-2` **dentro do wrapper da timeline**, não no header (para o header ficar simétrico com o da coluna 01).
-
-Timeline: `div.relative py-6 sm:py-8` com:
-- Linha vertical contínua `span absolute bottom-0 left-[2.9rem] sm:left-[3.75rem] top-0 w-px bg-border`.
-- **Marcadores T** no topo e no fim da linha (`CrossMark variant="t-top"` e `variant="t-bottom"` em `size=10`, posicionados em `left-[2.9rem] sm:left-[3.75rem]` com translate para centralizar).
-- `ol[aria-label]` percorrendo **grupos por ano** (`careerGroups` em `About.astro`, derivado de `profile.careerJourney` agrupado pelo ano de início). Cada grupo é um `li relative flex gap-3 sm:gap-5`:
-  - Coluna do ano: `w-[3.2rem] sm:w-[4.1rem] shrink-0`, `<p>` mono `text-right pr-4 sm:pr-6` + **marcador** na linha (`h-2.5 w-2.5 border border-foreground`), preenchido (`bg-foreground`) se todos os itens do grupo estiverem concluídos; **vazio** (`bg-background`) se algum item contiver "presente" (`ongoing = entries.some(e => e.period.includes('presente'))`).
-  - Coluna das experiências (`flex-1`): para cada `entry` do grupo, um `div border-b border-border last:border-b-0` contendo, **nesta ordem**: período (data primeiro, `p font-mono uppercase`), `h3` cargo, `p` empresa, `p` summary de 1 linha.
+### 3. Bloco 02 — Trajetória clean
+Header "Trajetória" + `02` com `Subtitle` `variant strong size sm`. Sem `yearRange`. `TrajectoryClean.astro` com 2 listas `Trabalho` (4) e `Formação` (3) `Role / Company` (`Role` `lg:text-[16px] text-sm font-semibold` primeiro) + `period` curto `trajectory-period` `text-[10px] sm:text-xs` `whitespace-nowrap` e `Subtitle` headings `Trabalho`/`Formação` (`text-[9px] sm:text-[11px]`). `HomePage.astro` envolve cada seção (`Hero`/`About`/etc) em `relative` com 2 `ElasticLine isVertical` `!w-10 h-[calc(100%+32/64px)]` nas laterais `max-w-6xl` para formar grid quadriculado sem quebrar ao balançar (pontas em `top-[-32px]` encontram horizontais `h-16` em `midY 32px`).
 
 ### 4. Morph alinhado ao retrato + tamanho responsivo
 - `--morph-final-size` no `:root` (global.css): **128px** base/`sm`/`md`, **160px** ≥1024 (no mobile não reduz mais — há espaço de sobra).

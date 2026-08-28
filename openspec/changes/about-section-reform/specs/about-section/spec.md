@@ -1,19 +1,15 @@
 ## Purpose
 
-Seção Sobre da home em **duas colunas** (Perfil à esquerda, Trajetória à direita). Em telas pequenas (mobile/tablet) as colunas **empilham** (Perfil acima, Trajetória abaixo); em `lg` (≥1024px) ficam lado a lado via `flex`. À esquerda, o **retrato P&B com marcações blueprint** e as **informações ao lado da foto (nunca abaixo)**: Role, stack principal e localização. À direita, uma **timeline vertical contínua agrupada por ano**, com os anos como pontos fixos na linha, a data primeiro ao lado do ano e o marcador preenchido (concluído) ou vazio (em andamento). Estética Engineering Blueprint (divisores finos, tipografia técnica, marcadores `T` no topo/fim da linha), imagem do hero intocada (apenas o ponto de aterrissagem do morph muda para o retrato) e hover de mira (`TargetHover` global, classe `.cursor-target`) nos links sociais.
+Seção Sobre da home em **coluna única** (Perfil acima, Trajetória abaixo, sempre empilhadas). O **retrato P&B com marcações blueprint** e as **informações ao lado da foto (nunca abaixo)** permanecem: Role, stack principal e localização em `dl` ao lado do retrato (`basis-[20%] md:basis-[30%] h-40`). Abaixo, **Trajetória clean** com 7 rows (`Trabalho` 4 + `Formação` 3) em duas listas `Role / Company` com `period` curto e `Subtitle` headings, sem linha vertical, sem `summary`, sem `yearRange`. Estética Engineering Blueprint mantida nos divisores finos e tipografia, com `max-w-6xl` e `Subtitle` reutilizável, imagem do hero com morph para `#sobre-portrait` e hover `TargetHover` nos links sociais.
 
 ## ADDED Requirements
 
-### Requirement: Layout em duas colunas (flex; empilha no mobile, lado a lado no desktop)
-`#sobre-content` SHALL ser um container `relative flex flex-col divide-y divide-border border-t border-border lg:flex-row lg:divide-x lg:divide-y-0`. Cada coluna SHALL ser um `<section data-col="perfil"|"trajetoria">` com `min-w-0` e `basis-full lg:basis-[46%]`/`lg:basis-[54%]`. No mobile (<1024px) as colunas **empilham** (Perfil acima, Trajetória abaixo, na ordem do DOM); em `lg` ficam lado a lado. O conteúdo não SHALL causar overflow horizontal.
+### Requirement: Layout em coluna única (sempre empilhado, Trajetória abaixo do Perfil)
+`#sobre-content` SHALL ser um container `relative flex flex-col divide-y divide-border border-t border-border` (sem `lg:flex-row`). Cada seção SHALL ser `<section data-col="perfil"|"trajetoria">` com `min-w-0 basis-full` (sem `lg:basis`). A ordem SHALL ser sempre Perfil acima, Trajetória abaixo, em qualquer viewport. O conteúdo não SHALL causar overflow horizontal.
 
-#### Scenario: Colunas lado a lado no desktop
-- **WHEN** a página carrega no desktop (1280px)
-- **THEN** `#sobre-content > div` é `display: flex` com `flex-direction: row` e contém 2 `<section>` (Perfil, Trajetória)
-
-#### Scenario: Colunas empilhadas no mobile
-- **WHEN** a página carrega no mobile (390px)
-- **THEN** `#sobre-content > div` é `display: flex` com `flex-direction: column` e a página não tem overflow horizontal
+#### Scenario: Coluna única em desktop e mobile
+- **WHEN** a página carrega em desktop (1280px) ou mobile (390px)
+- **THEN** `#sobre-content > div` é `display: flex` com `flex-direction: column`, contém 2 `<section>` na ordem `['perfil','trajetoria']` e `scrollWidth <= clientWidth`
 
 ### Requirement: Colunas etiquetadas semânticamente
 As duas colunas SHALL ser `<section data-col="perfil">` e `<section data-col="trajetoria">` (não anônimas), para evitar landmarks ambíguos.
@@ -23,7 +19,7 @@ As duas colunas SHALL ser `<section data-col="perfil">` e `<section data-col="tr
 - **THEN** `#sobre-content` contém `<section data-col="perfil">` e `<section data-col="trajetoria">`
 
 ### Requirement: Retrato à esquerda com informações ao lado (nunca abaixo)
-Na coluna 01 (Perfil), o box do retrato (`#sobre-portrait`, `aspect-square`, `shrink-0 basis-[47.5%]`, contém o `BlueprintMorphEnd`) SHALL ficar ao lado de um bloco de informações (`dl`, `flex-1`) com **3 itens**: **Role** (`hero.title` quebrado em 3 `span class="block"` — "Engenheiro de Software", "Enterpreneur", "Arquiteto de Soluções"), **Stack principal** (`hero.mainStack`) e **Localização** (`hero.location`). O bloco SHALL estar **à direita da foto**, **nunca abaixo**.
+Na coluna 01 (Perfil), o box do retrato (`#sobre-portrait`, `aspect-square`, `shrink-0 basis-[20%] md:basis-[30%] h-40 ml-14 md:ml-6 mt-6`, contém o `BlueprintMorphEnd`) SHALL ficar ao lado de um bloco de informações (`dl`, `flex-1`) com **3 itens**: **Role** (`hero.title` quebrado em 3 `span class="block"` — "Engenheiro de Software", "Enterpreneur", "Arquiteto de Soluções"), **Stack principal** (`hero.mainStack`) e **Localização** (`hero.location`). O bloco SHALL estar **à direita da foto**, **nunca abaixo**.
 
 #### Scenario: Informações à direita da foto
 - **WHEN** a página carrega no desktop e no mobile
@@ -44,30 +40,21 @@ Abaixo de foto+informações, a coluna 01 SHALL exibir, em ordem e separadas por
 - **WHEN** a página carrega
 - **THEN** na coluna 01 existem 5 links sociais (GitHub, LinkedIn, Instagram, WhatsApp, Email) com a classe `cursor-target` e **nenhum** texto `+55 53 98100-4874`
 
-### Requirement: Timeline vertical contínua agrupada por ano na coluna 02
-A coluna 02 SHALL ter o header com o rótulo "Trajetória" e o número `02` (simétrico ao header da coluna 01). O intervalo real dos dados (`yearRange` = min–max dos anos dos períodos; "presente" conta como o ano corrente) SHALL aparecer como rótulo mono `absolute right-0 top-2` **dentro do wrapper da timeline**, não no header. A timeline SHALL ser uma **linha vertical contínua** (`w-px`) percorrendo a coluna, com **marcadores `T`** (`CrossMark variant="t-top"` e `variant="t-bottom"`) no topo e no fim da linha. Os itens de `careerJourney` SHALL ser **agrupados pelo ano de início** (`careerGroups` em `About.astro`, derivado de `profile.careerJourney`); cada grupo é um `<li>` com:
-- Coluna do ano: `w-[3.2rem] sm:w-[4.1rem] shrink-0`, `<p>` mono `text-right` com o ano (ponto fixo) e **marcador** na linha (quadrado `border-foreground`), **preenchido** (`bg-foreground`) se todos os itens do grupo estiverem concluídos; **vazio** (`bg-background`) se algum item contiver "presente" (`ongoing = entries.some(e => e.period.includes('presente'))`).
-- Coluna das experiências (`flex-1`): para cada `entry` do grupo, um `div border-b last:border-b-0` contendo, **nesta ordem**: período (data primeiro, `p font-mono uppercase`), `h3` cargo, `p` empresa, `p` **summary** de 1 linha.
+### Requirement: Trajetória clean com duas listas e Subtitle
+
+A coluna 02 SHALL ter header com rótulo "Trajetória" e número `02` e, abaixo, duas listas `Trabalho` (4) e `Formação` (3) via `TrajectoryClean.astro` a partir de `src/data/timeline.ts:41` com `isEducationRole` filtro. Cada row SHALL ser `Role / Company` (`Role` `lg:text-[16px] text-sm font-semibold text-foreground` primeiro, `Company` `text-muted-foreground` depois) com `period` curto `trajectory-period` `font-mono text-[10px] sm:text-xs uppercase` à direita e `Subtitle` headings `Trabalho`/`Formação` (`text-[9px] sm:text-[11px]`). Sem `summary`, sem `yearRange`, sem linha vertical `w-px`, sem `CrossMark`, com `max-w-6xl` e `Subtitle` reutilizável.
 
 #### Scenario: Header simétrico com número 02
 - **WHEN** a página carrega
-- **THEN** o header da coluna 02 mostra o rótulo de trajetória localizado e o número `02` (sem `yearRange` no header)
+- **THEN** o header da coluna 02 mostra `Trajetória` e `02`, e abaixo existem `h3#trajectory-work-title` `Trabalho` e `h3#trajectory-edu-title` `Formação` (ou `Work`/`Education` em `en`)
 
-#### Scenario: Intervalo real dentro do wrapper da timeline
-- **WHEN** a página carrega
-- **THEN** o wrapper da timeline contém um rótulo mono com o intervalo `2007—2027` (calculado dos dados)
+#### Scenario: Duas listas com 7 rows Role / Company
+- **WHEN** a página carrega em `pt`
+- **THEN** `ul[aria-label="Trabalho"]` tem 4 `<li>` e `ul[aria-label="Formação"]` tem 3 `<li>`, cada `li` com `Role / Company` (`Role` primeiro) e `period` curto `trajectory-period` com `title` do period completo
 
-#### Scenario: Agrupamento por ano com marcador
+#### Scenario: Sem elementos antigos
 - **WHEN** a página carrega
-- **THEN** cada grupo da timeline exibe um único ano (mono, alinhado à direita) e um marcador quadrado sobre a linha vertical; itens de mesmo ano (ex.: 2022) compartilham um único ponto fixo
-
-#### Scenario: Marcadores T no topo e no fim da linha
-- **WHEN** a página carrega
-- **THEN** existem `CrossMark` `t-top` no topo e `t-bottom` no fim da linha vertical da timeline
-
-#### Scenario: Data primeiro, depois cargo/empresa/resumo
-- **WHEN** a página carrega
-- **THEN** cada `entry` dentro de um grupo exibe, nesta ordem: período (mono uppercase), `h3` cargo, `p` empresa, `p` summary de 1 linha não vazio
+- **THEN** não existe `yearRange` `2007—2027`, `span.w-px.bg-border` ou `.cross-mark` em `section[data-col="trajetoria"]` e nenhum `summary` é exibido
 
 ### Requirement: Dados factuais em fonte única, rótulos localizados
 Os dados factuais (hero, careerJourney, etc.) SHALL vir de `src/data/profile.ts` (fonte única, em pt, sem campos `OUTDATED_*`), incluindo `hero.mainStack` e `TimelineEntry.summary`. Os rótulos (colunas, Role/Stack/Localização, Sobre mim, Redes sociais) e a citação SHALL ser localizados em pt/es/en conforme o locale ativo; os fatos (cargo/período/empresa/stack) permanecem em pt.

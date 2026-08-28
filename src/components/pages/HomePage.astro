@@ -57,23 +57,99 @@ const websiteJsonLd = {
   <JsonLd slot="head" schema={personJsonLd} />
   <JsonLd slot="head" schema={websiteJsonLd} />
 
-  <Hero locale={locale} />
+  <!-- Grid elástico: verticais segmentadas entre cada ponto horizontal para não quebrar o quadriculado -->
+  <div class="relative mx-auto w-full max-w-6xl">
+    <!-- Hero: vertical até o centro da 1ª horizontal (32px) -->
+    <div class="relative">
+      <ElasticLine
+        isVertical
+        class="pointer-events-none absolute left-0 top-0 hidden h-[calc(100%+32px)] w-10 -translate-x-1/2 text-muted sm:block"
+        strokeWidth={1}
+        releaseThreshold={50}
+      />
+      <ElasticLine
+        isVertical
+        class="pointer-events-none absolute right-0 top-0 hidden h-[calc(100%+32px)] w-10 translate-x-1/2 text-muted sm:block"
+        strokeWidth={1}
+        releaseThreshold={50}
+      />
+      <Hero locale={locale} />
+    </div>
 
-  <!-- Divisor elástico: hero | sobre — reage ao ponteiro. Apague estas
-       4 linhas (ElasticLine) para remover os divisores por completo. -->
-  <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
+    <ElasticLine class="h-16 text-muted" strokeWidth={1} releaseThreshold={50} />
 
-  <About locale={locale} />
+    <!-- About: encontra as duas horizontais (32px acima e abaixo) -->
+    <div class="relative">
+      <ElasticLine
+        isVertical
+        class="pointer-events-none absolute left-0 -top-8 hidden h-[calc(100%+64px)] w-10 -translate-x-1/2 text-muted sm:block"
+        strokeWidth={1}
+        releaseThreshold={50}
+      />
+      <ElasticLine
+        isVertical
+        class="pointer-events-none absolute right-0 -top-8 hidden h-[calc(100%+64px)] w-10 translate-x-1/2 text-muted sm:block"
+        strokeWidth={1}
+        releaseThreshold={50}
+      />
+      <About locale={locale} />
+    </div>
 
-  <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
+    <ElasticLine class="h-16 text-muted" strokeWidth={1} releaseThreshold={50} />
 
-  <Projects locale={locale} />
+    <!-- Projects: encontra horizontais -->
+    <div class="relative">
+      <ElasticLine
+        isVertical
+        class="pointer-events-none absolute left-0 -top-8 hidden h-[calc(100%+64px)] w-10 -translate-x-1/2 text-muted sm:block"
+        strokeWidth={1}
+        releaseThreshold={50}
+      />
+      <ElasticLine
+        isVertical
+        class="pointer-events-none absolute right-0 -top-8 hidden h-[calc(100%+64px)] w-10 translate-x-1/2 text-muted sm:block"
+        strokeWidth={1}
+        releaseThreshold={50}
+      />
+      <Projects locale={locale} />
+    </div>
 
-  <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
+    <ElasticLine class="h-16 text-muted" strokeWidth={1} releaseThreshold={50} />
 
-  <Blog locale={locale} />
+    <!-- Blog: encontra horizontais -->
+    <div class="relative">
+      <ElasticLine
+        isVertical
+        class="pointer-events-none absolute left-0 -top-8 hidden h-[calc(100%+64px)] w-10 -translate-x-1/2 text-muted sm:block"
+        strokeWidth={1}
+        releaseThreshold={50}
+      />
+      <ElasticLine
+        isVertical
+        class="pointer-events-none absolute right-0 -top-8 hidden h-[calc(100%+64px)] w-10 translate-x-1/2 text-muted sm:block"
+        strokeWidth={1}
+        releaseThreshold={50}
+      />
+      <Blog locale={locale} />
+    </div>
 
-  <ElasticLine class="h-16 text-muted-foreground" strokeWidth={1} releaseThreshold={50} />
+    <ElasticLine class="h-16 text-muted" strokeWidth={1} releaseThreshold={50} />
 
-  <Contact locale={locale} />
+    <!-- Contact: encontra horizontal acima, vai até o footer -->
+    <div class="relative">
+      <ElasticLine
+        isVertical
+        class="pointer-events-none absolute left-0 -top-8 hidden h-[calc(100%+32px)] w-10 -translate-x-1/2 text-muted sm:block"
+        strokeWidth={1}
+        releaseThreshold={50}
+      />
+      <ElasticLine
+        isVertical
+        class="pointer-events-none absolute right-0 -top-8 hidden h-[calc(100%+32px)] w-10 translate-x-1/2 text-muted sm:block"
+        strokeWidth={1}
+        releaseThreshold={50}
+      />
+      <Contact locale={locale} />
+    </div>
+  </div>
 </BaseLayout>
