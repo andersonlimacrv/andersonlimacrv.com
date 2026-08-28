@@ -1,0 +1,26 @@
+---
+interface Props {
+  /** Classes Tailwind do wrapper — controlam dimensões do box (ex.: "h-60 border border-border"). */
+  class?: string;
+  /** Cor do estado ativo: "default" usa --primary do tema; "monochrome" usa o foreground. */
+  globalColor?: 'default' | 'monochrome';
+}
+
+const { class: className = '', globalColor = 'default' } = Astro.props;
+---
+
+<div
+  class:list={['relative overflow-hidden', className]}
+  data-kinetic-grid
+  data-kinetic-color={globalColor}
+>
+  <canvas aria-hidden="true" class="pointer-events-none absolute inset-0 h-full w-full">
+  </canvas>
+  <div class="relative z-10 h-full w-full">
+    <slot />
+  </div>
+</div>
+
+<script>
+  import './kinetic-grid';
+</script>

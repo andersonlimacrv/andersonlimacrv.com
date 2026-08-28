@@ -1,8 +1,8 @@
 # Auditoria de performance & SEO — 2026-08-28
 
 - **Páginas HTML:** 15
-- **Arquivos no dist/:** 40
-- **Peso total:** 811.7 KB (raw) / 417.8 KB (gzip)
+- **Arquivos no dist/:** 41
+- **Peso total:** 819.1 KB (raw) / 420.4 KB (gzip)
 
 - **Fontes:** 6
 
@@ -10,11 +10,11 @@
 
 | Categoria | Peso |
 | --- | --- |
-| html | 452.4 KB |
+| html | 452.7 KB |
 | font | 161.9 KB |
 | image | 120.0 KB |
-| css | 48.4 KB |
-| js | 20.1 KB |
+| css | 50.1 KB |
+| js | 25.4 KB |
 | other | 8.9 KB |
 
 ## Fontes
@@ -33,6 +33,7 @@
 | Arquivo | Peso | Gzip |
 | --- | --- | --- |
 | _astro/ClientRouter.astro_astro_type_script_index_0_lang.DO9cI7ss.js | 13.5 KB | 4.6 KB |
+| _astro/KineticGrid.astro_astro_type_script_index_0_lang.BeH3ScA2.js | 5.4 KB | 2.4 KB |
 | _astro/BaseLayout.astro_astro_type_script_index_0_lang.Dx1qOR6-.js | 4.1 KB | 1.5 KB |
 | _astro/prefetch.CvG7Nh41.js | 2.5 KB | 1.1 KB |
 | _astro/page.DODdB5Xf.js | 47 B | 67 B |

@@ -116,6 +116,7 @@ export const ui = {
     relatedPosts: "Leia também",
     contactParagraph:
       "Se você quer conversar sobre projetos, tecnologia ou apenas trocar uma ideia, meu e-mail está sempre aberto.",
+    contactGridHint: "mova o cursor · clique",
     blogLabel: "Blog",
     blogTitle: "Escritos",
     noPosts: "Nenhum post publicado ainda.",
@@ -220,6 +221,7 @@ export const ui = {
     relatedPosts: "También lee",
     contactParagraph:
       "Si quieres hablar de proyectos, tecnología o simplemente intercambiar una idea, mi correo siempre está abierto.",
+    contactGridHint: "mueve el cursor · haz clic",
     blogLabel: "Blog",
     blogTitle: "Escritos",
     noPosts: "Aún no hay posts publicados.",
@@ -324,6 +326,7 @@ export const ui = {
     relatedPosts: "Also read",
     contactParagraph:
       "If you'd like to talk about projects, technology or just exchange ideas, my inbox is always open.",
+    contactGridHint: "move your cursor · click",
     blogLabel: "Blog",
     blogTitle: "Writings",
     noPosts: "No posts published yet.",

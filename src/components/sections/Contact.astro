@@ -1,6 +1,7 @@
 ---
 import Reveal from '../ui/Reveal.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
+import KineticGrid from '../ui/KineticGrid.astro';
 import { site, socialLinks } from '../../data/site';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
 
@@ -23,6 +24,13 @@ const t = ui[locale];
       <p class="text-muted-foreground">
         {t.contactParagraph}
       </p>
+      <KineticGrid class="h-60 border border-border" globalColor="default">
+        <span
+          class="pointer-events-none absolute bottom-3 left-4 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground"
+        >
+          {t.contactGridHint}
+        </span>
+      </KineticGrid>
       <a
         href={`mailto:${socialLinks.email}`}
         class="cursor-target transition-micro inline-flex min-h-11 w-fit items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-foreground hover:text-primary"
