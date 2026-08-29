@@ -565,6 +565,15 @@
   }
 }
 
+/* Wireframes blueprint — gate anti-FOUC: --bp-w/--bp-h só existem após o
+   morph-measure medir o box da imagem; antes disso o board/legenda nasceriam
+   fora do lugar (top:auto no legend = topo da página). Invisível até
+   data-bp-ready (setado pelo morph-measure após publicar as vars). Sem JS
+   permanece oculto — decorativo e não medido. */
+[data-bp-wireframe]:not([data-bp-ready]) {
+  opacity: 0;
+}
+
 .reveal-present [data-reveal] {
   opacity: 0;
   transform: translateY(14px);

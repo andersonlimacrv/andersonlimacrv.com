@@ -13,9 +13,15 @@ const FINAL_SIZE_BY_VIEWPORT: Record<(typeof VIEWPORTS)[number]['name'], number>
 
 const TOLERANCE_PX = 3;
 
-async function gotoHome(page: Page) {
+const LOCALES = [
+  { path: '/' },
+  { path: '/es/' },
+  { path: '/en/' },
+] as const;
+
+async function gotoHome(page: Page, path = '/') {
   await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
-  await page.goto('/', { waitUntil: 'networkidle' });
+  await page.goto(path, { waitUntil: 'networkidle' });
   await page
     .waitForFunction(() => document.fonts.status !== 'loading', undefined, {
       timeout: 15_000,
@@ -466,6 +472,110 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         await page.waitForTimeout(120);
         const bottom = await check();
         expect(bottom.hasH).toBe(false);
+      });
+
+      test('wireframe medi antes de aparecer (gate data-bp-ready) e moldura alinhada ao img', async ({
+        page,
+      }) => {
+        await gotoHome(page);
+        const state = await page.evaluate((tol) => {
+          const wireframes = Array.from(
+            document.querySelectorAll<HTMLElement>('[data-bp-wireframe]'),
+          );
+          const rectFrame = document.querySelector<HTMLElement>('.bp-rect');
+          const img = document.querySelector('[data-scroll-morph] img');
+          const fr = rectFrame?.getBoundingClientRect();
+          const ir = img?.getBoundingClientRect();
+
+          // gate: sem data-bp-ready o wireframe DEVE estar invisível
+          const first = wireframes[0];
+          first?.removeAttribute('data-bp-ready');
+          const gatedOpacity =
+            first !== undefined ? getComputedStyle(first).opacity : null;
+          first?.setAttribute('data-bp-ready', '');
+          const ungatedOpacity =
+            first !== undefined ? getComputedStyle(first).opacity : null;
+
+          return {
+            wireframeCount: wireframes.length,
+            allReady: wireframes.every((w) => w.hasAttribute('data-bp-ready')),
+            gatedOpacity,
+            ungatedOpacity,
+            frameAligned:
+              fr !== undefined &&
+              ir !== undefined &&
+              Math.abs(fr.left - ir.left) <= tol &&
+              Math.abs(fr.top - ir.top) <= tol &&
+              Math.abs(fr.width - ir.width) <= tol,
+          };
+        }, TOLERANCE_PX);
+
+        expect(state.wireframeCount).toBe(2); // Board + Start
+        expect(state.allReady).toBe(true);
+        // gate: sem o atributo, invisível; com o atributo, visível
+        expect(state.gatedOpacity).toBe('0');
+        expect(state.ungatedOpacity).toBe('1');
+        // lugar correto: a moldura cobre exatamente o box da imagem
+        expect(state.frameAligned).toBe(true);
+      });
+
+      test('geometria dos blueprints idêntica entre idiomas (textos não redimensionam)', async ({
+        page,
+      }) => {
+        const measure = () =>
+          page.evaluate(() => {
+            const round = (el) => {
+              const r = el?.getBoundingClientRect();
+              return r
+                ? { w: Math.round(r.width * 10) / 10, h: Math.round(r.height * 10) / 10 }
+                : null;
+            };
+            const rectFrame = round(document.querySelector('.bp-rect'));
+            const legend = round(document.querySelector('[data-bp-board] .bp-legend'));
+            const ghost = round(document.querySelector('.bp-ghost'));
+            const endCircle = round(document.querySelector('[data-bp-end] .bp-end-circle'));
+            // medidas publicadas (neutralRect do img) — devem ser o box da imagem
+            const measuredW = document.querySelector('[data-bp-board] [data-bp="w"]')?.textContent ?? '';
+            const measuredH = document.querySelector('[data-bp-board] [data-bp="h"]')?.textContent ?? '';
+            // caixa de LAYOUT (offset*) — imune ao transform do morph
+            const img = document.querySelector('[data-scroll-morph] img');
+            return {
+              rectFrame,
+              legend,
+              ghost,
+              endCircle,
+              measuredW,
+              measuredH,
+              imgW: img ? img.offsetWidth : null,
+              imgH: img ? img.offsetHeight : null,
+            };
+          });
+
+        const geometry: Record<string, Awaited<ReturnType<typeof measure>>> = {};
+        for (const { path } of LOCALES) {
+          await gotoHome(page, path);
+          await page.locator('[data-bp-board]').scrollIntoViewIfNeeded();
+          await page.waitForTimeout(400);
+          geometry[path] = await measure();
+        }
+
+        const [pt, es, en] = LOCALES.map((l) => geometry[l.path]);
+        for (const key of ['rectFrame', 'legend', 'ghost', 'endCircle'] as const) {
+          expect(pt[key], `${key} pt`).not.toBeNull();
+          expect(es[key], `${key} es`).not.toBeNull();
+          expect(en[key], `${key} en`).not.toBeNull();
+          // nenhum item redimensiona com os textos do idioma (±3px)
+          expect(Math.abs(es[key]!.w - pt[key]!.w)).toBeLessThanOrEqual(TOLERANCE_PX);
+          expect(Math.abs(en[key]!.w - pt[key]!.w)).toBeLessThanOrEqual(TOLERANCE_PX);
+          expect(Math.abs(es[key]!.h - pt[key]!.h)).toBeLessThanOrEqual(TOLERANCE_PX);
+          expect(Math.abs(en[key]!.h - pt[key]!.h)).toBeLessThanOrEqual(TOLERANCE_PX);
+        }
+        // as medidas publicadas acompanham a IMAGEM (geometria da figura,
+        // não dos textos) — "NNNpx" publicado == round(largura/altura do img)
+        for (const g of [pt, es, en]) {
+          expect(g.measuredW).toBe(`${Math.round(g.imgW!)}px`);
+          expect(g.measuredH).toBe(`${Math.round(g.imgH!)}px`);
+        }
       });
 
       test('wireframes visíveis mesmo com prefers-reduced-motion', async ({ page }) => {

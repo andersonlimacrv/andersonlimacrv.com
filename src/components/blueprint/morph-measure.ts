@@ -86,6 +86,10 @@ function fill(wf: Wireframe): void {
     const key = span.dataset.bp;
     if (key && values[key]) span.textContent = values[key];
   }
+
+  // Gate anti-FOUC: publica data-bp-ready só depois das vars — o wireframe
+  // fica oculto (opacity 0, cf. global.css) até estar com a geometria certa.
+  wf.root.setAttribute('data-bp-ready', '');
 }
 
 // --- Leitura ao vivo durante o morph (desacoplado do scroll-morph.ts) ---
