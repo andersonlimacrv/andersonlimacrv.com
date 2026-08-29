@@ -79,16 +79,7 @@
 }
 
 @custom-variant dark (&:is(.dark *));
-
-/* Fonte de conteúdo: apenas src/ (auto-detecção desativada — evita
-   que docs/, openspec/ e prompt.md vazem utilitários mortos no build) */
 @source "../src/**/*.{astro,ts,md,mdx,css}";
-
-/* ------------------------------------------------------------------ */
-/* Design tokens — schema shadcn/tweakcn (OKLCH)                       */
-/* Valores iniciais: visual atual (monocromático) — troque colando     */
-/* um tema exportado do tweakcn.com sobre :root e .dark                */
-/* ------------------------------------------------------------------ */
 
 :root {
   --background: oklch(1 0 0);

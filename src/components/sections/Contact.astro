@@ -2,6 +2,7 @@
 import Reveal from '../ui/Reveal.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import KineticGrid from '../ui/KineticGrid.astro';
+import TargetSimbol from '../ui/TargetSimbol.astro';
 import { site, socialLinks } from '../../data/site';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
 
@@ -30,6 +31,10 @@ const t = ui[locale];
         >
           {t.contactGridHint}
         </span>
+        <TargetSimbol
+          size={32}
+          class="absolute bottom-3 right-4 opacity-60 transition-micro hover:opacity-100"
+        />
       </KineticGrid>
       <a
         href={`mailto:${socialLinks.email}`}

@@ -2,7 +2,7 @@
 
 - **Páginas HTML:** 15
 - **Arquivos no dist/:** 41
-- **Peso total:** 815.2 KB (raw) / 419.5 KB (gzip)
+- **Peso total:** 821.8 KB (raw) / 421.8 KB (gzip)
 
 - **Fontes:** 6
 
@@ -10,10 +10,10 @@
 
 | Categoria | Peso |
 | --- | --- |
-| html | 451.5 KB |
+| html | 457.4 KB |
 | font | 161.9 KB |
 | image | 120.0 KB |
-| css | 47.0 KB |
+| css | 47.7 KB |
 | js | 25.9 KB |
 | other | 8.9 KB |
 

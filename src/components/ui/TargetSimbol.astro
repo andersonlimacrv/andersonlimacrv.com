@@ -1,0 +1,51 @@
+---
+interface Props {
+  size?: number;
+  class?: string;
+}
+
+const { size = 48, class: className = '' } = Astro.props;
+---
+
+<span
+  class:list={['target-simbol block', className]}
+  data-target-simbol
+  aria-hidden="true"
+  style={`width:${size}px;height:${size}px;`}
+>
+  <svg
+    class="target-simbol-svg h-full w-full"
+    viewBox="0 0 512 512"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      class="target-simbol-ring"
+      fill-rule="evenodd"
+      d="M240 0 L272 0 L272 64 A192.666 192.666 0 0 1 448 240 L512 240 L512 272 L448 272 A192.666 192.666 0 0 1 272 448 L272 512 L240 512 L240 448 A192.666 192.666 0 0 1 64 272 L0 272 L0 240 L64 240 A192.666 192.666 0 0 1 240 64 Z M256 96.197 A159.803 159.803 0 1 0 256 415.803 A159.803 159.803 0 1 0 256 96.197 Z M97 240 L160 240 L160 272 L97 272 Z M352 240 L415 240 L415 272 L352 272 Z"
+    />
+    <circle class="target-simbol-dot" cx="256" cy="256" r="32" />
+  </svg>
+</span>
+
+<style>
+  .target-simbol {
+    will-change: transform;
+  }
+
+  .target-simbol-svg {
+    display: block;
+  }
+
+  .target-simbol-ring {
+    fill: color-mix(in oklab, var(--foreground) 55%, transparent);
+  }
+
+  .target-simbol-dot {
+    fill: var(--primary);
+  }
+</style>
+
+<script>
+  import './target-simbol';
+</script>
