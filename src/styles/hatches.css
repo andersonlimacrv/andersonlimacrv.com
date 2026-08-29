@@ -27,7 +27,9 @@
   --bp-hatch: color-mix(in oklab, var(--foreground) 8%, transparent);
 }
 
-.hatch-diagonal {
+/* @utility (Tailwind v4): hachuras viram utilitários composáveis e com
+   suporte a variantes (hover:hatch-square, dark:hatch-diagonal etc.). */
+@utility hatch-diagonal {
   background-image:
     repeating-linear-gradient(
       45deg,
@@ -41,7 +43,7 @@
     );
 }
 
-.hatch-square {
+@utility hatch-square {
   background-image:
     linear-gradient(
       var(--hatch-color, currentColor) var(--hatch-thickness, 1px),

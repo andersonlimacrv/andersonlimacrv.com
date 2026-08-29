@@ -247,3 +247,11 @@ if (baseline) {
   console.log(`\nBaseline gravado em docs/audit-baseline.json`);
   console.log(`Histórico atualizado em ${appendHistory(auditResult, null)}`);
 }
+
+// Auditoria de CSS customizado (classes mortas / tokens sem uso / hooks).
+// Gera docs/css-audit.md — independente do baseline de tamanho/SEO.
+try {
+  execSync('node scripts/css-audit.mjs', { stdio: 'inherit', cwd: ROOT });
+} catch {
+  console.error('css-audit falhou (classes mortas detectadas com --fail-on-dead?)');
+}

@@ -133,7 +133,6 @@ const ogImageMeta = image === portraitOg.src
             ? 'dark'
             : 'light';
         root.classList.toggle('dark', theme === 'dark');
-        root.classList.add('theme-applied');
       })();
     </script>
 
@@ -149,7 +148,7 @@ const ogImageMeta = image === portraitOg.src
       {t.skipLink}
     </a>
     <Header locale={locale} />
-    <main id="main-content" class="site-main">
+    <main id="main-content" class="pt-(--header-h)">
       <slot />
     </main>
     <Footer locale={locale} />

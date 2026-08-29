@@ -110,19 +110,6 @@
   --border: oklch(0.85 0 0);
   --input: oklch(0.85 0 0);
   --ring: oklch(0.215 0 0);
-  --chart-1: oklch(0.55 0 0);
-  --chart-2: oklch(0.35 0 0);
-  --chart-3: oklch(0.7 0 0);
-  --chart-4: oklch(0.45 0 0);
-  --chart-5: oklch(0.8 0 0);
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.215 0 0);
-  --sidebar-primary: oklch(0.215 0 0);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.967 0 0);
-  --sidebar-accent-foreground: oklch(0.27 0 0);
-  --sidebar-border: oklch(0.92 0 0);
-  --sidebar-ring: oklch(0.215 0 0);
 
   --font-sans: "Manrope Variable", "Segoe UI", system-ui, sans-serif;
   --font-serif: "Fraunces Variable", Georgia, serif;
@@ -131,12 +118,6 @@
   --radius: 0.25rem;
 
   /* Sombras (escala shadcn) */
-  --shadow-x: 0px;
-  --shadow-y: 1px;
-  --shadow-blur: 6px;
-  --shadow-spread: 0px;
-  --shadow-opacity: 0.08;
-  --shadow-color: #000000;
   --shadow-2xs: 0px 1px 6px 0px hsl(0 0% 0% / 0.04);
   --shadow-xs: 0px 1px 6px 0px hsl(0 0% 0% / 0.04);
   --shadow-sm:
@@ -153,11 +134,8 @@
 
   /* Tokens locais do site */
   --blur: 10px;
-  --shadow-soft: 0 30px 70px -32px
-    color-mix(in oklab, var(--foreground) 40%, transparent);
   --header-h: 3.8125rem;
   --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-expo-in: cubic-bezier(0.7, 0, 0.84, 0);
 
   /* Diâmetro do círculo final do morph da imagem. Responsivo: acompanha a
      caixa do retrato na seção Sobre (coluna esquerda das duas colunas fixas).
@@ -194,19 +172,6 @@
   --border: oklch(0.27 0 0);
   --input: oklch(0.24 0 0);
   --ring: oklch(0.7 0 0);
-  --chart-1: oklch(0.7 0 0);
-  --chart-2: oklch(0.5 0 0);
-  --chart-3: oklch(0.35 0 0);
-  --chart-4: oklch(0.8 0 0);
-  --chart-5: oklch(0.6 0 0);
-  --sidebar: oklch(0.2 0 0);
-  --sidebar-foreground: oklch(0.967 0 0);
-  --sidebar-primary: oklch(0.967 0 0);
-  --sidebar-primary-foreground: oklch(0.2 0 0);
-  --sidebar-accent: oklch(0.27 0 0);
-  --sidebar-accent-foreground: oklch(0.967 0 0);
-  --sidebar-border: oklch(0.27 0 0);
-  --sidebar-ring: oklch(0.7 0 0);
 
   --font-sans: "Manrope Variable", "Segoe UI", system-ui, sans-serif;
   --font-serif: "Fraunces Variable", Georgia, serif;
@@ -214,12 +179,6 @@
 
   --radius: 0.25rem;
 
-  --shadow-x: 0px;
-  --shadow-y: 1px;
-  --shadow-blur: 6px;
-  --shadow-spread: 0px;
-  --shadow-opacity: 0.3;
-  --shadow-color: #000000;
   --shadow-2xs: 0px 1px 6px 0px hsl(0 0% 0% / 0.15);
   --shadow-xs: 0px 1px 6px 0px hsl(0 0% 0% / 0.15);
   --shadow-sm:
@@ -256,19 +215,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
@@ -313,29 +259,58 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+
+  html {
+    scroll-behavior: smooth;
+    /* Âncoras compensam o header fixo */
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted-foreground) transparent;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--primary) 20%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--muted-foreground);
+    transition: background-color 0.18s ease-out;
+  }
+
+  ::-webkit-scrollbar-thumb:hover,
+  ::-webkit-scrollbar-thumb:active {
+    background-color: var(--foreground);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::-webkit-scrollbar-thumb {
+      transition: none;
+    }
+  }
 }
 
-/* Compensa o header fixo (toolbar 60px + borda 1px) para o conteúdo
-   não ficar escondido atrás da barra. Quando o header some, o espaço
-   permanece — a barra só desliza para cima sem reposicionar o layout. */
-.site-main {
-  padding-top: var(--header-h);
-}
-
-html {
-  scroll-behavior: smooth;
-  /* Âncoras compensam o header fixo */
-  scroll-padding-top: calc(var(--header-h) + 1rem);
-}
-
-::selection {
-  background-color: color-mix(in oklab, var(--primary) 20%, transparent);
-}
-
-:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
+/* CSS customizado do site em @layer components: na cascata do Tailwind v4
+   (theme < base < components < utilities) os utilitários SEMPRE vencem estas
+   regras — comportamento determinístico e auditável (ver scripts/css-audit.mjs
+   e e2e/reveal.spec.ts "cascata"). Header/menu/locale permanecem aqui por
+   exceção aprovada: estados JS (.is-open/.is-hidden/--menu-open), hooks de
+   teste e risco de regressão visual em breakpoints × temas. */
+@layer components {
 
 /* ------------------------------------------------------------------ */
 /* Header — barra fixa no topo, tamanho constante. Esconde deslizando  */
@@ -541,38 +516,6 @@ html {
   translate: 0 -50%;
 }
 
-
-html {
-  scrollbar-width: thin;
-  scrollbar-color: var(--muted-foreground) transparent;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track,
-::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: var(--muted-foreground);
-  transition: background-color 0.18s ease-out;
-}
-
-::-webkit-scrollbar-thumb:hover,
-::-webkit-scrollbar-thumb:active {
-  background-color: var(--foreground);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::-webkit-scrollbar-thumb {
-    transition: none;
-  }
-}
-
 .reveal-present [data-reveal] {
   opacity: 0;
   transform: translateY(14px);
@@ -682,6 +625,8 @@ html {
   border-top: 1px solid var(--border);
   margin: 2.5rem 0;
 }
+
+} /* /@layer components */
 
 @utility transition-micro {
   transition:
