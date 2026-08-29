@@ -1,4 +1,4 @@
-# Auditoria CSS — 2026-08-29T03:38:14.078Z
+# Auditoria CSS — 2026-08-29T04:39:48.777Z
 
 Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 
@@ -31,8 +31,6 @@ Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 | .target-hover-corner--tl | hook | nome montado em runtime por target-hover.ts |
 | .target-hover-corner--tr | hook | nome montado em runtime por target-hover.ts |
 | .woff2 | usada |  |
-| @utility hatch-diagonal | usada | undefined |
-| @utility hatch-square | usada | undefined |
 | @utility transition-micro | usada | undefined |
 
-**Resumo:** 30 itens — 26 usadas, 0 utilitárias, 4 hooks, 0 css-only, 0 mortas, 0 tokens sem uso.
+**Resumo:** 28 itens — 24 usadas, 0 utilitárias, 4 hooks, 0 css-only, 0 mortas, 0 tokens sem uso.

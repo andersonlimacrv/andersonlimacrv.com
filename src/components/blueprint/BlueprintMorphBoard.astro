@@ -19,10 +19,6 @@ const t = ui[locale];
   aria-hidden="true"
   style={`--bp-final-size: var(--morph-final-size, ${finalSize}px)`}
 >
-  <!-- Quadriculado atrás da foto: grade 8×8 em toda a área delimitada pelas
-       cantoneiras, bem mais transparente (aspecto de área hachurada). -->
-  <div class="bp-grid hatch-square" aria-hidden="true"></div>
-
   <!-- Legenda no meio da imagem, na camada de baixo: coberta pela foto e
        revelada quando o morph leva a imagem para #sobre-content. -->
   <div class="bp-legend">
@@ -90,25 +86,10 @@ const t = ui[locale];
   .bp-board {
     position: absolute;
     inset: 0;
-    /* Camada de baixo: atrás da foto (figure z-10) e do wireframe (z-20). */
     z-index: 5;
     pointer-events: none;
     color: var(--muted-foreground);
     --bp-line: color-mix(in oklab, var(--foreground) 48%, transparent);
-  }
-
-  /* Quadriculado (padrão hatch-square do hatches.css) com célula fixa de
-     20px — a mesma escala da figura: o número de quadrados acompanha o
-     tamanho do retrato em qualquer viewport. A cor usa o padrão único do
-     projeto (--bp-hatch: foreground 8%). */
-  .bp-grid {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--bp-h);
-    --hatch-color: var(--bp-hatch);
-    --hatch-cell: 20px;
   }
 
   .bp-legend {
@@ -125,7 +106,7 @@ const t = ui[locale];
     color: var(--muted-foreground);
   }
 
-  /* Cabeçalho com a identidade do projeto: nome em chip, régua e tag */
+
   .bp-legend-head {
     display: flex;
     align-items: center;
@@ -153,14 +134,12 @@ const t = ui[locale];
     white-space: nowrap;
   }
 
-  /* Dados dos grupos em coluna única (INICIAL / FINAL / POSIÇÃO) */
   .bp-legend-body {
     display: grid;
     grid-template-columns: 1fr;
     gap: 0;
   }
 
-  /* Dados agrupados: INICIAL / FINAL / POSIÇÃO — um abaixo do outro */
   .bp-data {
     display: grid;
     grid-template-columns: 1fr;

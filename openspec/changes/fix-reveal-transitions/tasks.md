@@ -12,6 +12,7 @@
 - [x] 2.1 `global.css`: custom em `@layer components`; `html`/`::selection`/`:focus-visible`/scrollbar em `@layer base`.
 - [x] 2.2 Remover mortos: `--chart-*`, `--sidebar-*`, `--shadow-x/y/blur/spread/opacity/color`, `--shadow-soft`, `--ease-expo-in` + mapeamentos `@theme`; `CrossMark.astro` (sem uso).
 - [x] 2.3 Conversões: `.site-main` → `pt-(--header-h)`; `.hatch-*` → `@utility hatch-diagonal`/`hatch-square`.
+  - **REVERTIDA pelo usuário (2026-08-29)**: `src/styles/hatches.css` removido (preferência visual "mais clean"); componente `BlueprintMorphEnd` troca as cruzes cardeais por 4 traços (2 verticais topo/base, 2 horizontais lados, gap 1rem, sem rotate — bbox previsível); `BlueprintMorphBoard` perde o quadriculado (`.bp-grid` removido junto com o texto-debug `kkkkk`); regra estrutural `.bp-end` restaurada (inset:0 — sem ela o container do círculo final fica estático). e2e `blueprint-morph.spec.ts` atualizados (traços com gap 16px ± tol, ausência do `.bp-grid`). Audit CSS final: 28 itens, 0 mortas, 0 tokens sem uso.
 - [x] 2.4 Exceção aprovada: header/menu/locale permanecem customizados (estados JS/hooks), agora em `@layer components` com nota.
 
 ## 3. Auditoria

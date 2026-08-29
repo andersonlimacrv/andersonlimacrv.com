@@ -56,7 +56,7 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         expect(d.sSpan).toMatch(/^\d+(\.\d+)?$/);
       });
 
-      test('camada de baixo: quadriculado e legenda centralizada atrás da foto', async ({
+      test('camada de baixo: legenda centralizada atrás da foto (sem quadriculado)', async ({
         page,
       }) => {
         await gotoHome(page);
@@ -66,17 +66,15 @@ test.describe('wireframe blueprint do morph da imagem', () => {
           const img = document.querySelector('[data-scroll-morph] img');
           const grid = board?.querySelector('.bp-grid');
           const legend = board?.querySelector('.bp-legend');
-          if (!board || !figure || !img || !grid || !legend) return null;
+          if (!board || !figure || !img || !legend) return null;
           const boardZ = parseInt(getComputedStyle(board).zIndex, 10);
           const figureZ = parseInt(getComputedStyle(figure).zIndex, 10);
-          const gr = grid.getBoundingClientRect();
           const ir = img.getBoundingClientRect();
           const lr = legend.getBoundingClientRect();
           return {
             boardZ,
             figureZ,
-            gridH: gr.height,
-            imgH: ir.height,
+            hasGrid: grid !== null,
             legendCenterY: lr.top + lr.height / 2,
             imgCenterY: ir.top + ir.height / 2,
             legendCenterX: lr.left + lr.width / 2,
@@ -86,7 +84,7 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         expect(data).not.toBeNull();
         const d = data!;
         expect(d.boardZ).toBeLessThan(d.figureZ);
-        expect(Math.abs(d.gridH - d.imgH)).toBeLessThanOrEqual(TOLERANCE_PX);
+        expect(d.hasGrid).toBe(false); // quadriculado (hatches.css) removido
         expect(Math.abs(d.legendCenterY - d.imgCenterY)).toBeLessThanOrEqual(TOLERANCE_PX + 4);
         expect(Math.abs(d.legendCenterX - d.imgCenterX)).toBeLessThanOrEqual(TOLERANCE_PX + 4);
       });
@@ -374,60 +372,78 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         expect(Math.abs(d.top - d.expectedTop)).toBeLessThanOrEqual(TOLERANCE_PX);
       });
 
-      test('círculo final: cruzes nos pontos cardeais (mira) + retrato mais transparente', async ({
+      test('círculo final: 4 traços cardeais (2 verticais, 2 horizontais) afastados 1rem + retrato mais transparente', async ({
         page,
       }) => {
         await gotoHome(page);
-        const data = await page.evaluate((tol) => {
-          const end = document.querySelector('[data-bp-end]');
-          const board = document.querySelector('[data-bp-end] .bp-end-board');
-          const img = document.querySelector('[data-bp-end] .bp-end-img');
-          if (!end || !board || !img) return null;
-          const circle = document.querySelector('[data-bp-end] .bp-end-circle');
-          const figure = document.querySelector('[data-scroll-morph]');
-          const cr = circle?.getBoundingClientRect();
-          const br = board.getBoundingClientRect();
-          const ds = Array.from(board.querySelectorAll('.bp-end-cross')).map((p) =>
-            p.getAttribute('d'),
-          );
-          const onCardinal = (d: string | null): boolean => {
-            if (!d) return false;
-            const top = /M\s*42\s+0\s+H\s*58/.test(d) && /M\s*50\s+-7\s+V\s*7/.test(d);
-            const right = /M\s*100\s+42\s+V\s*58/.test(d) && /M\s*93\s+50\s+H\s*107/.test(d);
-            const bottom = /M\s*42\s+100\s+H\s*58/.test(d) && /M\s*50\s+93\s+V\s*107/.test(d);
-            const left = /M\s*0\s+42\s+V\s*58/.test(d) && /M\s*-7\s+50\s+H\s*7/.test(d);
-            return top || right || bottom || left;
-          };
-          return {
-            crossCount: ds.length,
-            crossPathsCardinal: ds.every(onCardinal),
-            crossesAboveImage:
-              circle !== null &&
-              (circle.compareDocumentPosition(board) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
-            crossesAboveFinalImage:
-              figure !== null &&
-              circle !== null &&
-              parseInt(getComputedStyle(board).zIndex, 10) >
-                parseInt(getComputedStyle(figure).zIndex, 10),
-            circleBelowFinalImage:
-              figure !== null &&
-              circle !== null &&
-              parseInt(getComputedStyle(circle).zIndex, 10) <
-                parseInt(getComputedStyle(figure).zIndex, 10),
-            contentNotRevealed:
-              !document.querySelector('#sobre-content')?.closest('[data-reveal]'),
-            opacity: parseFloat(getComputedStyle(img).opacity),
-            boardMatchesCircle:
-              cr !== undefined &&
-              Math.abs(br.left - cr.left) <= tol &&
-              Math.abs(br.top - cr.top) <= tol &&
-              Math.abs(br.width - cr.width) <= tol,
-          };
-        }, TOLERANCE_PX);
+        // Responsivo: em <768px o traço/gap caem para 60% (0.6rem = 9.6px).
+        const size = vp.name === 'mobile' ? 9.6 : 16;
+        const data = await page.evaluate(
+          ({ tol, size }) => {
+            const end = document.querySelector('[data-bp-end]');
+            const board = document.querySelector('[data-bp-end] .bp-end-board');
+            const img = document.querySelector('[data-bp-end] .bp-end-img');
+            if (!end || !board || !img) return null;
+            const circle = document.querySelector('[data-bp-end] .bp-end-circle');
+            const figure = document.querySelector('[data-scroll-morph]');
+            const cr = circle?.getBoundingClientRect();
+            const br = board.getBoundingClientRect();
+            const ticks = Array.from(board.querySelectorAll('.bp-end-tick'));
+            const tickByClass = (c: string) =>
+              ticks.find((t) => t.classList.contains(c))?.getBoundingClientRect();
+            const top = tickByClass('bp-end-tick-top');
+            const bottom = tickByClass('bp-end-tick-bottom');
+            const left = tickByClass('bp-end-tick-left');
+            const right = tickByClass('bp-end-tick-right');
+            return {
+              tickCount: ticks.length,
+              classes: ['top', 'bottom', 'left', 'right'].map((c) =>
+                ticks.some((t) => t.classList.contains(`bp-end-tick-${c}`)),
+              ),
+              // gap de 1rem (16px; 9.6px mobile) entre o traço e a borda do
+              // círculo (borda PRÓXIMA do bbox)
+              topGap: cr ? cr.top - ((top?.top ?? cr.top) + (top?.height ?? 0)) : -1,
+              bottomGap: cr ? (bottom?.top ?? cr.bottom) - cr.bottom : -1,
+              leftGap: cr ? cr.left - ((left?.left ?? cr.left) + (left?.width ?? 0)) : -1,
+              rightGap: cr ? (right?.left ?? cr.right) - cr.right : -1,
+              // comprimento dos traços (60% em mobile)
+              topLen: top?.height ?? -1,
+              leftLen: left?.width ?? -1,
+              crossesAboveImage:
+                circle !== null &&
+                (circle.compareDocumentPosition(board) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
+              crossesAboveFinalImage:
+                figure !== null &&
+                circle !== null &&
+                parseInt(getComputedStyle(board).zIndex, 10) >
+                  parseInt(getComputedStyle(figure).zIndex, 10),
+              circleBelowFinalImage:
+                figure !== null &&
+                circle !== null &&
+                parseInt(getComputedStyle(circle).zIndex, 10) <
+                  parseInt(getComputedStyle(figure).zIndex, 10),
+              contentNotRevealed:
+                !document.querySelector('#sobre-content')?.closest('[data-reveal]'),
+              opacity: parseFloat(getComputedStyle(img).opacity),
+              boardMatchesCircle:
+                cr !== undefined &&
+                Math.abs(br.left - cr.left) <= tol &&
+                Math.abs(br.top - cr.top) <= tol &&
+                Math.abs(br.width - cr.width) <= tol,
+            };
+          },
+          { tol: TOLERANCE_PX, size },
+        );
         expect(data).not.toBeNull();
         const d = data!;
-        expect(d.crossCount).toBe(4);
-        expect(d.crossPathsCardinal).toBe(true);
+        expect(d.tickCount).toBe(4);
+        expect(d.classes.every(Boolean)).toBe(true);
+        expect(Math.abs(d.topGap - size)).toBeLessThanOrEqual(TOLERANCE_PX + 4);
+        expect(Math.abs(d.bottomGap - size)).toBeLessThanOrEqual(TOLERANCE_PX + 4);
+        expect(Math.abs(d.leftGap - size)).toBeLessThanOrEqual(TOLERANCE_PX + 4);
+        expect(Math.abs(d.rightGap - size)).toBeLessThanOrEqual(TOLERANCE_PX + 4);
+        expect(Math.abs(d.topLen - size)).toBeLessThanOrEqual(TOLERANCE_PX + 4);
+        expect(Math.abs(d.leftLen - size)).toBeLessThanOrEqual(TOLERANCE_PX + 4);
         expect(d.crossesAboveImage).toBe(true);
         expect(d.crossesAboveFinalImage).toBe(true);
         expect(d.circleBelowFinalImage).toBe(true);

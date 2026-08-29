@@ -10,12 +10,7 @@ interface Props {
 }
 
 const { src, finalSize = 160, finalX = 0.15, finalY = 0.5 } = Astro.props;
-// Diâmetro final responsivo: a var --morph-final-size (definida no :root)
-// acompanha o breakpoint; o prop vira fallback.
 const resolvedSize = `var(--morph-final-size, ${finalSize}px)`;
-// Mesma clamp do JS do morph (transformFor): min(max(center, top+r), bottom-r)
-// → borda do círculo entre 0 e (100% - finalSize). Quando o alvo é menor que
-// o diâmetro, o máximo prevalece e o círculo "estoura" o topo (igual ao morph).
 const centerStyle = {
   left: `min(max(0px, calc(${finalX * 100}% - ${resolvedSize} / 2)), calc(100% - ${resolvedSize}))`,
   top: `min(max(0px, calc(${finalY * 100}% - ${resolvedSize} / 2)), calc(100% - ${resolvedSize}))`,
@@ -33,20 +28,15 @@ const centerStyle = {
       alt=""
       class="bp-end-img"
     />
-    <span class="bp-end-hatch hatch-diagonal" aria-hidden="true"></span>
     <span class="bp-end-cross bp-end-cross-x" aria-hidden="true"></span>
     <span class="bp-end-cross bp-end-cross-y" aria-hidden="true"></span>
   </div>
 
-  <!-- Cruzes cardeais (mira) UMA CAMADA ACIMA da imagem: por virem depois do
-       círculo na DOM, ficam sobre o retrato transparente. -->
   <div class="bp-end-board" style={centerStyle}>
-    <svg class="bp-end-corners" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-      <path class="bp-end-cross" d="M 42 0 H 58 M 50 -7 V 7" />
-      <path class="bp-end-cross" d="M 100 42 V 58 M 93 50 H 107" />
-      <path class="bp-end-cross" d="M 42 100 H 58 M 50 93 V 107" />
-      <path class="bp-end-cross" d="M 0 42 V 58 M -7 50 H 7" />
-    </svg>
+    <span class="bp-end-tick bp-end-tick-top" aria-hidden="true"></span>
+    <span class="bp-end-tick bp-end-tick-bottom" aria-hidden="true"></span>
+    <span class="bp-end-tick bp-end-tick-left" aria-hidden="true"></span>
+    <span class="bp-end-tick bp-end-tick-right" aria-hidden="true"></span>
   </div>
 </div>
 
@@ -54,27 +44,26 @@ const centerStyle = {
   .bp-end {
     position: absolute;
     inset: 0;
-    /* Sem stacking context próprio (z-index: auto): cada filho compete no
-       contexto do ancestral. Assim dá para colocar as cruzes ACIMA da
-       imagem final (figura do morph é z-10) e o círculo (hachura/crosshair)
-       ABAIXO dela. */
     pointer-events: none;
-    color: var(--muted-foreground);
-    --bp-line: color-mix(in oklab, var(--foreground) 48%, transparent);
-    --bp-line-strong: color-mix(in oklab, var(--foreground) 60%, transparent);
+    /* Tamanho e gap dos traços cardeais: 60% em telas < 768px (círculo
+       menor — --morph-final-size 128px) para manter a proporção. */
+    --bp-tick-size: 1rem;
+    --bp-tick-gap: 1rem;
   }
 
-  /* Círculo final: mesma clamp do JS do morph (transformFor) — mantém o
-     centro entre r do alvo, sem cortar o conteúdo de #sobre-content.
-     Fica ABAIXO da imagem que chega (z-10 da figura): hachura, crosshair e
-     borda são cobertos pelo retrato final. */
+  @media (max-width: 767px) {
+    .bp-end {
+      --bp-tick-size: 0.6rem;
+      --bp-tick-gap: 0.6rem;
+    }
+  }
+
   .bp-end-circle {
     position: absolute;
     z-index: 2;
     width: var(--bp-final-size, 160px);
     height: var(--bp-final-size, 160px);
-    /* Anel na mesma cor/opacidade das hachuras (--bp-hatch: foreground 8%). */
-    border: 1px solid var(--bp-hatch);
+    border: 1px solid var(--color-primary-foreground);
     border-radius: 9999px;
     overflow: hidden;
   }
@@ -88,8 +77,6 @@ const centerStyle = {
     opacity: 0.2;
   }
 
-  /* Só as cruzes cardeais (mira) ficam ACIMA da imagem final: mesmo box do
-     círculo, mas com z-index acima do z-10 da figura do morph. */
   .bp-end-board {
     position: absolute;
     z-index: 30;
@@ -97,29 +84,47 @@ const centerStyle = {
     height: var(--bp-final-size, 160px);
   }
 
-  .bp-end-corners {
+  /* Traços cardeais (mesmo padrão do bp-ghost-tick do hero): 2 verticais
+     (topo/base) e 2 horizontais (lados), com gap de 1rem do círculo
+     (0.6rem em <768px). Sem rotate — top/bottom usam border-left explícito
+     (bbox previsível). Tamanho/gap vêm de --bp-tick-size/--bp-tick-gap. */
+  .bp-end-tick {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
+    width: var(--bp-tick-size);
+    height: 0;
+    border-top: 1px solid color-mix(in oklab, var(--primary) 60%, transparent);
   }
 
-  .bp-end-cross {
-    fill: none;
-    /* Cruzes cardeais sobre a imagem: um pouco mais transparentes. */
-    stroke: color-mix(in oklab, var(--foreground) 20%, transparent);
-    stroke-width: 2;
-    vector-effect: non-scaling-stroke;
+  .bp-end-tick-top,
+  .bp-end-tick-bottom {
+    width: 0;
+    height: var(--bp-tick-size);
+    border-top: none;
+    border-left: 1px solid color-mix(in oklab, var(--primary) 60%, transparent);
   }
 
-  /* Hachura sobre o preenchimento (padrão diagonal do hatches.css) — mesma
-     cor/transparência de todas as hachuras do projeto (--bp-hatch). */
-  .bp-end-hatch {
-    position: absolute;
-    inset: 0;
-    --hatch-color: var(--bp-hatch);
-    --hatch-gap: 7px;
+  .bp-end-tick-top {
+    left: 50%;
+    top: calc(-1 * (var(--bp-tick-gap) + var(--bp-tick-size)));
+    translate: -50% 0;
+  }
+
+  .bp-end-tick-bottom {
+    left: 50%;
+    bottom: calc(-1 * (var(--bp-tick-gap) + var(--bp-tick-size)));
+    translate: -50% 0;
+  }
+
+  .bp-end-tick-left {
+    top: 50%;
+    left: calc(-1 * (var(--bp-tick-gap) + var(--bp-tick-size)));
+    translate: 0 -50%;
+  }
+
+  .bp-end-tick-right {
+    top: 50%;
+    right: calc(-1 * (var(--bp-tick-gap) + var(--bp-tick-size)));
+    translate: 0 -50%;
   }
 
   .bp-end-cross {
@@ -132,6 +137,7 @@ const centerStyle = {
     right: 0;
     top: 50%;
     height: 1px;
+        background-color: var(--primary-foreground);
   }
 
   .bp-end-cross-y {
@@ -139,5 +145,6 @@ const centerStyle = {
     bottom: 0;
     left: 50%;
     width: 1px;
+    background-color: var(--primary-foreground);
   }
 </style>
