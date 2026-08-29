@@ -76,6 +76,21 @@ test.describe('scrollbar personalizada', () => {
     // getComputedStyle pseudo:hover retorna vazio fora do estado ativo;
     // lemos a regra CSS injetada em global.css para confirmar o destino do hover.
     const hoverTarget = await page.evaluate(() => {
+      // As regras vivem em @layer (base/components) — atravessa blocos de
+      // camada e media queries para achar CSSStyleRule.
+      const collect = (rules: CSSRuleList, out: CSSStyleRule[]) => {
+        for (const rule of Array.from(rules)) {
+          if (rule instanceof CSSStyleRule) out.push(rule);
+          else if (
+            rule instanceof CSSGroupingRule ||
+            rule instanceof CSSLayerBlockRule
+          ) {
+            collect(rule.cssRules, out);
+          }
+        }
+        return out;
+      };
+      const found: string | null = null;
       for (const sheet of Array.from(document.styleSheets)) {
         let rules: CSSRuleList;
         try {
@@ -83,15 +98,15 @@ test.describe('scrollbar personalizada', () => {
         } catch {
           continue;
         }
-        for (const rule of Array.from(rules)) {
-          if (rule instanceof CSSStyleRule && rule.selectorText.includes('::-webkit-scrollbar-thumb')) {
+        for (const rule of collect(rules, [])) {
+          if (rule.selectorText.includes('::-webkit-scrollbar-thumb')) {
             if (rule.selectorText.includes(':hover') || rule.selectorText.includes(':active')) {
               return rule.style.getPropertyValue('background-color');
             }
           }
         }
       }
-      return null;
+      return found;
     });
     expect(hoverTarget).not.toBeNull();
     // O valor escrito na regra é `var(--foreground)`; convertemos para cor

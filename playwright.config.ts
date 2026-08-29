@@ -7,9 +7,10 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? 'github' : 'list',
   use: {
-    // 4322 (não 4321) para não colidir com o `astro dev` do desenvolvedor —
-    // ver comentário em scripts/e2e.mjs.
-    baseURL: 'http://localhost:4322',
+    // 4322 (não 4321) para não colidir com o `astro dev` do desenvolvedor;
+    // 127.0.0.1 (não localhost) para evitar resolução IPv4/IPv6 flaky do
+    // Chromium contra o bind IPv6-only do astro — ver scripts/e2e.mjs.
+    baseURL: 'http://127.0.0.1:4322',
     viewport: { width: 1280, height: 800 },
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
