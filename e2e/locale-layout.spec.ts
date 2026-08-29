@@ -61,7 +61,8 @@ test.describe('estabilidade entre idiomas', () => {
     const toolbar = page.locator('.site-toolbar');
     const before = (await toolbar.boundingBox())!.width;
 
-    await page.locator('.site-locale-select').selectOption({ label: 'EN' });
+    await page.locator('.site-locale-toggle').click();
+    await page.locator('.site-locale-menu a', { hasText: 'EN' }).click();
     await page.waitForURL('**/en/**');
     await page.evaluate(() => document.fonts.ready);
     const after = (await toolbar.boundingBox())!.width;
@@ -90,7 +91,8 @@ test.describe('estabilidade entre idiomas', () => {
       expect(opacity).toBe('1');
     }
 
-    await page.locator('.site-locale-select').selectOption({ label: 'ES' });
+    await page.locator('.site-locale-toggle').click();
+    await page.locator('.site-locale-menu a', { hasText: 'ES' }).click();
     await page.waitForURL('**/es/**');
     const animAfter = await page
       .locator('h1.hero-name')

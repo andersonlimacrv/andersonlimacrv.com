@@ -459,52 +459,110 @@
   }
 }
 
+/* Idiomas — disclosure de links com o MESMO comportamento do menu
+   hambúrguer mobile (cf. .site-menu e site-header.ts): botão disclosure
+   com aria-expanded, reveal max-height/opacity via --menu-h/--menu-open,
+   fecha em Esc/clique-fora/link/navegação. Em global.css (e não no
+   escopo do componente) porque inlineStylesheets:'auto' inline o CSS
+   de escopo em TODAS as 15 páginas (~+24 KB). Substitui o antigo
+   <select> nativo cujo popup cinza era UI do browser (inestilizável). */
 .site-locale-wrap {
   position: relative;
   display: inline-flex;
+}
+
+.site-locale-toggle {
+  display: inline-flex;
   align-items: center;
-  color: var(--muted-foreground);
-  transition: color 0.18s ease-out;
-}
-
-.site-locale-wrap:hover {
-  color: var(--foreground);
-}
-
-.site-locale-wrap:has(.site-locale-select:focus-visible) {
-  color: var(--foreground);
-}
-
-.site-locale-select {
-  appearance: none;
-  -webkit-appearance: none;
+  justify-content: center;
+  gap: 0.25rem;
   min-height: 44px;
   width: 64px;
-  min-width: 44px;
-  padding-inline: 0.75rem 2rem;
+  padding-inline: 0.75rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background-color: color-mix(in oklab, var(--background) 60%, transparent);
-  color: inherit;
+  color: var(--muted-foreground);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 400;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: border-color 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    color 0.18s ease-out;
 }
 
-.site-locale-select:hover {
+.site-locale-toggle:hover,
+.site-locale-toggle[aria-expanded='true'] {
   border-color: color-mix(in oklab, var(--primary) 50%, transparent);
+  color: var(--foreground);
 }
 
 .site-locale-chevron {
-  pointer-events: none;
+  transition: transform 0.3s var(--ease-expo-out);
+}
+
+.is-open.site-locale-wrap .site-locale-chevron {
+  transform: rotate(180deg);
+}
+
+.site-locale-menu {
   position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  translate: 0 -50%;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: 100%;
+  z-index: 10;
+  max-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    max-height 0.4s var(--ease-expo-out),
+    opacity 0.25s ease-out;
+}
+
+.is-open.site-locale-wrap .site-locale-menu {
+  max-height: var(--menu-h);
+  opacity: 1;
+  visibility: visible;
+}
+
+.site-locale-menu a {
+  display: block;
+  padding: 0.375rem 0.5rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  border-radius: calc(var(--radius) - 2px);
+  transition:
+    background-color 0.15s ease-out,
+    color 0.15s ease-out;
+}
+
+.site-locale-menu a:hover {
+  background: color-mix(in oklab, var(--primary) 12%, transparent);
+}
+
+.site-locale-menu a[aria-current='true'] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-locale-chevron,
+  .site-locale-menu,
+  .site-locale-menu a {
+    transition: none;
+  }
 }
 
 .reveal-present [data-reveal] {

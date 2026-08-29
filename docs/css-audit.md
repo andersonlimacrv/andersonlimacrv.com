@@ -1,4 +1,4 @@
-# Auditoria CSS — 2026-08-29T06:04:53.105Z
+# Auditoria CSS — 2026-08-29T07:24:25.114Z
 
 Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 
@@ -14,7 +14,8 @@ Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 | .site-actions | usada |  |
 | .site-header | usada |  |
 | .site-locale-chevron | usada |  |
-| .site-locale-select | usada |  |
+| .site-locale-menu | usada |  |
+| .site-locale-toggle | usada |  |
 | .site-locale-wrap | usada |  |
 | .site-menu | usada |  |
 | .site-menu-bar | usada |  |
@@ -33,4 +34,4 @@ Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 | .woff2 | usada |  |
 | @utility transition-micro | usada | undefined |
 
-**Resumo:** 28 itens — 24 usadas, 0 utilitárias, 4 hooks, 0 css-only, 0 mortas, 0 tokens sem uso.
+**Resumo:** 29 itens — 25 usadas, 0 utilitárias, 4 hooks, 0 css-only, 0 mortas, 0 tokens sem uso.

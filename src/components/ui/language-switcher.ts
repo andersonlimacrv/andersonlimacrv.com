@@ -1,11 +1,103 @@
-const select = document.querySelector<HTMLSelectElement>('.site-locale-select');
+// LanguageSwitcher — disclosure de idiomas com o mesmo comportamento do
+// menu hambúrguer mobile (cf. site-header.ts): botão com aria-expanded,
+// reveal max-height/opacity via --menu-h, stagger nos links (WAAPI),
+// fecha em Esc / clique-fora / clique num link / navegação (astro:page-load).
+//
+// Enhancement progressivo: sem JS o popup permanece fechado — mesmo
+// compromisso do hambúrguer mobile.
 
-if (select) {
-  select.addEventListener('change', () => {
-    const href = select.value;
-    const current = location.pathname + location.search;
-    if (href && href !== current) {
-      location.assign(href + location.hash);
-    }
-  });
+const wrap = document.querySelector<HTMLElement>('[data-locale-switcher]');
+
+// Inatividade do site-header esconde o header após 3s — com o popup aberto,
+// o header não deve sumir junto (o hambúrguer aberto já tem esse guard).
+const header = document.querySelector<HTMLElement>(
+  '[data-astro-transition-persist="header"]',
+);
+
+const reduced =
+  typeof window !== 'undefined' &&
+  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+
+const toggle = wrap?.querySelector<HTMLButtonElement>('.site-locale-toggle');
+const menu = wrap?.querySelector<HTMLElement>('.site-locale-menu');
+const links = menu ? Array.from(menu.querySelectorAll<HTMLAnchorElement>('a')) : [];
+
+const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+const LINK_STAGGER = 45;
+
+const isOpen = () => wrap?.classList.contains('is-open') === true;
+
+function setMenuHeight() {
+  if (!menu || !isOpen()) return;
+  menu.style.setProperty('--menu-h', `${menu.scrollHeight}px`);
 }
+
+function setOpen(open: boolean) {
+  if (!wrap) return;
+  wrap.classList.toggle('is-open', open);
+  toggle?.setAttribute('aria-expanded', String(open));
+  if (open) {
+    setMenuHeight();
+    header?.classList.remove('is-hidden');
+    if (!reduced) {
+      links.forEach((link, i) => {
+        link.getAnimations().forEach((a) => a.cancel());
+        link.animate(
+          [
+            { opacity: 0, transform: 'translateY(6px)' },
+            { opacity: 1, transform: 'translateY(0)' },
+          ],
+          {
+            duration: 260,
+            delay: 40 + i * LINK_STAGGER,
+            easing: EASE,
+            fill: 'both',
+          },
+        );
+      });
+    }
+  } else {
+    links.forEach((link) => {
+      link.getAnimations().forEach((a) => a.cancel());
+      link.style.removeProperty('opacity');
+      link.style.removeProperty('transform');
+    });
+  }
+}
+
+function close() {
+  if (isOpen()) setOpen(false);
+}
+
+function handlePointerDown(event: PointerEvent) {
+  if (!isOpen()) return;
+  if (!wrap?.contains(event.target as Node)) close();
+}
+
+function handleKeyDown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && isOpen()) {
+    close();
+    toggle?.focus();
+  }
+}
+
+// O wrap vive dentro do header persistido (view transition) — listeners são
+// amarrados uma única vez; astro:page-load fecha o popup a cada navegação.
+if (wrap && wrap.dataset.bound !== 'true') {
+  wrap.dataset.bound = 'true';
+  toggle?.addEventListener('click', () => setOpen(!isOpen()));
+  links.forEach((link) =>
+    link.addEventListener('click', (event) => {
+      // Navegação plena (como o antigo select com location.assign): o header
+      // persistido manteria os rótulos/hrefs do idioma antigo numa navegação
+      // soft do ClientRouter. O hash corrente é preservado (#contato etc.).
+      event.preventDefault();
+      close();
+      location.assign(link.href + location.hash);
+    }),
+  );
+  document.addEventListener('pointerdown', handlePointerDown);
+  document.addEventListener('keydown', handleKeyDown);
+}
+
+document.addEventListener('astro:page-load', close);

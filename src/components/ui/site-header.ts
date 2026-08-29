@@ -24,6 +24,8 @@ function showHeader() {
 
 function hideHeader() {
   if (!header || reduced || isOpen()) return;
+  // Popup de idiomas aberto: header não some junto (guard do disclosure).
+  if (document.querySelector('[data-locale-switcher].is-open')) return;
   if (window.scrollY <= HIDE_AFTER) return;
   header.classList.add('is-hidden');
 }

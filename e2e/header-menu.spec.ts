@@ -86,7 +86,8 @@ test.describe('menu mobile (hambúrguer)', () => {
     await toggle.click();
     await expect(page.locator('.site-header')).toHaveClass(/is-open/);
 
-    await page.locator('.site-locale-select').selectOption({ label: 'ES' });
+    await page.locator('.site-locale-toggle').click();
+    await page.locator('.site-locale-menu a', { hasText: 'ES' }).click();
     await page.waitForURL('**/es/**');
     await expect(page.locator('.site-header')).not.toHaveClass(/is-open/);
     await expect(page.locator('.site-menu-toggle')).toHaveAttribute(

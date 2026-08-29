@@ -59,7 +59,8 @@ test.describe('navegação por âncora', () => {
     await gotoHome(page, '/es/#contato');
     await expect(page).toHaveURL(/#contato$/);
 
-    await page.locator('.site-locale-select').selectOption({ label: 'PT' });
+    await page.locator('.site-locale-toggle').click();
+    await page.locator('.site-locale-menu a', { hasText: 'PT' }).click();
     await page.waitForURL('**/#contato');
     expect(new URL(page.url()).hash).toBe('#contato');
   });

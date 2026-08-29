@@ -133,7 +133,8 @@ test.describe('theme toggle', () => {
     await page.locator('.theme-toggle').click();
     await expect(page.locator('html')).toHaveClass(/dark/);
 
-    await page.locator('.site-locale-select').selectOption({ label: 'EN' });
+    await page.locator('.site-locale-toggle').click();
+    await page.locator('.site-locale-menu a', { hasText: 'EN' }).click();
     await page.waitForURL('**/en/**');
     await expect(page.locator('html')).toHaveClass(/dark/);
     await expect(page.locator('.theme-toggle')).toHaveAttribute(

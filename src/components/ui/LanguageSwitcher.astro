@@ -7,6 +7,12 @@ interface Props {
 
 const current = Astro.props.locale ?? defaultLocale;
 
+// Disclosure de idiomas — mesmo comportamento do menu hambúrguer mobile
+// (cf. site-header.ts): botão com aria-expanded, reveal max-height/opacity,
+// fecha em Esc/clique-fora/link/navegação. Enhancement progressivo: sem JS
+// o popup não abre. Estilos em global.css (inline por página custaria
+// ~+24 KB no HTML).
+
 const options = (Object.keys(languages) as Locale[]).map((target) => ({
   locale: target,
   label: target.toUpperCase(),
@@ -16,28 +22,44 @@ const options = (Object.keys(languages) as Locale[]).map((target) => ({
 }));
 ---
 
-<span class="site-locale-wrap">
-  <select class="site-locale-select" aria-label={languages[current]}>
-    {options.map((option) => (
-      <option value={option.href} title={option.fullName} selected={option.active}>
-        {option.label}
-      </option>
-    ))}
-  </select>
-  <svg
-    class="site-locale-chevron"
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
+<span class="site-locale-wrap" data-locale-switcher>
+  <button
+    type="button"
+    class="site-locale-toggle"
+    aria-expanded="false"
+    aria-controls="locale-menu"
+    aria-label={languages[current]}
+    title={languages[current]}
   >
-    <path d="m6 9 6 6 6-6" />
-  </svg>
+    {current.toUpperCase()}
+    <svg
+      class="site-locale-chevron"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  </button>
+  <div id="locale-menu" class="site-locale-menu">
+    {options.map((option) => (
+      <a
+        href={option.href}
+        lang={option.locale}
+        hreflang={option.locale}
+        aria-current={option.active ? 'true' : undefined}
+        title={option.fullName}
+      >
+        {option.label}
+      </a>
+    ))}
+  </div>
 </span>
 
 <script>
