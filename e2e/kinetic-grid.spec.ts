@@ -137,26 +137,40 @@ test.describe('kinetic grid do contato', () => {
     }
   });
 
-  test('tema: canvas revalida cores ao alternar claro/escuro', async ({
+  test('tema: grid repintado com as novas cores ao alternar claro/escuro (mesmo idle)', async ({
     page,
   }) => {
     await gotoHome(page);
     const grid = await gridBox(page);
 
-    // alterna tema pelo toggle do header
-    const toggle = page
-      .locator('header button[aria-label*="tema"], header button[aria-label*="theme"]')
-      .first();
-    await toggle.click();
+    // idle (mouse fora do box): o loop pula o draw — o repaint no toggle
+    // precisa vir do MutationObserver de tema.
+    await page.waitForTimeout(500);
+
+    const sample = () =>
+      grid.evaluate((el: HTMLElement) => {
+        const canvas = el.querySelector('canvas') as HTMLCanvasElement;
+        const ctx = canvas.getContext('2d')!;
+        const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let visible = 0;
+        let sum = 0;
+        for (let i = 3; i < data.length; i += 4) {
+          if (data[i] > 10) {
+            visible++;
+            sum += data[i - 3] + data[i - 2] + data[i - 1];
+          }
+        }
+        return { visible, sum };
+      });
+
+    const before = await sample();
+    expect(before.visible).toBeGreaterThan(500); // grid presente
+
+    await page.locator('button.theme-toggle').first().click();
     await page.waitForTimeout(300);
 
-    // pinta o canvas mentalmente: trocar tema não pode quebrar o loop nem
-    // deixar o canvas vazio (dimensões continuam válidas)
-    const bmp = await grid.evaluate((el: HTMLElement) => {
-      const canvas = el.querySelector('canvas') as HTMLCanvasElement;
-      return { w: canvas.width, h: canvas.height };
-    });
-    expect(bmp.w).toBeGreaterThan(0);
-    expect(bmp.h).toBeGreaterThan(0);
+    const after = await sample();
+    expect(after.visible).toBeGreaterThan(500); // grid continua visível
+    expect(after.sum).not.toBe(before.sum); // ...e repintado com novas cores
   });
 });

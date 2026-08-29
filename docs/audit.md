@@ -2,7 +2,7 @@
 
 - **Páginas HTML:** 15
 - **Arquivos no dist/:** 41
-- **Peso total:** 819.3 KB (raw) / 420.5 KB (gzip)
+- **Peso total:** 819.6 KB (raw) / 420.6 KB (gzip)
 
 - **Fontes:** 6
 
@@ -14,7 +14,7 @@
 | font | 161.9 KB |
 | image | 120.0 KB |
 | css | 50.1 KB |
-| js | 25.6 KB |
+| js | 25.9 KB |
 | other | 8.9 KB |
 
 ## Fontes
@@ -33,7 +33,7 @@
 | Arquivo | Peso | Gzip |
 | --- | --- | --- |
 | _astro/ClientRouter.astro_astro_type_script_index_0_lang.DO9cI7ss.js | 13.5 KB | 4.6 KB |
-| _astro/KineticGrid.astro_astro_type_script_index_0_lang.BbBBocnc.js | 5.5 KB | 2.4 KB |
+| _astro/KineticGrid.astro_astro_type_script_index_0_lang.DgMQ5_px.js | 5.8 KB | 2.6 KB |
 | _astro/BaseLayout.astro_astro_type_script_index_0_lang.Dx1qOR6-.js | 4.1 KB | 1.5 KB |
 | _astro/prefetch.CvG7Nh41.js | 2.5 KB | 1.1 KB |
 | _astro/page.DODdB5Xf.js | 47 B | 67 B |

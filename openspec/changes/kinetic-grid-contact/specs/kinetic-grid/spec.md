@@ -24,6 +24,14 @@ O módulo SHALL reproduzir a física do original: warp dos pontos do grid em dir
 - **WHEN** o ponteiro entra no box pela primeira vez (ou reaparece depois de sair/retornar à aba) e se move
 - **THEN** o mouse interno faz snap ao ponto de entrada (sem lerp vindo do sentinela off-screen) e o warp é visível no primeiro frame — sem período de efeito morto
 
+#### Scenario: Saída suave no lugar
+- **WHEN** o ponteiro sai do box
+- **THEN** a intensidade do warp decai gradualmente (~0,5s) no próprio local, sem deslizar em direção ao canto nem sumir em 1–2 frames
+
+#### Scenario: Repaint ao trocar de tema em idle
+- **WHEN** o usuário alterna claro/escuro com o box visível e o mouse FORA dele (estado idle, sem loop de animação)
+- **THEN** o canvas é repintado imediatamente com as cores do novo tema — o grid permanece visível (não herda o último frame do tema anterior)
+
 #### Scenario: Ripple no click
 - **WHEN** o usuário clica dentro do box
 - **THEN** uma onda circular se expande do ponto do click deslocando os pontos do grid, e o contador de debug `data-ripple-count` no wrapper é incrementado

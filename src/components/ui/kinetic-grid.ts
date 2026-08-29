@@ -15,6 +15,9 @@
 // Adaptações obrigatórias do port (ver openspec/changes/kinetic-grid-contact):
 //  - canvas contido no wrapper (nada de fixed full-screen), fundo transparente;
 //  - listeners de ponteiro no wrapper (coords relativas ao canvas);
+//  - intensidade do efeito controlada por `strength` (0..1): snap a 1 na
+//    entrada (com snap-on-enter do mouse interno), fade ~0.5s no lugar na
+//    saída — sem glide para o canto via sentinela -9999;
 //  - cores lidas dos tokens do site (foreground/primary) e revalidadas na
 //    troca de tema (MutationObserver em html.class);
 //  - DPR correto + ResizeObserver;
@@ -63,6 +66,12 @@ interface KineticGridState {
   colorMode: 'default' | 'monochrome';
   visible: boolean;
   isStatic: boolean;
+  /** 0..1 — intensidade do warp; 1 com ponteiro dentro, fade a 0 na saída. */
+  strength: number;
+  /** ponteiro dentro do box */
+  inside: boolean;
+  /** sem efeito ativo (strength 0 e sem ripples) — draw pode ser pulado */
+  idle: boolean;
 }
 
 // ─── Constantes (idênticas ao original) ──────────────────────────────────────
@@ -72,6 +81,8 @@ const INFLUENCE_RADIUS = 260;
 const MAX_WARP = 24;
 const DOT_SPACING = 28;
 const LERP_SPEED = 0.08;
+/** decaimento do strength na saída do ponteiro (~0.5s até repouso) */
+const STRENGTH_FADE = 0.12;
 
 const LINE_BASE_ALPHA = 0.13;
 const TEXTURE_ALPHA = 0.05;
@@ -154,6 +165,7 @@ function getWarpedPoint(
   ripples: Ripple[],
   cols: number,
   rows: number,
+  strength: number,
 ): { pt: Point; proximity: number } {
   // Edge pin — trava suavemente as linhas/colunas de borda
   const edgeMargin = 1.5;
@@ -165,7 +177,8 @@ function getWarpedPoint(
   const dy = gy - mouse.y;
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  const proximity = Math.max(0, 1 - dist / INFLUENCE_RADIUS) * pinFactor;
+  const proximity =
+    Math.max(0, 1 - dist / INFLUENCE_RADIUS) * pinFactor * strength;
 
   // Deslocamento das ondas (ripples)
   let rx = 0;
@@ -190,7 +203,7 @@ function getWarpedPoint(
   if (dist < INFLUENCE_RADIUS && dist > 0 && pinFactor > 0) {
     const t = dist / INFLUENCE_RADIUS;
     const eased = t < 0.01 ? 0 : (1 - t) * (1 - t) * Math.min(1, dist / 60);
-    const warpAmt = eased * MAX_WARP * pinFactor;
+    const warpAmt = eased * MAX_WARP * pinFactor * strength;
     const angle = Math.atan2(dy, dx);
     return {
       pt: {
@@ -256,6 +269,7 @@ function draw(state: KineticGridState, now: number) {
         ripples,
         cols,
         rows,
+        state.strength,
       );
       pts[row][col] = pt;
       prox[row][col] = proximity;
@@ -346,8 +360,25 @@ function applySize(state: KineticGridState) {
 function frame(now: number) {
   for (const state of states) {
     if (!state.visible || state.isStatic) continue;
+
+    // Intensidade: instantânea na entrada, fade suave (~0.5s) na saída.
+    if (!state.inside && state.strength > 0) {
+      state.strength = lerpN(state.strength, 0, STRENGTH_FADE);
+      if (state.strength < 0.01) state.strength = 0;
+    }
+
     state.mouse.x = lerpN(state.mouse.x, state.targetMouse.x, LERP_SPEED);
     state.mouse.y = lerpN(state.mouse.y, state.targetMouse.y, LERP_SPEED);
+
+    // Box visível mas sem efeito ativo: pula o draw (grid já em repouso).
+    if (state.strength === 0 && state.ripples.length === 0) {
+      if (!state.idle) {
+        state.idle = true;
+        draw(state, now); // frame final em repouso
+      }
+      continue;
+    }
+    state.idle = false;
     draw(state, now);
   }
   rafId = requestAnimationFrame(frame);
@@ -407,6 +438,9 @@ function bindWrapper(wrapper: HTMLElement) {
     colorMode,
     visible: false,
     isStatic: reduced,
+    strength: 0,
+    inside: false,
+    idle: false,
   };
   states.push(state);
 
@@ -417,9 +451,15 @@ function bindWrapper(wrapper: HTMLElement) {
     wrapper.dataset.static = 'true';
     draw(state, performance.now());
   } else {
+    wrapper.addEventListener('pointerenter', () => {
+      state.inside = true;
+      state.strength = 1;
+    });
     wrapper.addEventListener(
       'pointermove',
       (e: PointerEvent) => {
+        state.inside = true;
+        state.strength = 1;
         const p = relativePoint(state, e);
         state.targetMouse = p;
         snapIfNeeded(state, p);
@@ -427,7 +467,9 @@ function bindWrapper(wrapper: HTMLElement) {
       { passive: true },
     );
     wrapper.addEventListener('pointerleave', () => {
-      state.targetMouse = { ...OFFSCREEN };
+      // strength decai no frame loop (fade no lugar); o mouse interno congela
+      // onde estava — sem mais salto para o sentinela off-screen.
+      state.inside = false;
     });
     wrapper.addEventListener('pointerdown', (e: PointerEvent) => {
       const p = relativePoint(state, e);
@@ -451,7 +493,10 @@ function revalidateColors() {
   for (const state of states) {
     if (!state.wrapper.isConnected) continue;
     state.colors = readColors(state.wrapper, state.colorMode);
-    if (state.isStatic) draw(state, performance.now());
+    // Estados sem loop ativo (reduced-motion ou idle) precisam repintar com
+    // as novas cores — senão o canvas exibe o último frame do tema antigo
+    // (grid "invisível" após trocar de tema).
+    if (state.isStatic || state.idle) draw(state, performance.now());
   }
 }
 
