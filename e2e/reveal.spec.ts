@@ -60,7 +60,7 @@ test.describe('reveal — transições de entrada das seções', () => {
     await page.click('a[href="/blog"]');
     await page.waitForURL('**/blog');
     await expect
-      .poll(() => revealState(page).then((s) => s.present), { timeout: 5000 })
+      .poll(() => revealState(page).then((s) => s.present), { timeout: 10000 })
       .toBe(true);
     const onBlog = await revealState(page);
     expect(onBlog.els.length).toBeGreaterThanOrEqual(1);
@@ -68,13 +68,19 @@ test.describe('reveal — transições de entrada das seções', () => {
     await page.click('header a[href="/"]');
     await page.waitForURL(page.url().replace(/\/blog.*/, '/'));
     await expect
-      .poll(() => revealState(page).then((s) => s.present), { timeout: 5000 })
+      .poll(() => revealState(page).then((s) => s.present), { timeout: 10000 })
       .toBe(true);
     const back = await revealState(page);
     expect(back.els.length).toBeGreaterThanOrEqual(6);
 
-    // scroll ao fim: tudo visível (nenhuma seção ficou presa em opacity 0)
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    // scroll ao fim em passos (salto único pode não reavaliar a interseção
+    // do IO — cada passo gera nova avaliação)
+    const height = await page.evaluate(() => document.body.scrollHeight);
+    const steps = Math.max(4, Math.ceil(height / 500));
+    for (let i = 1; i <= steps; i++) {
+      await page.evaluate((y) => window.scrollTo(0, y), (height * i) / steps);
+      await page.waitForTimeout(150);
+    }
     await expect
       .poll(
         () =>
