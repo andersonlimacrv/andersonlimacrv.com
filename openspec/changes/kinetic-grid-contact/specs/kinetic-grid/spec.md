@@ -20,6 +20,10 @@ O módulo SHALL reproduzir a física do original: warp dos pontos do grid em dir
 - **WHEN** o ponteiro se move sobre o box
 - **THEN** os pontos do grid dentro do raio de influência se deslocam em direção ao cursor (lerp suave) e as bordas do grid permanecem fixas (edge pin)
 
+#### Scenario: Resposta imediata na primeira entrada
+- **WHEN** o ponteiro entra no box pela primeira vez (ou reaparece depois de sair/retornar à aba) e se move
+- **THEN** o mouse interno faz snap ao ponto de entrada (sem lerp vindo do sentinela off-screen) e o warp é visível no primeiro frame — sem período de efeito morto
+
 #### Scenario: Ripple no click
 - **WHEN** o usuário clica dentro do box
 - **THEN** uma onda circular se expande do ponto do click deslocando os pontos do grid, e o contador de debug `data-ripple-count` no wrapper é incrementado

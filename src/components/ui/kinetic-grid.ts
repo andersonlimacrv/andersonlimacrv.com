@@ -362,6 +362,26 @@ function relativePoint(state: KineticGridState, e: PointerEvent): Point {
   return { x: e.clientX - rect.left, y: e.clientY - rect.top };
 }
 
+/**
+ * Snap do mouse interno ao ponteiro quando ele "nasce" longe demais:
+ * primeira entrada (sentinela -9999) ou reentrada depois de o mouse ter
+ * derivado para longe (pointerleave, refocus de tab). Sem isso o lerp
+ * levaria ~0,7-1s para trazer o efeito de volta (~44-58 frames de
+ * 10000·0.92^n até INFLUENCE_RADIUS). Durante o movimento normal o lerp
+ * segue intacto (cauda suave do original).
+ */
+function snapIfNeeded(state: KineticGridState, p: Point) {
+  const SNAP_DIST = 2 * INFLUENCE_RADIUS;
+  const dx = state.mouse.x - p.x;
+  const dy = state.mouse.y - p.y;
+  const far = dx * dx + dy * dy > SNAP_DIST * SNAP_DIST;
+  const atSentinel =
+    state.mouse.x === OFFSCREEN.x && state.mouse.y === OFFSCREEN.y;
+  if (far || atSentinel) {
+    state.mouse = { ...p };
+  }
+}
+
 function bindWrapper(wrapper: HTMLElement) {
   const canvas = wrapper.querySelector<HTMLCanvasElement>('canvas');
   if (!canvas) return;
@@ -400,7 +420,9 @@ function bindWrapper(wrapper: HTMLElement) {
     wrapper.addEventListener(
       'pointermove',
       (e: PointerEvent) => {
-        state.targetMouse = relativePoint(state, e);
+        const p = relativePoint(state, e);
+        state.targetMouse = p;
+        snapIfNeeded(state, p);
       },
       { passive: true },
     );
