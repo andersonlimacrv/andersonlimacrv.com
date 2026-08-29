@@ -23,7 +23,7 @@ async function spins(page: Page) {
 }
 
 test.describe('target simbol — mira com spin roleta', () => {
-  test('presente no #contato, 48px, sempre visível (desktop e mobile)', async ({
+  test('presente no #contato, 32px, sempre visível (desktop e mobile)', async ({
     page,
   }) => {
     await gotoHome(page);
@@ -31,8 +31,8 @@ test.describe('target simbol — mira com spin roleta', () => {
     await expect(el).toBeVisible();
     const box = await el.boundingBox();
     expect(box).not.toBeNull();
-    expect(Math.round(box!.width)).toBe(48);
-    expect(Math.round(box!.height)).toBe(48);
+    expect(Math.round(box!.width)).toBe(32);
+    expect(Math.round(box!.height)).toBe(32);
     // dentro do box do kinetic grid
     const kinetic = page.locator('[data-kinetic-grid]').first();
     const kb = await kinetic.boundingBox();

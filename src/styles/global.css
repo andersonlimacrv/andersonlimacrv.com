@@ -513,6 +513,7 @@
   transition:
     opacity 0.6s var(--ease-expo-out),
     transform 0.6s var(--ease-expo-out);
+    /*background-color: red;         FIX: ARRUMAR DEPOIS, NAO APARECE EM ALGUMAS SECTIONS - TRAJETORY.*/
 }
 
 .reveal-present [data-reveal].is-visible {
