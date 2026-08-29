@@ -109,6 +109,62 @@ test.describe('estabilidade entre idiomas', () => {
   });
 });
 
+test.describe('navegação e sync do switch de idiomas', () => {
+  const POST = {
+    pt: '/blog/design-editorial-para-web',
+    es: '/es/blog/diseno-editorial-para-la-web',
+    en: '/en/blog/editorial-design-for-the-web',
+  };
+
+  test('post pt → es preserva a rota do post traduzida (não cai na raiz)', async ({
+    page,
+  }) => {
+    await gotoHome(page, POST.pt);
+    await page.locator('.site-locale-toggle').click();
+    await page.locator('.site-locale-menu a', { hasText: 'ES' }).click();
+    await page.waitForURL(`**${POST.es}`);
+    await expect(page.locator('html')).toHaveAttribute('lang', /es/);
+  });
+
+  test('post pt → en preserva a rota do post traduzida', async ({ page }) => {
+    await gotoHome(page, POST.pt);
+    await page.locator('.site-locale-toggle').click();
+    await page.locator('.site-locale-menu a', { hasText: 'EN' }).click();
+    await page.waitForURL(`**${POST.en}`);
+  });
+
+  test('popup sincroniza com a página corrente após navegação interna (header persistido)', async ({
+    page,
+  }) => {
+    // fluxo real: home → blog → post por ClientRouter — o header persiste
+    // com os hrefs da home; o sync (alternates do head) deve corrigi-los
+    await gotoHome(page, '/');
+    await page.locator('a[href="/blog"]').first().click();
+    await page.waitForURL('**/blog');
+    await page.locator('a[href="/blog/design-editorial-para-web"]').first().click();
+    await page.waitForURL(`**${POST.pt}`);
+
+    const hrefs = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('.site-locale-menu a')).map((a) =>
+        a.getAttribute('href'),
+      ),
+    );
+    expect(hrefs).toContain(POST.pt);
+    expect(hrefs).toContain(POST.es);
+    expect(hrefs).toContain(POST.en);
+
+    // alterna para ES pelo popup — deve ir ao POST traduzido (não à raiz)
+    await page.locator('.site-locale-toggle').click();
+    await page.locator('.site-locale-menu a', { hasText: 'ES' }).click();
+    await page.waitForURL(`**${POST.es}`);
+    await expect(page.locator('html')).toHaveAttribute('lang', /es/);
+    await expect(
+      page.locator('.site-locale-menu a', { hasText: 'ES' }),
+    ).toHaveAttribute('aria-current', 'true');
+    await expect(page.locator('.site-locale-toggle')).toHaveText(/ES/);
+  });
+});
+
 test.describe('conteúdo do blog', () => {
   test('landing mostra os últimos 3 posts e /blog lista posts nas 3 línguas', async ({
     page,
