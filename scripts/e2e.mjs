@@ -1,6 +1,10 @@
 import { execSync, spawn } from 'node:child_process';
 
-const BASE_URL = 'http://localhost:4321';
+// Porta dedicada aos e2e — NÃO usar 4321 (default do `astro dev`): se o
+// desenvolvedor tiver o dev server rodando, o Playwright testaria contra o
+// dev server (com Dev Toolbar injetando elementos) em vez do preview.
+const PORT = 4322;
+const BASE_URL = `http://localhost:${PORT}`;
 const cwd = process.cwd();
 
 function sh(cmd) {
@@ -26,7 +30,7 @@ async function ensureServer() {
   }
   spawn(
     process.execPath,
-    ['node_modules/astro/bin/astro.mjs', 'preview', '--port', '4321'],
+    ['node_modules/astro/bin/astro.mjs', 'preview', '--port', String(PORT)],
     { cwd, detached: true, stdio: 'ignore' },
   ).unref();
   const started = Date.now();

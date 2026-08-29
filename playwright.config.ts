@@ -7,7 +7,9 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? 'github' : 'list',
   use: {
-    baseURL: 'http://localhost:4321',
+    // 4322 (não 4321) para não colidir com o `astro dev` do desenvolvedor —
+    // ver comentário em scripts/e2e.mjs.
+    baseURL: 'http://localhost:4322',
     viewport: { width: 1280, height: 800 },
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
