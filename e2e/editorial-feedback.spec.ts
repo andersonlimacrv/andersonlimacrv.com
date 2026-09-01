@@ -66,8 +66,8 @@ test.describe('TargetSimbol auxiliar (feedback de toque)', () => {
     const link = page.locator('footer').last().locator('a[href="#top"]');
     const simbol = link.locator('[data-target-simbol]');
     await link.scrollIntoViewIfNeeded();
-    // spin de entrada (IO) termina antes do tap (~1s)
-    await page.waitForTimeout(1200);
+    // spin de entrada (IO) termina antes do tap (~1.6s)
+    await page.waitForTimeout(1800);
     const before = await simbol.evaluate((el) =>
       Number(el.getAttribute('data-spins') ?? '0'),
     );
