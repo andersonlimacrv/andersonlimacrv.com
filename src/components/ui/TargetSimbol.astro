@@ -8,7 +8,7 @@ const { size = 48, class: className = '' } = Astro.props;
 ---
 
 <span
-  class:list={['target-simbol block', className]}
+  class:list={['target-simbol block', 'opacity-60 transition-micro hover:opacity-100',  className]}
   data-target-simbol
   aria-hidden="true"
   style={`width:${size}px;height:${size}px;`}
