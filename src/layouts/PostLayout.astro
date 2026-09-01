@@ -71,10 +71,10 @@ const shareText = encodeURIComponent(title);
 
   <article class="mx-auto w-full max-w-6xl px-4 sm:px-6 md:px-8 pb-16 pt-12 sm:pt-16">
     <header class="mx-auto mb-10 max-w-[70ch]">
-      <p class="mb-4 cursor-target">
+      <p class="mb-4">
         <a
           href={`${baseUrl}/blog`}
-          class={`transition-micro inline-flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
+          class={`cursor-target group transition-micro inline-flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
         >
           {t.backToBlog}
           <TargetSimbol size={25} class="md:hidden" />
@@ -118,14 +118,14 @@ const shareText = encodeURIComponent(title);
             href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`}
             target="_blank"
             rel="noopener noreferrer"
-            class={`cursor-target transition-micro flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
+            class={`cursor-target group transition-micro flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
           >
             {t.shareX}
             <TargetSimbol size={25} class="md:hidden" />
           </a>
           <a
             href={`mailto:?subject=${shareText}&body=${shareUrl}`}
-            class={`cursor-target transition-micro flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
+            class={`cursor-target group transition-micro flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
           >
             {t.shareEmail}
             <TargetSimbol size={25} class="md:hidden" />

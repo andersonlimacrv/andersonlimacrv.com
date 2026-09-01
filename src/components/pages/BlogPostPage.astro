@@ -42,7 +42,7 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
               <span class={`min-w-0 flex-1 transition-micro group-hover:text-primary ${TYPE.titleH3}`}>
                 {relatedPost.data.title}
               </span>
-              <TargetSimbol size={25} class="shrink-0 self-center sm:hidden mr-4" />
+              <TargetSimbol size={25} class="shrink-0 self-center md:hidden mr-4" />
               <time
                 datetime={relatedPost.data.pubDate.toISOString()}
                 class={`hidden shrink-0 self-center ${TYPE.label} text-muted-foreground sm:inline`}
