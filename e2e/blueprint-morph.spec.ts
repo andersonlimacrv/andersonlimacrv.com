@@ -524,7 +524,7 @@ test.describe('wireframe blueprint do morph da imagem', () => {
       }) => {
         const measure = () =>
           page.evaluate(() => {
-            const round = (el) => {
+            const round = (el: Element | null) => {
               const r = el?.getBoundingClientRect();
               return r
                 ? { w: Math.round(r.width * 10) / 10, h: Math.round(r.height * 10) / 10 }
@@ -538,7 +538,7 @@ test.describe('wireframe blueprint do morph da imagem', () => {
             const measuredW = document.querySelector('[data-bp-board] [data-bp="w"]')?.textContent ?? '';
             const measuredH = document.querySelector('[data-bp-board] [data-bp="h"]')?.textContent ?? '';
             // caixa de LAYOUT (offset*) — imune ao transform do morph
-            const img = document.querySelector('[data-scroll-morph] img');
+            const img = document.querySelector<HTMLElement>('[data-scroll-morph] img');
             return {
               rectFrame,
               legend,

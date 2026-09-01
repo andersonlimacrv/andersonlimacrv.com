@@ -167,3 +167,7 @@ window.addEventListener('resize', () => {
 });
 
 bind();
+
+// Marca o arquivo como módulo ES (evita colisão de nomes no escopo global
+// do tsc com outros scripts sem import/export, ex.: language-switcher.ts).
+export {};
