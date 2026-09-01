@@ -33,135 +33,142 @@ const socials = [
   eyebrow={t.sections.about.eyebrow}
 >
   <div id="sobre-content" class="relative">
+    <header
+      class="
+        flex
+        items-center
+        gap-2
+        border-b
+        border-border
+        py-6
+        sm:py-8
+      "
+    >
+      <span class={`${TYPE.label} text-muted-foreground/50`}>01</span>
+      <span class={`${TYPE.label} text-muted-foreground`}>{t.aboutProfileColumn}</span>
+    </header>
+
     <div
       class="
-        grid
-        grid-cols-1
+        flex
+        flex-col
         divide-y
-        lg:grid-cols-2
+        divide-border
+        lg:flex-row
         lg:divide-y-0
         lg:divide-x
       "
     >
-      <!-- COLUNA 01 — PERFIL -->
-
-      <section data-col="perfil" class="min-w-0 ">
-        <header
+      <!-- COLUNA 01 — PERFIL VISUAL -->
+      <section
+        data-col="perfil"
+        class="flex min-w-0 flex-[0_0_100%] flex-col gap-6 py-6 sm:py-8 lg:basis-[42%] lg:pr-8 "
+      >
+        <div
+          id="sobre-portrait"
           class="
-            flex
-            items-center
-            gap-2
-            py-6
-            sm:py-8
+            relative
+            aspect-square
+            ml-10
+            h-30
+            w-30
+            bg-red-500
+            shrink-0
+            self-start
           "
         >
-          <span class={`${TYPE.label} text-muted-foreground/50`}>01</span>
-          <span class={`${TYPE.label} text-muted-foreground`}>{t.aboutProfileColumn}</span>
-        </header>
+          <BlueprintMorphEnd
+            src={portrait}
+            finalSize={160}
+            finalX={0}
+            finalY={0}
+          />
+          <div class="absolute mr-auto bg-blue-500">COLOCAR ISSO AQUI AO LADO DA FOTO, NO MOBILE (frase - quote.</div>
+        </div>
 
-        <div class="flex flex-col gap-6 py-6 sm:py-8">
-          <div
-            id="sobre-portrait"
+        <Reveal>
+        <div class=''>
+  <div
             class="
               relative
-              aspect-square
-              h-40
-              w-40
-              shrink-0
-              self-start
+              border
+              border-dashed
+              border-border
+              px-4
+              py-5
+              sm:px-6
+              sm:py-6
             "
           >
-            <BlueprintMorphEnd
-              src={portrait}
-              finalSize={160}
-              finalX={0}
-              finalY={0}
-            />
-          </div>
-
-          <Reveal>
-            <div
+            <span
+              aria-hidden="true"
               class="
-                relative
-                border
-                border-dashed
-                border-border
-                px-4
-                py-5
-                sm:px-6
-                sm:py-6
+                absolute
+                -left-px
+                -top-px
+                h-3
+                w-3
+                border-l
+                border-t
+                border-foreground
               "
-            >
-              <span
-                aria-hidden="true"
-                class="
-                  absolute
-                  -left-px
-                  -top-px
-                  h-3
-                  w-3
-                  border-l
-                  border-t
-                  border-foreground
-                "
-              ></span>
+            ></span>
 
-              <span
-                aria-hidden="true"
-                class="
-                  absolute
-                  -bottom-px
-                  -right-px
-                  h-3
-                  w-3
-                  border-b
-                  border-r
-                  border-foreground
-                "
-              ></span>
+            <span
+              aria-hidden="true"
+              class="
+                absolute
+                -bottom-px
+                -right-px
+                h-3
+                w-3
+                border-b
+                border-r
+                border-foreground
+              "
+            ></span>
 
-              <blockquote class={`${TYPE.quote} text-foreground`}>
-                <p>{t.aboutQuote}</p>
-              </blockquote>
-            </div>
-          </Reveal>
-
-          <Reveal delay={60}>
-            <footer class="flex flex-col gap-3">
-              <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutContactTitle}</span>
-
-              <nav class="flex flex-col" aria-label={t.aboutContactTitle}>
-                {socials.map((social) => (
-                  <a
-                    href={social.href}
-                    {...(social.external
-                      ? { target: '_blank', rel: 'noopener noreferrer' }
-                      : {})}
-                    class={`
-                      ${TYPE.label}
-                      text-center
-                      cursor-target
-                      transition-micro
-                      border
-                      py-2.5
-                      text-muted-foreground
-                      hover:text-foreground
-                    `}
-                  >
-                    {social.label}
-                  </a>
-                ))}
-              </nav>
-            </footer>
-          </Reveal>
+            <blockquote class={`${TYPE.quote} text-foreground`}>
+              <p>{t.aboutQuote}</p>
+            </blockquote>
+          </div>
         </div>
+        </Reveal>
+
+        <Reveal delay={60}>
+          <footer class="flex flex-col gap-3">
+            <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutContactTitle}</span>
+
+            <nav class="flex flex-col" aria-label={t.aboutContactTitle}>
+              {socials.map((social) => (
+                <a
+                  href={social.href}
+                  {...(social.external
+                    ? { target: '_blank', rel: 'noopener noreferrer' }
+                    : {})}
+                  class={`
+                    ${TYPE.label}
+                    text-center
+                    cursor-target
+                    transition-micro
+                    border
+                    py-2.5
+                    text-muted-foreground
+                    hover:text-foreground
+                  `}
+                >
+                  {social.label}
+                </a>
+              ))}
+            </nav>
+          </footer>
+        </Reveal>
       </section>
 
-      <!-- COLUNA 02 — DADOS -->
-
-      <section data-col="dados" class="min-w-0">
-        <div class="">
-          <div class="">
+      <!-- COLUNA 02 — DADOS (padrão título → conteúdo, 3 tipos) -->
+      <section data-col="dados" class="flex min-w-0 flex-1 flex-col lg:basis-[58%] lg:pl-8">
+        <div class="flex flex-col divide-y divide-border">
+          <div class="py-6 first:pt-0 sm:py-8">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutRoleTitle}</span>
             <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
               {profile.hero.title.split(' · ').map((part) => (
@@ -170,7 +177,7 @@ const socials = [
             </p>
           </div>
 
-          <div class="">
+          <div class="py-6 sm:py-8">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutMainStackTitle}</span>
             <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
               {profile.hero.mainStack.split(' · ').map((stack, i) => (
@@ -182,31 +189,28 @@ const socials = [
             </p>
           </div>
 
-          <div class="">
+          <div class="py-6 sm:py-8">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutLocationTitle}</span>
             <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
               {profile.hero.location}
             </p>
           </div>
 
-          <div class="">
+          <div class="py-6 sm:py-8">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutBioTitle}</span>
-            <Reveal>
-              <div class="mt-2 space-y-3">
-                {t.aboutBio.map((paragraph) => (
-                  <p class={`${TYPE.body} text-muted-foreground`}>
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </Reveal>
+            <div class="mt-2 space-y-3">
+              {t.aboutBio.map((paragraph) => (
+                <p class={`${TYPE.body} text-muted-foreground`}>
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       </section>
     </div>
 
     <!-- TRAJETÓRIA — abaixo das duas colunas, largura total -->
-
     <section data-col="trajetoria" class="min-w-0 border-t border-border">
       <header
         class="
