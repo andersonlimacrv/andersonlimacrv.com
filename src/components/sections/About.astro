@@ -4,6 +4,7 @@ import SectionHeading from '../ui/SectionHeading.astro';
 import BlueprintMorphEnd from '../blueprint/BlueprintMorphEnd.astro';
 import TrajectoryClean from './TrajectoryClean.astro';
 import Subtitle from '../ui/Subtitle.astro';
+import Sep from '../ui/Sep.astro';
 import portrait from '../../assets/me.png';
 import { site, socialLinks } from '../../data/site';
 import { profile } from '../../data/profile';
@@ -178,7 +179,12 @@ const socials = [
                     sm:text-[10px]
                   "
                 >
-                  {profile.hero.mainStack}
+                  {profile.hero.mainStack.split(' · ').map((stack, i) => (
+                    <>
+                      {i > 0 && <Sep />}
+                      {stack}
+                    </>
+                  ))}
                 </dd>
               </div>
 

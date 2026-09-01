@@ -9,7 +9,7 @@ com o baseline salvo em `docs/audit-baseline.json`.
 ```sh
 npm run build          # build de produção
 npm run check          # diagnóstico Astro (0 erros)
-npm run test:e2e       # 123 testes Playwright (desktop/mobile, blueprint, scrollbar, fonte de dados; 7 falhas pré-existentes no main)
+npm run test:e2e       # 132 testes Playwright (desktop/mobile, blueprint, scrollbar, fonte de dados; 7 falhas pré-existentes no main)
 node scripts/audit.mjs # build + métricas + comparação vs baseline
 ```
 
@@ -36,19 +36,26 @@ node scripts/audit.mjs # build + métricas + comparação vs baseline
 - [x] As 4 seções numeradas (01 Sobre, 02 Projetos, 03 Blog, 04 Contato) com
       `SectionHeading` + KineticGrid; slot com `mt-8` padrão; blocos internos
       do About com `py-6 sm:py-8` uniformes.
+- [x] Nav do header na ordem das seções (Sobre, Projetos, Blog, Contato);
+      TargetSimbol auxiliar de toque (`md:hidden`) em links mono uppercase
+      (voltar ao topo, voltar ao blog, share, relacionadas); "Leia também"
+      como lista editorial numerada; separador unificado `·` via `Sep.astro`
+      (eyebrow, trajetória, meta do post, mainStack, shareX).
+      Trade-off: +58 KB raw de HTML (instâncias inline do SVG da mira;
+      +7 KB gzip).
 
 | Métrica | Baseline | Atual | Δ |
 | --- | --- | --- | --- |
 | Arquivos dist/ | 42 | 41 | −1 |
-| Peso raw | 640.9 KB | 860.9 KB | +220.0 KB |
-| Peso gzip | 411.1 KB | 429.7 KB | +18.6 KB |
+| Peso raw | 640.9 KB | 919.0 KB | +278.1 KB |
+| Peso gzip | 411.1 KB | 436.9 KB | +25.8 KB |
 | Fontes | 13 | 6 | −7 |
 | CSS externo (linhas global.css) | 706 | 687 | −19 |
 | `group-link`/`group-arrow` (regras) | 2 | 0 | −2 |
 | SVGs inline de link | 6 | 0 | −6 |
 | Instâncias `<TargetHover>` | 1 (About) | 1 (global) | — |
 | `npm run check` | 20 erros (escopo global) | 0 erros | −20 |
-| Testes Playwright | 86 | 123 | +37 |
+| Testes Playwright | 86 | 132 | +46 |
 
 ## SEO on-page
 

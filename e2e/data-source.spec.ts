@@ -50,7 +50,10 @@ test.describe('fonte única de dados', () => {
   }) => {
     await gotoHome(page, '/es/');
     const eyebrow = page.locator('section#hero p').first();
-    await expect(eyebrow).toContainText('Perfil / 2026');
+    await expect(eyebrow).toContainText('Perfil');
+    await expect(eyebrow).toContainText('2026');
+    // composição via label2 + Sep (ponto médio unificado)
+    await expect(eyebrow.locator('span[aria-hidden="true"]')).toHaveCount(1);
   });
 });
 

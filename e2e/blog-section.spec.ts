@@ -103,9 +103,12 @@ test.describe('seção Blog com SectionHeading numerado', () => {
     await gotoHome(page, '/#blog');
     const section = page.locator('#blog');
     await expect(section).toBeVisible();
-    const top = await section.evaluate(
-      (el) => el.getBoundingClientRect().top,
-    );
-    expect(top).toBeLessThan(200);
+    // scroll-behavior: smooth → poll até o scroll assentar
+    await expect
+      .poll(
+        () => section.evaluate((el) => el.getBoundingClientRect().top),
+        { timeout: 4000 },
+      )
+      .toBeLessThan(200);
   });
 });

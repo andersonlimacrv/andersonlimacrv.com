@@ -1,13 +1,16 @@
 ---
+import Sep from './Sep.astro';
+
 interface Props {
   label: string;
+  label2?: string;
   class?: string;
 }
 
-const { label, class: className = '' } = Astro.props;
+const { label, label2, class: className = '' } = Astro.props;
 ---
 
 <span class:list={[
-    'inline-flex items-center gap-1.5 border border-border rounded bg-background/60 px-2 py-[0.3125rem] font-mono text-xs font-semibold leading-none uppercase tracking-[0.18em] text-muted-foreground',
+    'inline-flex items-center gap-1.5 border border-border bg-background/60 px-2 py-[0.3125rem] font-mono text-xs font-semibold leading-none uppercase tracking-[0.18em] text-muted-foreground',
     className,
-  ]}><slot name="icon" />{label}</span>
+  ]}><slot name="icon" />{label}{label2 && <Sep class="mx-1" />}{label2}</span>

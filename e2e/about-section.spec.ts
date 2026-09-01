@@ -122,7 +122,13 @@ test.describe('seção Sobre reformulada', () => {
         await expect(info.getByText('Engenheiro de Software')).toBeVisible();
         await expect(info.getByText('Enterpreneur')).toBeVisible();
         await expect(info.getByText('Arquiteto de Soluções')).toBeVisible();
-        await expect(info.getByText('Python · TypeScript · C/C++ · ESP32 · React')).toBeVisible();
+        // mainStack via split(' · ') + Sep (ponto médio unificado)
+        const stackRow = info.locator('dd', { hasText: 'Python' });
+        await expect(stackRow).toContainText('TypeScript');
+        await expect(stackRow).toContainText('React');
+        await expect(
+          stackRow.locator('span[aria-hidden="true"]'),
+        ).toHaveCount(4);
         await expect(info.getByText('Pelotas, Rio Grande do Sul, Brasil')).toBeVisible();
 
         const quote = page.locator('#sobre-content blockquote p');

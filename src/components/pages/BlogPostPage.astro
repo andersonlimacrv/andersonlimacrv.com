@@ -1,8 +1,8 @@
 ---
 import { render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
-import PostCard from '../ui/PostCard.astro';
-import { getPublishedPosts, getRelatedPosts, type BlogPost } from '../../lib/posts';
+import TargetSimbol from '../ui/TargetSimbol.astro';
+import { getPublishedPosts, getRelatedPosts, getPostSlug, formatDate, type BlogPost } from '../../lib/posts';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
 
 interface Props {
@@ -15,20 +15,47 @@ const t = ui[locale];
 const allPosts = await getPublishedPosts(locale);
 const related = getRelatedPosts(post, allPosts, 3);
 const { Content } = await render(post);
+const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
 ---
 
 <PostLayout post={post} locale={locale}>
   <Content />
   {related.length > 0 && (
     <aside class="mt-14 border-t border-border pt-10">
-      <h2 class="mb-6 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
+      <h2 class="mb-2 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
         {t.relatedPosts}
       </h2>
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {related.map((relatedPost) => (
-          <PostCard post={relatedPost} locale={locale} />
+      <ol class="flex flex-col divide-y divide-border">
+        {related.map((relatedPost, i) => (
+          <li>
+            <a
+              href={`${baseUrl}/blog/${getPostSlug(relatedPost)}`}
+              class="cursor-target group transition-micro flex min-h-11 items-baseline gap-x-4 py-5"
+            >
+              <span
+                aria-hidden="true"
+                class="shrink-0 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span class="min-w-0 flex-1 font-sans text-lg font-semibold leading-snug tracking-tight transition-micro group-hover:text-primary sm:text-xl">
+                {relatedPost.data.title}
+              </span>
+              <TargetSimbol size={16} class="shrink-0 self-center sm:hidden" />
+              <span
+                aria-hidden="true"
+                class="shrink-0 self-center font-mono text-xs text-muted-foreground transition-micro group-hover:translate-x-1 group-hover:text-foreground"
+              >&rarr;</span>
+              <time
+                datetime={relatedPost.data.pubDate.toISOString()}
+                class="hidden shrink-0 self-center font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground sm:inline"
+              >
+                {formatDate(relatedPost.data.pubDate, locale)}
+              </time>
+            </a>
+          </li>
         ))}
-      </div>
+      </ol>
     </aside>
   )}
 </PostLayout>
