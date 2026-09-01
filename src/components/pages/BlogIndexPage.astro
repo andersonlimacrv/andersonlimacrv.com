@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../ui/PostCard.astro';
 import Reveal from '../ui/Reveal.astro';
+import { TYPE } from '../ui/typography';
 import JsonLd from '../ui/JsonLd.astro';
 import { getPublishedPosts } from '../../lib/posts';
 import { siteUrl } from '../../data/site';
@@ -44,10 +45,10 @@ const breadcrumbJsonLd = {
   <JsonLd slot="head" schema={breadcrumbJsonLd} />
 
   <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 md:px-8 pb-16 pt-12 sm:pt-16">
-    <p class="mb-6 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
+    <p class={`mb-6 ${TYPE.labelWide} text-muted-foreground`}>
       {t.blogLabel}
     </p>
-    <h1 class="mb-10 font-sans text-h1 font-bold leading-[1.1] tracking-tight">{t.blogTitle}</h1>
+    <h1 class={`mb-10 ${TYPE.titleH1}`}>{t.blogTitle}</h1>
 
     {posts.length > 0 ? (
       <Reveal>

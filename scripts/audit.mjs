@@ -255,3 +255,11 @@ try {
 } catch {
   console.error('css-audit falhou (classes mortas detectadas com --fail-on-dead?)');
 }
+
+// Auditoria de tipografia (tudo deve vir do registro TYPE em Text.astro).
+// Gera docs/typography-audit.md — falha se houver violação.
+try {
+  execSync('node scripts/typography-audit.mjs', { stdio: 'inherit', cwd: ROOT });
+} catch {
+  console.error('typography-audit falhou (tipografia fora do Text.astro)');
+}

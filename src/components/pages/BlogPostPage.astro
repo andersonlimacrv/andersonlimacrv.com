@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 import TargetSimbol from '../ui/TargetSimbol.astro';
+import { TYPE } from '../ui/typography';
 import { getPublishedPosts, getRelatedPosts, getPostSlug, formatDate, type BlogPost } from '../../lib/posts';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
 
@@ -22,7 +23,7 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
   <Content />
   {related.length > 0 && (
     <aside class="mt-14 border-t border-border pt-10">
-      <h2 class="mb-2 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
+      <h2 class={`mb-2 ${TYPE.labelWide} text-muted-foreground`}>
         {t.relatedPosts}
       </h2>
       <ol class="flex flex-col divide-y divide-border">
@@ -34,21 +35,21 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
             >
               <span
                 aria-hidden="true"
-                class="shrink-0 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground"
+                class={`shrink-0 ${TYPE.label} text-muted-foreground`}
               >
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <span class="min-w-0 flex-1 font-sans text-lg font-semibold leading-snug tracking-tight transition-micro group-hover:text-primary sm:text-xl">
+              <span class={`min-w-0 flex-1 transition-micro group-hover:text-primary ${TYPE.titleH3}`}>
                 {relatedPost.data.title}
               </span>
               <TargetSimbol size={16} class="shrink-0 self-center sm:hidden" />
               <span
                 aria-hidden="true"
-                class="shrink-0 self-center font-mono text-xs text-muted-foreground transition-micro group-hover:translate-x-1 group-hover:text-foreground"
+                class={`shrink-0 self-center ${TYPE.label} text-muted-foreground transition-micro group-hover:translate-x-1 group-hover:text-foreground`}
               >&rarr;</span>
               <time
                 datetime={relatedPost.data.pubDate.toISOString()}
-                class="hidden shrink-0 self-center font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground sm:inline"
+                class={`hidden shrink-0 self-center ${TYPE.label} text-muted-foreground sm:inline`}
               >
                 {formatDate(relatedPost.data.pubDate, locale)}
               </time>

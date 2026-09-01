@@ -33,13 +33,13 @@ test.describe('target simbol — mira com spin roleta', () => {
     expect(box).not.toBeNull();
     expect(Math.round(box!.width)).toBe(32);
     expect(Math.round(box!.height)).toBe(32);
-    // dentro do box do kinetic grid
-    const kinetic = page.locator('[data-kinetic-grid]').first();
-    const kb = await kinetic.boundingBox();
-    expect(kb).not.toBeNull();
-    expect(box!.x).toBeGreaterThanOrEqual(kb!.x);
-    expect(box!.x + box!.width).toBeLessThanOrEqual(kb!.x + kb!.width + 1);
-    expect(box!.y + box!.height).toBeLessThanOrEqual(kb!.y + kb!.height + 1);
+    // dentro da seção de contato (ao lado do email — sem kinetic box)
+    const contact = page.locator('#contato');
+    const cb = await contact.boundingBox();
+    expect(cb).not.toBeNull();
+    expect(box!.x).toBeGreaterThanOrEqual(cb!.x);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(cb!.x + cb!.width + 1);
+    expect(box!.y + box!.height).toBeLessThanOrEqual(cb!.y + cb!.height + 1);
   });
 
   test('spins ao entrar na viewport (data-spins incrementa) e em re-entrada', async ({

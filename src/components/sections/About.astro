@@ -1,9 +1,9 @@
 ---
 import Reveal from '../ui/Reveal.astro';
+import { TYPE } from '../ui/typography';
 import SectionHeading from '../ui/SectionHeading.astro';
 import BlueprintMorphEnd from '../blueprint/BlueprintMorphEnd.astro';
 import TrajectoryClean from './TrajectoryClean.astro';
-import Subtitle from '../ui/Subtitle.astro';
 import Sep from '../ui/Sep.astro';
 import portrait from '../../assets/me.png';
 import { site, socialLinks } from '../../data/site';
@@ -36,13 +36,6 @@ const socials = [
     id="sobre-content"
     class="relative"
   >
-
-    <!-- =========================================================
-          ABOUT — coluna única: Perfil acima, Trajetória abaixo
-          01 — Perfil (retrato + informações ao lado)
-          02 — Trajetória (lista clean com badges)
-          ========================================================= -->
-
     <div
       class="
         relative
@@ -54,11 +47,6 @@ const socials = [
         border-border
       "
     >
-
-      <!-- =======================================================
-            BLOCO 01 — PERFIL
-            ======================================================= -->
-
       <section
         data-col="perfil"
         class="min-w-0 basis-full"
@@ -78,26 +66,9 @@ const socials = [
             sm:py-8
           "
         >
-          <Subtitle label={t.aboutProfileColumn} variant="strong" size="sm" />
-
-          <span
-            class="
-              font-mono
-              text-[8px]
-              tracking-[0.15em]
-              text-muted-foreground/50
-              sm:text-[9px]
-            "
-          >
-            01
-          </span>
+          <span class={`${TYPE.label} text-muted-foreground`}>{t.aboutProfileColumn}</span>
+          <span class={`${TYPE.label} text-muted-foreground/50`}>01</span>
         </div>
-
-
-        <!-- =====================================================
-             FOTO + INFORMAÇÕES
-             Sempre lado a lado (nunca abaixo da foto)
-             ===================================================== -->
 
         <div
           class="
@@ -109,9 +80,7 @@ const socials = [
           "
         >
 
-          <!-- FOTO (alvo do morph) -->
-
-          <div
+        <div
             id="sobre-portrait"
             class="
               relative
@@ -145,16 +114,12 @@ const socials = [
             >
 
               <div>
-                <Subtitle label={t.aboutRoleTitle} as="dt" />
+                <dt class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutRoleTitle}</dt>
 
                 <dd
                   class="
                     mt-1
-                    text-[9px]
-                    font-medium
-                    leading-snug
-                    text-foreground
-                    sm:text-xs
+                   text-muted-foreground
                   "
                 >
                   {profile.hero.title.split(' · ').map((part) => (
@@ -164,19 +129,13 @@ const socials = [
               </div>
 
 
-              <!-- STACK PRINCIPAL -->
-
               <div>
-                <Subtitle label={t.aboutMainStackTitle} as="dt" />
+                <dt class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutMainStackTitle}</dt>
 
                 <dd
                   class="
                     mt-1
-                    font-mono
-                    text-[8px]
-                    leading-relaxed
                     text-muted-foreground
-                    sm:text-[10px]
                   "
                 >
                   {profile.hero.mainStack.split(' · ').map((stack, i) => (
@@ -188,20 +147,13 @@ const socials = [
                 </dd>
               </div>
 
-
-              <!-- LOCALIZAÇÃO -->
-
               <div>
-                <Subtitle label={t.aboutLocationTitle} as="dt" />
+                <dt class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutLocationTitle}</dt>
 
                 <dd
                   class="
                     mt-1
-                    font-mono
-                    text-[8px]
-                    leading-relaxed
                     text-muted-foreground
-                    sm:text-[10px]
                   "
                 >
                   {profile.hero.location}
@@ -212,11 +164,6 @@ const socials = [
           </div>
 
         </div>
-
-
-        <!-- =====================================================
-             FRASE
-             ===================================================== -->
 
         <Reveal
           class="
@@ -238,8 +185,6 @@ const socials = [
               sm:py-6
             "
           >
-
-            <!-- blueprint corner -->
 
             <span
               aria-hidden="true"
@@ -272,13 +217,7 @@ const socials = [
 
             <blockquote
               class="
-                font-serif
-                text-sm
-                italic
-                leading-relaxed
-                tracking-tight
                 text-foreground
-                sm:text-lg
               "
             >
               <p>
@@ -290,10 +229,6 @@ const socials = [
           </div>
         </Reveal>
 
-
-        <!-- =====================================================
-             SOBRE MIM
-             ===================================================== -->
 
         <Reveal
           delay={60}
@@ -313,7 +248,7 @@ const socials = [
               gap-3
             "
           >
-            <Subtitle label={t.aboutBioTitle} />
+            <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutBioTitle}</span>
           </div>
 
 
@@ -327,10 +262,7 @@ const socials = [
             {t.aboutBio.map((paragraph) => (
               <p
                 class="
-                  text-[10px]
-                  leading-relaxed
                   text-muted-foreground
-                  sm:text-xs
                 "
               >
                 {paragraph}
@@ -339,11 +271,6 @@ const socials = [
           </div>
 
         </Reveal>
-
-
-        <!-- =====================================================
-             SOCIAL / CONTATO — fim da coluna
-             ===================================================== -->
 
         <Reveal
           delay={200}
@@ -362,7 +289,7 @@ const socials = [
             "
           >
             <div class="flex flex-col gap-2">
-              <Subtitle label={t.aboutContactTitle} />
+              <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutContactTitle}</span>
 
               <nav
                 class="flex flex-col"
@@ -380,13 +307,8 @@ const socials = [
                       transition-micro
                       border
                       py-2.5
-                      font-mono
-                      text-xs
-                      uppercase
-                      tracking-[0.16em]
                       text-muted-foreground
                       hover:text-foreground
-                      sm:text-sm
                     "
                   >
                     {social.label}
@@ -423,19 +345,8 @@ const socials = [
             sm:py-8
           "
         >
-          <Subtitle label={t.aboutTrajectoryColumn} variant="strong" size="sm" />
-
-          <span
-            class="
-              font-mono
-              text-[8px]
-              tracking-[0.15em]
-              text-muted-foreground/50
-              sm:text-[9px]
-            "
-          >
-            02
-          </span>
+          <span class={`${TYPE.label} text-muted-foreground`}>{t.aboutTrajectoryColumn}</span>
+          <span class={`${TYPE.label} text-muted-foreground/50`}>02</span>
         </div>
 
         <div class="py-6 sm:py-8">

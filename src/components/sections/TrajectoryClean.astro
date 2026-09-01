@@ -1,8 +1,8 @@
 ---
 import type { Locale } from '../../i18n/ui';
+import { TYPE } from '../ui/typography';
 import { ui, defaultLocale } from '../../i18n/ui';
 import { getTimeline } from '../../data/timeline';
-import Subtitle from '../ui/Subtitle.astro';
 import Sep from '../ui/Sep.astro';
 
 interface Props {
@@ -68,22 +68,22 @@ function formatPeriodShort(period: string): string {
 
 <div class="flex flex-col gap-8 sm:gap-10">
   <section aria-labelledby="trajectory-work-title">
-    <Subtitle label={t.aboutBadgeWork} as="h3" id="trajectory-work-title" class="mb-3" />
+    <h3 id="trajectory-work-title" class={`${TYPE.label} text-muted-foreground/60 mb-3`}>{t.aboutBadgeWork}</h3>
     <ul aria-label={t.aboutBadgeWork} class="flex flex-col">
       {
         workRows.map((row) => (
           <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
             <span class="min-w-0 flex-1 truncate">
-              <span class="font-sans leading-relaxed  text-foreground font-medium text-sm">
+              <span class={`${TYPE.body} text-foreground`}>
                 {row.role}
               </span>
               <Sep class="mx-1" />
-              <span class="font-sans leading-relaxed text-muted-foreground/80 text-sm">
+              <span class={`${TYPE.body} text-muted-foreground/80`}>
                 {row.company}
               </span>
             </span>
             <span
-              class="trajectory-period shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:text-xs whitespace-nowrap sm:text-right"
+              class={`trajectory-period shrink-0 ${TYPE.label} text-muted-foreground whitespace-nowrap sm:text-right`}
               title={row.period}
             >
               {formatPeriodShort(row.period)}
@@ -94,22 +94,22 @@ function formatPeriodShort(period: string): string {
     </ul>
   </section>
   <section aria-labelledby="trajectory-edu-title">
-    <Subtitle label={t.aboutBadgeEducation} as="h3" id="trajectory-edu-title" class="mb-3" />
+    <h3 id="trajectory-edu-title" class={`${TYPE.label} text-muted-foreground/60 mb-3`}>{t.aboutBadgeEducation}</h3>
     <ul aria-label={t.aboutBadgeEducation} class="flex flex-col">
       {
         eduRows.map((row) => (
           <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
             <span class="min-w-0 flex-1 truncate">
-              <span class="font-sans leading-relaxed text-foreground font-medium text-sm">
+              <span class={`${TYPE.body} text-foreground`}>
                 {row.role}
               </span>
               <Sep class="mx-2" />
-              <span class="font-sans leading-relaxed text-muted-foreground/80 text-sm">
+              <span class={`${TYPE.body} text-muted-foreground/80`}>
                 {row.company}
               </span>
             </span>
             <span
-              class="trajectory-period shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground sm:text-xs whitespace-nowrap sm:text-right"
+              class={`trajectory-period shrink-0 ${TYPE.label} text-muted-foreground whitespace-nowrap sm:text-right`}
               title={row.period}
             >
               {formatPeriodShort(row.period)}

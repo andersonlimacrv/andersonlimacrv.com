@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import '../styles/target-hover.css';
 import { getImage } from 'astro:assets';
+import { TYPE } from '../components/ui/typography';
 import { ClientRouter } from 'astro:transitions';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
@@ -140,7 +141,7 @@ const ogImageMeta = image === portraitOg.src
   <body>
     <div class="screen-fade screen-fade-top" aria-hidden="true" />
     <a
-      class="skip-link"
+      class={`skip-link ${TYPE.label}`}
       href="#main-content"
       aria-label={t.skipLink}
     >

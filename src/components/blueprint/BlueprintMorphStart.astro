@@ -1,4 +1,6 @@
 ---
+import { TYPE } from '../ui/typography';
+
 interface Props {
   finalSize?: number;
 }
@@ -21,10 +23,10 @@ const { finalSize = 160 } = Astro.props;
       <span class="bp-ghost-tick bp-ghost-tick-top" aria-hidden="true"></span>
       <span class="bp-ghost-tick bp-ghost-tick-bottom" aria-hidden="true"></span>
       <span class="bp-ghost-tick bp-ghost-tick-right" aria-hidden="true"></span>
-      <b class="bp-ghost-r-label" data-bp="rlabel" aria-hidden="true">r —</b>
-      <b class="bp-ghost-q bp-ghost-q-a" data-bp="a" data-bp-live aria-hidden="true">—</b>
-      <b class="bp-ghost-q bp-ghost-q-s" data-bp="s" data-bp-live aria-hidden="true">—</b>
-      <b class="bp-ghost-q bp-ghost-q-xy" data-bp="xy" data-bp-live aria-hidden="true">0 · 0</b>
+      <b class={`bp-ghost-r-label ${TYPE.ghostLabel}`} data-bp="rlabel" aria-hidden="true">r —</b>
+      <b class={`bp-ghost-q bp-ghost-q-a ${TYPE.ghostMicro}`} data-bp="a" data-bp-live aria-hidden="true">—</b>
+      <b class={`bp-ghost-q bp-ghost-q-s ${TYPE.ghostLabel}`} data-bp="s" data-bp-live aria-hidden="true">—</b>
+      <b class={`bp-ghost-q bp-ghost-q-xy ${TYPE.ghostMicro}`} data-bp="xy" data-bp-live aria-hidden="true">0 · 0</b>
     </div>
 
     <span class="bp-ghost-r" aria-hidden="true">
@@ -113,7 +115,6 @@ const { finalSize = 160 } = Astro.props;
     border-radius: 9999px;
     background-color: color-mix(in oklab, var(--foreground) 4%, transparent);
     /* --bp-scale herdado do root (.bp-wireframe). */
-    font-size: calc(0.625rem * var(--bp-scale));
   }
 
   .bp-ghost-cross {
@@ -190,9 +191,6 @@ const { finalSize = 160 } = Astro.props;
     position: absolute;
     translate: 0 -50%;
     display: block;
-    font-family: var(--font-mono);
-    font-size: calc(0.625rem * var(--bp-scale));
-    letter-spacing: 0.04em;
     color: var(--foreground);
     white-space: nowrap;
   }
@@ -207,7 +205,6 @@ const { finalSize = 160 } = Astro.props;
     right: calc(50% + 0.5rem * var(--bp-scale));
     top: 41%;
     text-align: right;
-    font-size: calc(0.5625rem * var(--bp-scale));
   }
 
   .bp-ghost-q-s,
@@ -222,7 +219,6 @@ const { finalSize = 160 } = Astro.props;
 
   .bp-ghost-q-xy {
     top: 59%;
-    font-size: calc(0.5625rem * var(--bp-scale));
     line-height: 1.2;
     white-space: pre-line;
   }

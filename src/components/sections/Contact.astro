@@ -1,5 +1,6 @@
 ---
 import Reveal from '../ui/Reveal.astro';
+import { TYPE } from '../ui/typography';
 import SectionHeading from '../ui/SectionHeading.astro';
 import TargetSimbol from '../ui/TargetSimbol.astro';
 import { site, socialLinks } from '../../data/site';
@@ -21,13 +22,13 @@ const t = ui[locale];
 >
   <Reveal>
     <div class="flex max-w-xl flex-col gap-4 p-6 sm:p-8">
-      <p class="text-muted-foreground">
+      <p class={`${TYPE.body} text-muted-foreground`}>
         {t.contactParagraph}
       </p>
     <div class="flex items-center cursor-target transition-micro group">
       <a
         href={`mailto:${socialLinks.email}`}
-        class="font-mono text-sm uppercase tracking-[0.16em] text-foreground hover:text-primary"
+        class={`${TYPE.label} text-foreground hover:text-primary`}
       >
         {socialLinks.email}
       </a>

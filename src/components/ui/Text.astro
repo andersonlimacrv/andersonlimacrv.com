@@ -1,0 +1,24 @@
+---
+/** Text — componente span de tipografia única (registro em ./typography.ts).
+ * Fora do registro + espelho .post-content (global.css) não pode haver
+ * tipografia — verificado por scripts/typography-audit.mjs.
+ * (Elementos com tag semântica própria aplicam TYPE.<variante> via class.) */
+import { TYPE } from './typography';
+
+interface Props {
+  variant?: string;
+  id?: string;
+  class?: string;
+}
+
+const {
+  variant = 'body',
+  id,
+  class: className = '',
+} = Astro.props as Props;
+const typeClass = (TYPE as Record<string, string>)[variant];
+---
+
+<span id={id} class:list={[typeClass, className]}>
+  <slot />
+</span>

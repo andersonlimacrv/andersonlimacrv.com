@@ -1,4 +1,6 @@
 ---
+import { TYPE } from './typography';
+
 interface Props {
   class?: string;
 }
@@ -6,7 +8,4 @@ interface Props {
 const { class: className = '' } = Astro.props;
 ---
 
-<span
-  aria-hidden="true"
-  class:list={['select-none font-mono text-[0.8em] leading-none text-muted-foreground/60', className]}
->·</span>
+<span class:list={['select-none', TYPE.sep, 'text-muted-foreground/60', className]} aria-hidden="true">·</span>

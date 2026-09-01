@@ -1,5 +1,6 @@
 ---
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
+import { TYPE } from '../ui/typography';
 
 interface Props {
   finalSize?: number;
@@ -23,58 +24,49 @@ const t = ui[locale];
        revelada quando o morph leva a imagem para #sobre-content. -->
   <div class="bp-legend">
     <div class="bp-legend-head">
-      <span class="bp-legend-name">{t.blueprint.figName}</span>
-      <span class="bp-legend-tag">{t.blueprint.morphTag}</span>
+      <span class={`bp-legend-name ${TYPE.bpLegendName}`}>{t.blueprint.figName}</span>
+      <span class={`bp-legend-tag ${TYPE.bpLegendTag}`}>{t.blueprint.morphTag}</span>
     </div>
     <div class="bp-legend-body">
     <dl class="bp-data">
       <div class="bp-group">
-        <dt class="bp-group-title">{t.blueprint.initial}</dt>
+        <dt class={`bp-group-title ${TYPE.bpGroupTitle}`}>{t.blueprint.initial}</dt>
         <div class="bp-group-row">
-          <dt>W</dt>
-          <dd data-bp="w">—</dd>
+          <dt class={`${TYPE.bpRowLabel}`}>W</dt><dd data-bp="w" class={`${TYPE.bpRowValue}`}>—</dd>
         </div>
         <div class="bp-group-row">
-          <dt>H</dt>
-          <dd data-bp="h">—</dd>
+          <dt class={`${TYPE.bpRowLabel}`}>H</dt><dd data-bp="h" class={`${TYPE.bpRowValue}`}>—</dd>
         </div>
         <div class="bp-group-row">
-          <dt>d = √(W²+H²)</dt>
-          <dd data-bp="d">—</dd>
+          <dt class={`${TYPE.bpRowLabel}`}>d = √(W²+H²)</dt><dd data-bp="d" class={`${TYPE.bpRowValue}`}>—</dd>
         </div>
         <div class="bp-group-row">
-          <dt>A = W·H</dt>
-          <dd data-bp="a">—</dd>
+          <dt class={`${TYPE.bpRowLabel}`}>A = W·H</dt><dd data-bp="a" class={`${TYPE.bpRowValue}`}>—</dd>
         </div>
       </div>
       <div class="bp-group">
-        <dt class="bp-group-title">{t.blueprint.final}</dt>
+        <dt class={`bp-group-title ${TYPE.bpGroupTitle}`}>{t.blueprint.final}</dt>
         <div class="bp-group-row">
-          <dt>D</dt>
-          <dd data-bp="df">—</dd>
+          <dt class={`${TYPE.bpRowLabel}`}>D</dt><dd data-bp="df" class={`${TYPE.bpRowValue}`}>—</dd>
         </div>
         <div class="bp-group-row">
-          <dt>r</dt>
-          <dd data-bp="r">—</dd>
+          <dt class={`${TYPE.bpRowLabel}`}>r</dt><dd data-bp="r" class={`${TYPE.bpRowValue}`}>—</dd>
         </div>
         <div class="bp-group-row">
-          <dt>A = πr²</dt>
-          <dd data-bp="af">—</dd>
+          <dt class={`${TYPE.bpRowLabel}`}>A = πr²</dt><dd data-bp="af" class={`${TYPE.bpRowValue}`}>—</dd>
         </div>
         <div class="bp-group-row">
-          <dt>C = 2πr</dt>
-          <dd data-bp="c">—</dd>
+          <dt class={`${TYPE.bpRowLabel}`}>C = 2πr</dt><dd data-bp="c" class={`${TYPE.bpRowValue}`}>—</dd>
         </div>
       </div>
       <div class="bp-group">
-        <dt class="bp-group-title">{t.blueprint.position}</dt>
+        <dt class={`bp-group-title ${TYPE.bpGroupTitle}`}>{t.blueprint.position}</dt>
         <div class="bp-group-row">
           <dt>x·y</dt>
-          <dd>{Math.round(finalX * 100)}% · {Math.round(finalY * 100)}%</dd>
+          <dd class={`${TYPE.bpRowValue}`}>{Math.round(finalX * 100)}% · {Math.round(finalY * 100)}%</dd>
         </div>
         <div class="bp-group-row">
-          <dt>s</dt>
-          <dd data-bp="s">—</dd>
+          <dt class={`${TYPE.bpRowLabel}`}>s</dt><dd data-bp="s" class={`${TYPE.bpRowValue}`}>—</dd>
         </div>
       </div>
     </dl>
@@ -102,7 +94,6 @@ const t = ui[locale];
     border-radius: var(--radius);
     padding: 0.75rem 0.875rem;
     background-color: var(--background);
-    font-family: var(--font-mono);
     color: var(--muted-foreground);
   }
 
@@ -115,10 +106,6 @@ const t = ui[locale];
   }
 
   .bp-legend-name {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
     color: var(--foreground);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -127,9 +114,6 @@ const t = ui[locale];
   }
 
   .bp-legend-tag {
-    font-size: 0.5625rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
     color: var(--muted-foreground);
     white-space: nowrap;
   }
@@ -152,10 +136,6 @@ const t = ui[locale];
     margin-bottom: 0.375rem;
     padding-bottom: 0.25rem;
     border-bottom: 1px solid var(--border);
-    font-size: 0.5625rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
     color: var(--primary);
   }
 
@@ -164,20 +144,15 @@ const t = ui[locale];
     align-items: baseline;
     justify-content: space-between;
     gap: 0.5rem;
-    font-size: 0.625rem;
-    line-height: 1.6;
-    letter-spacing: 0.04em;
   }
 
   .bp-group-row dt {
-    text-transform: uppercase;
     color: var(--muted-foreground);
   }
 
   .bp-group-row dd {
     margin: 0;
     color: var(--foreground);
-    font-weight: 600;
     white-space: nowrap;
   }
 

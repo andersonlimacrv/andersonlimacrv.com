@@ -1,4 +1,6 @@
 ---
+import { TYPE } from './typography';
+
 interface Props {
   title: string;
   description?: string;
@@ -17,13 +19,13 @@ const { title, description, url, tags = [], external = true } = Astro.props;
   class="cursor-target transition-micro flex min-h-11 flex-col gap-2 border border-border p-5"
 >
   <span class="flex items-center justify-between gap-3">
-    <span class="font-sans text-lg font-semibold tracking-tight">{title}</span>
+    <span class={`${TYPE.titleH3}`}>{title}</span>
   </span>
-  {description && <span class="text-sm text-muted-foreground">{description}</span>}
+  {description && <span class={`${TYPE.body} text-muted-foreground`}>{description}</span>}
   {tags.length > 0 && (
     <span class="mt-1 flex flex-wrap gap-2">
       {tags.map((tag) => (
-        <span class="border border-border px-2 py-0.5 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground">
+        <span class={`border border-border px-2 py-0.5 ${TYPE.label} text-muted-foreground`}>
           {tag}
         </span>
       ))}

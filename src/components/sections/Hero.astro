@@ -1,5 +1,6 @@
 ---
 import Eyebrow from '../ui/Eyebrow.astro';
+import { TYPE } from '../ui/typography';
 import ScrollMorphPortrait from '../ui/ScrollMorphPortrait.astro';
 import BlueprintMorphStart from '../blueprint/BlueprintMorphStart.astro';
 import BlueprintMorphBoard from '../blueprint/BlueprintMorphBoard.astro';
@@ -20,10 +21,10 @@ const t = ui[locale];
     <p class="mb-6">
       <Eyebrow label={t.heroEyebrow} label2={site.heroEyebrowYear} />
     </p>
-    <h1 id="hero-title" class="hero-name font-sans text-hero font-extrabold leading-[1.05] tracking-[-0.03em]">
+    <h1 id="hero-title" class={`hero-name ${TYPE.hero}`}>
       {site.name}
     </h1>
-    <p class="mt-6 max-w-md text-lg text-muted-foreground">
+    <p class={`mt-6 max-w-md ${TYPE.body} text-muted-foreground`}>
       {t.heroSubtitle}
     </p>
   </div>

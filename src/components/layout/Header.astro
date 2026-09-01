@@ -1,6 +1,7 @@
 ---
 import ThemeToggle from '../ui/ThemeToggle.astro';
 import LanguageSwitcher from '../ui/LanguageSwitcher.astro';
+import { TYPE } from '../ui/typography';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
 
 interface Props {
@@ -28,14 +29,14 @@ const navLinks = [
     <a
       href={logoHref}
       aria-label={t.logoLabel}
-      class="cursor-target transition-micro flex min-h-11 shrink-0 items-center px-2 font-mono text-2xl font-bold uppercase tracking-[0.20em] text-foreground hover:text-muted-foreground mx-auto"
+      class={`cursor-target transition-micro flex min-h-11 shrink-0 items-center px-2 $${TYPE.logo} text-foreground hover:text-muted-foreground mx-auto`}
     >AC</a>
 
     <nav class="site-nav" aria-label={t.navLabel}>
       {navLinks.map((link) => (
         <a
           href={link.href}
-          class={`cursor-target transition-micro flex min-h-11 w-24 items-center justify-center whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] ${
+          class={`cursor-target transition-micro flex min-h-11 w-24 items-center justify-center whitespace-nowrap ${TYPE.navLink} ${
             pathname === homeHref
               ? 'text-foreground hover:text-muted-foreground'
               : 'text-muted-foreground hover:text-foreground'
@@ -89,7 +90,7 @@ const navLinks = [
       {navLinks.map((link) => (
         <a
           href={link.href}
-          class={`cursor-target transition-micro flex min-h-11 items-center whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] ${
+          class={`cursor-target transition-micro flex min-h-11 items-center whitespace-nowrap ${TYPE.navLink} ${
             pathname === homeHref
               ? 'text-foreground hover:text-muted-foreground'
               : 'text-muted-foreground hover:text-foreground'

@@ -82,18 +82,16 @@ test.describe('kinetic grid do contato', () => {
     expect(after).toBe(before);
   });
 
-  test('hint localizado por locale e placeholder removido', async ({ page }) => {
-    const cases = [
-      { path: '/', hint: 'mova o cursor · clique' },
-      { path: '/es/', hint: 'mueve el cursor · haz clic' },
-      { path: '/en/', hint: 'move your cursor · click' },
-    ];
-    for (const { path, hint } of cases) {
+  test('sem resquício do placeholder e grid presente no SectionHeading', async ({
+    page,
+  }) => {
+    for (const path of ['/', '/es/', '/en/']) {
       await gotoHome(page, path);
-      const grid = await gridBox(page);
-      await expect(grid).toContainText(hint);
       const body = await page.locator('body').innerHTML();
       expect(body).not.toContain('teste o background aqui');
+      // o KineticGrid agora vive no SectionHeading (cada seção numerada)
+      const grids = page.locator('[data-kinetic-grid]');
+      expect(await grids.count()).toBeGreaterThanOrEqual(1);
     }
   });
 

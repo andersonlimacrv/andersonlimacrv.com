@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import Sep from '../components/ui/Sep.astro';
+import { TYPE } from '../components/ui/typography';
 import TargetSimbol from '../components/ui/TargetSimbol.astro';
 import { getReadingTime, formatDate, getPostSlug } from '../lib/posts';
 import { siteUrl, authorName } from '../data/site';
@@ -73,15 +74,15 @@ const shareText = encodeURIComponent(title);
       <p class="mb-4 cursor-target">
         <a
           href={`${baseUrl}/blog`}
-          class="transition-micro inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+          class={`transition-micro inline-flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
         >
           {t.backToBlog}
           <TargetSimbol size={16} class="md:hidden" />
         </a>
       </p>
-      <h1 class="mb-4 font-sans text-h1 font-bold leading-[1.1] tracking-tight">{title}</h1>
-      <p class="mb-4 text-lg text-muted-foreground">{description}</p>
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+      <h1 class={`mb-4 ${TYPE.titleH1}`}>{title}</h1>
+      <p class={`mb-4 ${TYPE.body} text-muted-foreground`}>{description}</p>
+      <div class={`flex flex-wrap items-center gap-x-4 gap-y-2 ${TYPE.label} text-muted-foreground`}>
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate, locale)}</time>
         <Sep />
         <span>{t.readingTime.replace('{count}', String(readingTime))}</span>
@@ -95,7 +96,7 @@ const shareText = encodeURIComponent(title);
       {tags.length > 0 && (
         <div class="mt-4 flex flex-wrap gap-2">
           {tags.map((tag) => (
-            <span class="rounded-lg border border-border px-2 py-0.5 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground">
+            <span class={`rounded-lg border border-border px-2 py-0.5 ${TYPE.label} text-muted-foreground`}>
               {tag}
             </span>
           ))}
@@ -109,7 +110,7 @@ const shareText = encodeURIComponent(title);
 
     <footer class="mx-auto mt-12 max-w-[70ch] border-t border-border pt-8">
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground">
+        <p class={`${TYPE.label} text-muted-foreground`}>
           {t.share}
         </p>
         <div class="flex gap-4">
@@ -117,14 +118,14 @@ const shareText = encodeURIComponent(title);
             href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`}
             target="_blank"
             rel="noopener noreferrer"
-            class="cursor-target transition-micro flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+            class={`cursor-target transition-micro flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
           >
             {t.shareX}
             <TargetSimbol size={16} class="md:hidden" />
           </a>
           <a
             href={`mailto:?subject=${shareText}&body=${shareUrl}`}
-            class="cursor-target transition-micro flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+            class={`cursor-target transition-micro flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
           >
             {t.shareEmail}
             <TargetSimbol size={16} class="md:hidden" />

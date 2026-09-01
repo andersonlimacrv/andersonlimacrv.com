@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { formatDate, getPostSlug } from '../../lib/posts';
+import { TYPE } from './typography';
 import { defaultLocale, type Locale } from '../../i18n/ui';
 
 interface Props {
@@ -20,18 +21,12 @@ const href = `${baseUrl}/blog/${getPostSlug(post)}`;
     class="cursor-target group transition-micro grid min-h-11 grid-cols-1 gap-x-10 gap-y-3 py-6 sm:grid-cols-[1fr_auto] sm:items-start sm:py-8"
   >
     <span class="flex min-w-0 flex-col gap-2">
-      <span
-        class="transition-micro font-sans text-xl font-semibold leading-snug tracking-tight group-hover:text-primary sm:text-2xl"
-      >
-        {data.title}
-      </span>
-      <span class="line-clamp-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
-        {data.description}
-      </span>
+      <span class={`transition-micro group-hover:text-primary ${TYPE.titleH3}`}>{data.title}</span>
+      <span class={`line-clamp-2 max-w-prose ${TYPE.body} text-muted-foreground`}>{data.description}</span>
     </span>
     <span class="flex flex-col items-start gap-3 sm:items-end">
       <time
-        class="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground"
+        class={`${TYPE.label} text-muted-foreground`}
         datetime={data.pubDate.toISOString()}
       >
         {formatDate(data.pubDate, locale)}
@@ -40,7 +35,7 @@ const href = `${baseUrl}/blog/${getPostSlug(post)}`;
         <span class="flex flex-wrap gap-2 sm:justify-end">
           {data.tags.map((tag) => (
             <span
-              class="border border-border px-2 py-0.5 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-muted-foreground"
+              class={`border border-border px-2 py-0.5 ${TYPE.label} text-muted-foreground`}
             >
               {tag}
             </span>

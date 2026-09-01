@@ -1,4 +1,5 @@
 ---
+import Text from './Text.astro';
 import Sep from './Sep.astro';
 
 interface Props {
@@ -10,7 +11,15 @@ interface Props {
 const { label, label2, class: className = '' } = Astro.props;
 ---
 
-<span class:list={[
-    'inline-flex items-center gap-1.5 border border-border bg-background/60 px-2 py-[0.3125rem] font-mono text-xs font-semibold leading-none uppercase tracking-[0.18em] text-muted-foreground',
+<span
+  class:list={[
+    'inline-flex items-center gap-1.5 border border-border bg-background/60 px-2 py-[0.3125rem] text-muted-foreground',
     className,
-  ]}><slot name="icon" />{label}{label2 && <Sep class="mx-1" />}{label2}</span>
+  ]}
+>
+  <slot name="icon" />
+  <Text variant="label">{label}</Text>
+  {label2 && <Sep class="mx-1" />}
+  {label2 && <Text variant="label">{label2}</Text>}
+</span>
+</span>
