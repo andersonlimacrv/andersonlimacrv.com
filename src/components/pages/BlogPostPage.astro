@@ -26,7 +26,7 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
       <h2 class={`mb-2 ${TYPE.labelWide} text-muted-foreground`}>
         {t.relatedPosts}
       </h2>
-      <ol class="flex flex-col divide-y divide-border">
+      <ol class="flex flex-col divide-y divide-border list-none">
         {related.map((relatedPost, i) => (
           <li>
             <a
@@ -42,11 +42,7 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
               <span class={`min-w-0 flex-1 transition-micro group-hover:text-primary ${TYPE.titleH3}`}>
                 {relatedPost.data.title}
               </span>
-              <TargetSimbol size={16} class="shrink-0 self-center sm:hidden" />
-              <span
-                aria-hidden="true"
-                class={`shrink-0 self-center ${TYPE.label} text-muted-foreground transition-micro group-hover:translate-x-1 group-hover:text-foreground`}
-              >&rarr;</span>
+              <TargetSimbol size={25} class="shrink-0 self-center sm:hidden mr-4" />
               <time
                 datetime={relatedPost.data.pubDate.toISOString()}
                 class={`hidden shrink-0 self-center ${TYPE.label} text-muted-foreground sm:inline`}

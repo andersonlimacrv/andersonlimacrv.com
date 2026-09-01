@@ -2,6 +2,7 @@
 import Reveal from '../ui/Reveal.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import PostCard from '../ui/PostCard.astro';
+import TargetSimbol from '../ui/TargetSimbol.astro';
 import { TYPE } from '../ui/typography';
 import { getPublishedPosts } from '../../lib/posts';
 import { site } from '../../data/site';
@@ -42,7 +43,7 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
       class={`cursor-target transition-micro group inline-flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
     >
       {t.viewAllPosts}
-      <span aria-hidden="true" class="transition-micro inline-block group-hover:translate-x-1">&rarr;</span>
+        <TargetSimbol size={25} class="md:hidden" />
     </a>
   </div>
 </SectionHeading>

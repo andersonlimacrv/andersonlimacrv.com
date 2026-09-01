@@ -77,7 +77,7 @@ const shareText = encodeURIComponent(title);
           class={`transition-micro inline-flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
         >
           {t.backToBlog}
-          <TargetSimbol size={16} class="md:hidden" />
+          <TargetSimbol size={25} class="md:hidden" />
         </a>
       </p>
       <h1 class={`mb-4 ${TYPE.titleH1}`}>{title}</h1>
@@ -121,14 +121,14 @@ const shareText = encodeURIComponent(title);
             class={`cursor-target transition-micro flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
           >
             {t.shareX}
-            <TargetSimbol size={16} class="md:hidden" />
+            <TargetSimbol size={25} class="md:hidden" />
           </a>
           <a
             href={`mailto:?subject=${shareText}&body=${shareUrl}`}
             class={`cursor-target transition-micro flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
           >
             {t.shareEmail}
-            <TargetSimbol size={16} class="md:hidden" />
+            <TargetSimbol size={25} class="md:hidden" />
           </a>
         </div>
       </div>
