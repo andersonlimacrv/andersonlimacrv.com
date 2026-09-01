@@ -26,8 +26,8 @@ const states: SpinState[] = [];
 let io: IntersectionObserver | null = null;
 const bound = new WeakSet<HTMLElement>();
 
-const SPIN_DURATION = 1000;
-const SPIN_TURNS = 6;
+const SPIN_DURATION = 1600;
+const SPIN_TURNS = 10;
 const SPIN_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'; // --ease-expo-out
 
 function reducedMotion(): boolean {

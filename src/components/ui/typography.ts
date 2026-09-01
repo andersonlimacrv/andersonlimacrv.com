@@ -20,7 +20,7 @@ export const TYPE = {
   sectionEyebrow: 'font-mono text-xs uppercase tracking-[0.3em]',
   // TEXTOS
   body: 'font-sans font-normal text-xs md:text-sm leading-relaxed',
-  quote: 'font-serif italic text-sm leading-relaxed tracking-tight',
+  quote: 'font-serif italic text-sm lg:text-xl leading-relaxed tracking-tight',
   postBody: 'font-sans font-normal text-lead leading-[1.6]',
   postH2: 'font-sans font-bold text-h2 leading-[1.2] tracking-tight',
   postH3: 'font-sans font-semibold text-h3 leading-[1.3] tracking-tight',

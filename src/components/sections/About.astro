@@ -9,6 +9,7 @@ import portrait from '../../assets/me.png';
 import { site, socialLinks } from '../../data/site';
 import { profile } from '../../data/profile';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
+import TargetSimbol from '../ui/TargetSimbol.astro';
 
 interface Props {
   locale?: Locale;
@@ -62,9 +63,9 @@ const socials = [
       <!-- COLUNA 01 — PERFIL VISUAL -->
       <section
         data-col="perfil"
-        class="flex min-w-0 flex-[0_0_100%] flex-col gap-6 py-6 sm:py-8 lg:basis-[42%] lg:pr-8"
+        class="flex min-w-0 flex-[0_0_100%] flex-col gap-6 py-6 sm:py-8 lg:basis-[50%] lg:pr-8"
       >
-        <div class="flex flex-row gap-4 lg:flex-col lg:gap-6">
+        <div class="flex flex-row gap-4">
           <div
             id="sobre-portrait"
             class="
@@ -73,6 +74,7 @@ const socials = [
               h-30
               w-30
               shrink-0
+              m-5
               flex-[0_0_120px]
               self-start
               lg:h-40
@@ -167,18 +169,18 @@ const socials = [
       </section>
 
       <!-- COLUNA 02 — DADOS (padrão título → conteúdo, 3 tipos) -->
-      <section data-col="dados" class="flex min-w-0 flex-1 flex-col lg:basis-[58%] lg:pl-8">
-        <div class="flex flex-col divide-y divide-border">
-          <div class="py-6 first:pt-0 sm:py-8">
+      <section data-col="dados" class="flex min-w-0 flex-1 flex-col lg:basis-[50%] lg:pl-8">
+        <div class="flex flex-col">
+          <div class="py-2">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutRoleTitle}</span>
             <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
               {profile.hero.title.split(' · ').map((part) => (
-                <span class="block">{part}</span>
+                <span class="block"> <TargetSimbol size={16} class="inline-block align-middle mr-2" />{part}</span>
               ))}
             </p>
           </div>
 
-          <div class="py-6 sm:py-8">
+         <div class="py-2">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutMainStackTitle}</span>
             <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
               {profile.hero.mainStack.split(' · ').map((stack, i) => (
@@ -190,14 +192,14 @@ const socials = [
             </p>
           </div>
 
-          <div class="py-6 sm:py-8">
+          <div class="py-2">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutLocationTitle}</span>
             <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
               {profile.hero.location}
             </p>
           </div>
 
-          <div class="py-6 sm:py-8">
+         <div class="py-2">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutBioTitle}</span>
             <div class="mt-2 space-y-3">
               {t.aboutBio.map((paragraph) => (
@@ -215,6 +217,7 @@ const socials = [
     <section data-col="trajetoria" class="min-w-0 border-t border-border">
       <header
         class="
+        mt-8
           flex
           items-center
           gap-2
