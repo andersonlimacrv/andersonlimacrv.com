@@ -51,7 +51,7 @@ test.describe('TargetSimbol auxiliar (feedback de toque)', () => {
     const footer = page.locator('footer').last();
     const simbol = footer.locator('[data-target-simbol]');
     await expect(simbol).toBeVisible();
-    await expect(simbol).toHaveCSS('width', '16px');
+    await expect(simbol).toHaveCSS('width', '25px');
     // desktop
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.reload({ waitUntil: 'networkidle' });
