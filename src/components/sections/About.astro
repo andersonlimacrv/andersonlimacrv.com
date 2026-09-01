@@ -62,78 +62,79 @@ const socials = [
       <!-- COLUNA 01 — PERFIL VISUAL -->
       <section
         data-col="perfil"
-        class="flex min-w-0 flex-[0_0_100%] flex-col gap-6 py-6 sm:py-8 lg:basis-[42%] lg:pr-8 "
+        class="flex min-w-0 flex-[0_0_100%] flex-col gap-6 py-6 sm:py-8 lg:basis-[42%] lg:pr-8"
       >
-        <div
-          id="sobre-portrait"
-          class="
-            relative
-            aspect-square
-            ml-10
-            h-30
-            w-30
-            bg-red-500
-            shrink-0
-            self-start
-          "
-        >
-          <BlueprintMorphEnd
-            src={portrait}
-            finalSize={160}
-            finalX={0}
-            finalY={0}
-          />
-          <div class="absolute mr-auto bg-blue-500">COLOCAR ISSO AQUI AO LADO DA FOTO, NO MOBILE (frase - quote.</div>
-        </div>
-
-        <Reveal>
-        <div class=''>
-  <div
+        <div class="flex flex-row gap-4 lg:flex-col lg:gap-6">
+          <div
+            id="sobre-portrait"
             class="
               relative
-              border
-              border-dashed
-              border-border
-              px-4
-              py-5
-              sm:px-6
-              sm:py-6
+              aspect-square
+              h-30
+              w-30
+              shrink-0
+              flex-[0_0_120px]
+              self-start
+              lg:h-40
+              lg:w-40
+              lg:flex-[0_0_160px]
             "
           >
-            <span
-              aria-hidden="true"
-              class="
-                absolute
-                -left-px
-                -top-px
-                h-3
-                w-3
-                border-l
-                border-t
-                border-foreground
-              "
-            ></span>
-
-            <span
-              aria-hidden="true"
-              class="
-                absolute
-                -bottom-px
-                -right-px
-                h-3
-                w-3
-                border-b
-                border-r
-                border-foreground
-              "
-            ></span>
-
-            <blockquote class={`${TYPE.quote} text-foreground`}>
-              <p>{t.aboutQuote}</p>
-            </blockquote>
+            <BlueprintMorphEnd
+              src={portrait}
+              finalSize={160}
+              finalX={0}
+              finalY={0}
+            />
           </div>
+
+          <Reveal class="min-w-0 flex-1">
+            <div
+              class="
+                relative
+                border
+                border-dashed
+                border-border
+                px-4
+                py-5
+                sm:px-6
+                sm:py-6
+              "
+            >
+              <span
+                aria-hidden="true"
+                class="
+                  absolute
+                  -left-px
+                  -top-px
+                  h-3
+                  w-3
+                  border-l
+                  border-t
+                  border-foreground
+                "
+              ></span>
+
+              <span
+                aria-hidden="true"
+                class="
+                  absolute
+                  -bottom-px
+                  -right-px
+                  h-3
+                  w-3
+                  border-b
+                  border-r
+                  border-foreground
+                "
+              ></span>
+
+              <blockquote class={`${TYPE.quote} text-foreground`}>
+                <p>{t.aboutQuote}</p>
+              </blockquote>
+            </div>
+          </Reveal>
         </div>
-        </Reveal>
 
         <Reveal delay={60}>
           <footer class="flex flex-col gap-3">
