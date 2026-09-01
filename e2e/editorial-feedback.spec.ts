@@ -205,7 +205,7 @@ test.describe('separador unificado ·', () => {
     expect(trajText).not.toContain('–');
     // mainStack do About intercalado com Sep
     const stackSep = page
-      .locator('dd', { hasText: 'TypeScript' })
+      .locator('section[data-col="dados"] p', { hasText: 'TypeScript' })
       .locator('span[aria-hidden="true"]');
     expect(await stackSep.count()).toBeGreaterThanOrEqual(1);
   });

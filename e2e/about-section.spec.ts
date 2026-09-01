@@ -32,54 +32,146 @@ test.describe('seção Sobre reformulada', () => {
     test.describe(vp.name, () => {
       test.use({ viewport: { width: vp.width, height: vp.height } });
 
-      test('layout: trajetória sempre abaixo do perfil (coluna única)', async ({
+      test('layout: duas colunas (perfil/dados) + trajetória abaixo (grid responsivo)', async ({
         page,
       }) => {
         await gotoHome(page);
         const data = await page.evaluate(() => {
           const grid = document.querySelector(
-            '#sobre-content > div.flex',
+            '#sobre-content > div.grid',
           ) as HTMLElement | null;
           if (!grid) return null;
           const cs = getComputedStyle(grid);
           const sections = Array.from(grid.querySelectorAll(':scope > section'));
           const order = sections.map((s) => s.getAttribute('data-col'));
+          const trajetoria = document.querySelector(
+            '#sobre-content > section[data-col="trajetoria"]',
+          );
+          const gridRect = grid.getBoundingClientRect();
+          const trajRect = trajetoria?.getBoundingClientRect();
           return {
             display: cs.display,
-            flexDirection: cs.flexDirection,
-            sections: sections.length,
+            cols: cs.gridTemplateColumns.split(' ').length,
             order,
+            trajBelow: trajRect !== undefined && trajRect.top >= gridRect.bottom - 1,
           };
         });
         expect(data).not.toBeNull();
-        expect(data!.display).toBe('flex');
-        expect(data!.sections).toBe(2);
-        expect(data!.flexDirection).toBe('column');
-        expect(data!.order).toEqual(['perfil', 'trajetoria']);
+        expect(data!.display).toBe('grid');
+        expect(data!.order).toEqual(['perfil', 'dados']);
+        expect(data!.trajBelow).toBe(true);
+        // desktop: 2 colunas; mobile: 1
+        if (vp.name === 'desktop') expect(data!.cols).toBe(2);
+        else expect(data!.cols).toBe(1);
       });
 
-      test('retrato à esquerda com informações ao lado (nunca abaixo)', async ({
+      test('colunas lado a lado no desktop, empilhadas no mobile', async ({
         page,
       }) => {
         await gotoHome(page);
         const data = await page.evaluate(() => {
-          const portrait = document.querySelector('#sobre-portrait');
-          const info = document.querySelector('#sobre-portrait + div');
-          if (!portrait || !info) return null;
-          const pr = portrait.getBoundingClientRect();
-          const ir = info.getBoundingClientRect();
-          const dl = info.querySelector('dl');
+          const perfil = document
+            .querySelector('#sobre-content section[data-col="perfil"]')
+            ?.getBoundingClientRect();
+          const dados = document
+            .querySelector('#sobre-content section[data-col="dados"]')
+            ?.getBoundingClientRect();
+          if (!perfil || !dados) return null;
           return {
-            infoRight: ir.right,
-            portraitRight: pr.right,
-            infoTopOverlap: ir.top < pr.bottom,
-            dlCount: dl ? dl.querySelectorAll(':scope > div').length : 0,
+            dadosLeft: dados.left,
+            perfilRight: perfil.right,
+            dadosTop: dados.top,
+            perfilBottom: perfil.bottom,
           };
         });
         expect(data).not.toBeNull();
-        // Informações ao lado (à direita) e com topo dentro da área da foto.
-        expect(data!.infoRight).toBeGreaterThan(data!.portraitRight - TOLERANCE_PX);
-        expect(data!.infoTopOverlap).toBe(true);
+        if (vp.name === 'desktop') {
+          // lado a lado: dados à direita do perfil, com sobreposição vertical
+          expect(data!.dadosLeft).toBeGreaterThan(data!.perfilRight - TOLERANCE_PX);
+          expect(data!.dadosTop).toBeLessThan(data!.perfilBottom - TOLERANCE_PX);
+        } else {
+          // empilhado: dados abaixo do perfil
+          expect(data!.dadosTop).toBeGreaterThanOrEqual(data!.perfilBottom - TOLERANCE_PX);
+        }
+      });
+
+      test('conteúdo: role/stack/location/bio na coluna dados (sem dl); frase e sociais na coluna perfil', async ({
+        page,
+      }) => {
+        await gotoHome(page);
+
+        // sem dl/dt/dd — blocos "título + conteúdo" diretos
+        const dlCount = await page.evaluate(
+          () => document.querySelectorAll('#sobre-content dl').length,
+        );
+        expect(dlCount).toBe(0);
+
+        const dados = page.locator('#sobre-content section[data-col="dados"]');
+        await expect(dados.getByText('Engenheiro de Software')).toBeVisible();
+        await expect(dados.getByText('Enterpreneur')).toBeVisible();
+        await expect(dados.getByText('Arquiteto de Soluções')).toBeVisible();
+        await expect(dados.getByText('TypeScript')).toBeVisible();
+        await expect(dados.getByText('React')).toBeVisible();
+        await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brasil')).toBeVisible();
+        // stack separado por Sep (4 separadores)
+        const stackRow = dados.locator('p', { hasText: 'Python' });
+        await expect(stackRow.locator('span[aria-hidden="true"]')).toHaveCount(4);
+
+        const perfil = page.locator('#sobre-content section[data-col="perfil"]');
+        const quote = perfil.locator('blockquote p');
+        await expect(quote).not.toHaveText('');
+        await expect(perfil.locator('blockquote')).toContainText('Faço web pensando em quem lê');
+
+        await expect(page.locator('#sobre-content footer').getByText('GitHub')).toBeVisible();
+        await expect(page.locator('#sobre-content footer').getByText('Instagram')).toBeVisible();
+        await expect(page.locator('#sobre-content footer').getByText('WhatsApp')).toBeVisible();
+        await expect(page.locator('#sobre-content footer').getByText('+55 53 98100-4874')).toHaveCount(0);
+
+        // Trajetória clean: 7 rows separadas em Trabalho (4) + Formação (3)
+        const entries = page.locator('#sobre-content section[data-col="trajetoria"] li');
+        await expect(entries).toHaveCount(7);
+        await expect(entries.first()).toContainText('CESS');
+        // Headings de seção Trabalho / Formação visíveis
+        await expect(page.locator('#trajectory-work-title')).toHaveText('Trabalho');
+        await expect(page.locator('#trajectory-edu-title')).toHaveText('Formação');
+        // Sem summary longo, sem linha vertical
+        await expect(entries.first()).not.toContainText('Especialização em IA e ML aplicada');
+        await expect(page.locator('#sobre-content section[data-col="trajetoria"] .cross-mark')).toHaveCount(0);
+        // Trabalho 4 + Formação 3
+        await expect(page.locator('ul[aria-label="Trabalho"] > li')).toHaveCount(4);
+        await expect(page.locator('ul[aria-label="Formação"] > li')).toHaveCount(3);
+      });
+
+      test('tipografia do perfil: label (10-12px), conteúdo (14px), quote serif itálico', async ({
+        page,
+      }) => {
+        await gotoHome(page);
+        const data = await page.evaluate(() => {
+          const dados = document.querySelector(
+            '#sobre-content section[data-col="dados"]',
+          );
+          const title = dados?.querySelector('span');
+          const content = dados?.querySelector('p');
+          const quote = document.querySelector('#sobre-content blockquote p');
+          const csTitle = title ? getComputedStyle(title) : null;
+          const csContent = content ? getComputedStyle(content) : null;
+          const csQuote = quote ? getComputedStyle(quote) : null;
+          return {
+            titleSize: csTitle ? parseFloat(csTitle.fontSize) : -1,
+            contentSize: csContent ? parseFloat(csContent.fontSize) : -1,
+            quoteFamily: csQuote?.fontFamily ?? '',
+            quoteStyle: csQuote?.fontStyle ?? '',
+          };
+        });
+        // label eyebrow 10→12px
+        expect(data.titleSize).toBeGreaterThanOrEqual(10);
+        expect(data.titleSize).toBeLessThanOrEqual(12);
+        // conteúdo body: responsivo 12px (mobile) → 14px (desktop)
+        const expectedContent = vp.name === 'mobile' ? 12 : 14;
+        expect(data.contentSize).toBe(expectedContent);
+        // frase: serif itálico (estilo à parte)
+        expect(data.quoteFamily).toContain('Fraunces');
+        expect(data.quoteStyle).toBe('italic');
       });
 
       test('sem overflow horizontal', async ({ page }) => {
@@ -110,51 +202,6 @@ test.describe('seção Sobre reformulada', () => {
         } else {
           await expect(page.locator('.target-hover-corner')).toHaveCount(0);
         }
-      });
-
-      test('conteúdo: role/stack/location na coluna 01, frase, bio, social; trajectory na coluna 02', async ({
-        page,
-      }) => {
-        await gotoHome(page);
-
-        const info = page.locator('#sobre-portrait + div dl');
-        await expect(info.locator(':scope > div')).toHaveCount(3);
-        await expect(info.getByText('Engenheiro de Software')).toBeVisible();
-        await expect(info.getByText('Enterpreneur')).toBeVisible();
-        await expect(info.getByText('Arquiteto de Soluções')).toBeVisible();
-        // mainStack via split(' · ') + Sep (ponto médio unificado)
-        const stackRow = info.locator('dd', { hasText: 'Python' });
-        await expect(stackRow).toContainText('TypeScript');
-        await expect(stackRow).toContainText('React');
-        await expect(
-          stackRow.locator('span[aria-hidden="true"]'),
-        ).toHaveCount(4);
-        await expect(info.getByText('Pelotas, Rio Grande do Sul, Brasil')).toBeVisible();
-
-        const quote = page.locator('#sobre-content blockquote p');
-        await expect(quote).not.toHaveText('');
-        await expect(page.locator('#sobre-content blockquote')).toContainText(
-          'Faço web pensando em quem lê',
-        );
-
-        await expect(page.locator('#sobre-content footer').getByText('GitHub')).toBeVisible();
-        await expect(page.locator('#sobre-content footer').getByText('Instagram')).toBeVisible();
-        await expect(page.locator('#sobre-content footer').getByText('WhatsApp')).toBeVisible();
-        await expect(page.locator('#sobre-content footer').getByText('+55 53 98100-4874')).toHaveCount(0);
-
-        // Trajetória clean: 7 rows separadas em Trabalho (4) + Formação (3)
-        const entries = page.locator('#sobre-content section[data-col="trajetoria"] li');
-        await expect(entries).toHaveCount(7);
-        await expect(entries.first()).toContainText('CESS');
-        // Headings de seção Trabalho / Formação visíveis
-        await expect(page.locator('#trajectory-work-title')).toHaveText('Trabalho');
-        await expect(page.locator('#trajectory-edu-title')).toHaveText('Formação');
-        // Sem summary longo, sem linha vertical
-        await expect(entries.first()).not.toContainText('Especialização em IA e ML aplicada');
-        await expect(page.locator('#sobre-content section[data-col="trajetoria"] .cross-mark')).toHaveCount(0);
-        // Trabalho 4 + Formação 3
-        await expect(page.locator('ul[aria-label="Trabalho"] > li')).toHaveCount(4);
-        await expect(page.locator('ul[aria-label="Formação"] > li')).toHaveCount(3);
       });
 
       test('trajetória clean: duas listas Trabalho/Formação com Company / Role e period, sem linha vertical ou yearRange', async ({
@@ -222,10 +269,9 @@ test.describe('seção Sobre reformulada', () => {
         page,
       }) => {
         await gotoHome(page, '/en/');
-        await expect(page.locator('#sobre-portrait + div dl').getByText('Role')).toBeVisible();
-        await expect(
-          page.locator('#sobre-portrait + div dl').getByText('Main stack'),
-        ).toBeVisible();
+        const dados = page.locator('#sobre-content section[data-col="dados"]');
+        await expect(dados.getByText('Role')).toBeVisible();
+        await expect(dados.getByText('Main stack')).toBeVisible();
         await expect(page.locator('#sobre-content blockquote p')).toContainText(
           'I build for the web',
         );

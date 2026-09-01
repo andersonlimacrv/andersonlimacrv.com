@@ -32,65 +32,43 @@ const socials = [
   id="sobre"
   eyebrow={t.sections.about.eyebrow}
 >
-  <div
-    id="sobre-content"
-    class="relative"
-  >
+  <div id="sobre-content" class="relative">
     <div
       class="
-        relative
-        flex
-        flex-col
+        grid
+        grid-cols-1
         divide-y
-        divide-border
-        border-t
-        border-border
+        lg:grid-cols-2
+        lg:divide-y-0
+        lg:divide-x
       "
     >
-      <section
-        data-col="perfil"
-        class="min-w-0 basis-full"
-      >
+      <!-- COLUNA 01 — PERFIL -->
 
-        <!-- LABEL -->
-
-        <div
+      <section data-col="perfil" class="min-w-0 ">
+        <header
           class="
-            relative
             flex
             items-center
-            justify-between
-            border-b
-            border-border
+            gap-2
             py-6
             sm:py-8
           "
         >
-          <span class={`${TYPE.label} text-muted-foreground`}>{t.aboutProfileColumn}</span>
           <span class={`${TYPE.label} text-muted-foreground/50`}>01</span>
-        </div>
+          <span class={`${TYPE.label} text-muted-foreground`}>{t.aboutProfileColumn}</span>
+        </header>
 
-        <div
-          class="
-            flex
-            items-start
-            gap-3
-            py-6
-            sm:py-8
-          "
-        >
-
-        <div
+        <div class="flex flex-col gap-6 py-6 sm:py-8">
+          <div
             id="sobre-portrait"
             class="
               relative
               aspect-square
-              min-w-0
-              shrink-0
-              basis-[20%] md:basis-[30%]
               h-40
-              mt-6 md:mt-6
-              ml-14 md:ml-6 mr-4
+              w-40
+              shrink-0
+              self-start
             "
           >
             <BlueprintMorphEnd
@@ -101,207 +79,66 @@ const socials = [
             />
           </div>
 
-
-          <!-- INFORMAÇÕES -->
-
-          <div class="min-w-0 flex-1">
-            <dl
+          <Reveal>
+            <div
               class="
-                mt-1
-                space-y-3
-                sm:space-y-4
+                relative
+                border
+                border-dashed
+                border-border
+                px-4
+                py-5
+                sm:px-6
+                sm:py-6
               "
             >
-
-              <div>
-                <dt class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutRoleTitle}</dt>
-
-                <dd
-                  class="
-                    mt-1
-                   text-muted-foreground
-                  "
-                >
-                  {profile.hero.title.split(' · ').map((part) => (
-                    <span class="block">{part}</span>
-                  ))}
-                </dd>
-              </div>
-
-
-              <div>
-                <dt class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutMainStackTitle}</dt>
-
-                <dd
-                  class="
-                    mt-1
-                    text-muted-foreground
-                  "
-                >
-                  {profile.hero.mainStack.split(' · ').map((stack, i) => (
-                    <>
-                      {i > 0 && <Sep />}
-                      {stack}
-                    </>
-                  ))}
-                </dd>
-              </div>
-
-              <div>
-                <dt class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutLocationTitle}</dt>
-
-                <dd
-                  class="
-                    mt-1
-                    text-muted-foreground
-                  "
-                >
-                  {profile.hero.location}
-                </dd>
-              </div>
-
-            </dl>
-          </div>
-
-        </div>
-
-        <Reveal
-          class="
-            border-t
-            border-border
-            py-6
-            sm:py-8
-          "
-        >
-          <div
-            class="
-              relative
-              border
-              border-dashed
-              border-border
-              px-4
-              py-5
-              sm:px-6
-              sm:py-6
-            "
-          >
-
-            <span
-              aria-hidden="true"
-              class="
-                absolute
-                -left-px
-                -top-px
-                h-3
-                w-3
-                border-l
-                border-t
-                border-foreground
-              "
-            ></span>
-
-            <span
-              aria-hidden="true"
-              class="
-                absolute
-                -bottom-px
-                -right-px
-                h-3
-                w-3
-                border-b
-                border-r
-                border-foreground
-              "
-            ></span>
-
-
-            <blockquote
-              class="
-                text-foreground
-              "
-            >
-              <p>
-                {t.aboutQuote}
-              </p>
-
-            </blockquote>
-
-          </div>
-        </Reveal>
-
-
-        <Reveal
-          delay={60}
-          class="
-            border-t
-            border-border
-            py-6
-            sm:py-8
-          "
-        >
-
-          <div
-            class="
-              flex
-              items-baseline
-              justify-between
-              gap-3
-            "
-          >
-            <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutBioTitle}</span>
-          </div>
-
-
-          <div
-            class="
-              mt-4
-              max-w-xl
-              space-y-3
-            "
-          >
-            {t.aboutBio.map((paragraph) => (
-              <p
+              <span
+                aria-hidden="true"
                 class="
-                  text-muted-foreground
+                  absolute
+                  -left-px
+                  -top-px
+                  h-3
+                  w-3
+                  border-l
+                  border-t
+                  border-foreground
                 "
-              >
-                {paragraph}
-              </p>
-            ))}
-          </div>
+              ></span>
 
-        </Reveal>
+              <span
+                aria-hidden="true"
+                class="
+                  absolute
+                  -bottom-px
+                  -right-px
+                  h-3
+                  w-3
+                  border-b
+                  border-r
+                  border-foreground
+                "
+              ></span>
 
-        <Reveal
-          delay={200}
-          class="
-            border-t
-            border-border
-            py-6
-            sm:py-8
-          "
-        >
-          <footer
-            class="
-              flex
-              flex-col
-              gap-3
-            "
-          >
-            <div class="flex flex-col gap-2">
+              <blockquote class={`${TYPE.quote} text-foreground`}>
+                <p>{t.aboutQuote}</p>
+              </blockquote>
+            </div>
+          </Reveal>
+
+          <Reveal delay={60}>
+            <footer class="flex flex-col gap-3">
               <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutContactTitle}</span>
 
-              <nav
-                class="flex flex-col"
-                aria-label={t.aboutContactTitle}
-              >
+              <nav class="flex flex-col" aria-label={t.aboutContactTitle}>
                 {socials.map((social) => (
                   <a
                     href={social.href}
                     {...(social.external
                       ? { target: '_blank', rel: 'noopener noreferrer' }
                       : {})}
-                    class="
+                    class={`
+                      ${TYPE.label}
                       text-center
                       cursor-target
                       transition-micro
@@ -309,53 +146,85 @@ const socials = [
                       py-2.5
                       text-muted-foreground
                       hover:text-foreground
-                    "
+                    `}
                   >
                     {social.label}
                   </a>
                 ))}
               </nav>
-            </div>
-          </footer>
-        </Reveal>
-
+            </footer>
+          </Reveal>
+        </div>
       </section>
 
+      <!-- COLUNA 02 — DADOS -->
 
-      <!-- =======================================================
-            BLOCO 02 — TRAJETÓRIA (sempre abaixo do Perfil)
-            ======================================================= -->
+      <section data-col="dados" class="min-w-0">
+        <div class="">
+          <div class="">
+            <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutRoleTitle}</span>
+            <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
+              {profile.hero.title.split(' · ').map((part) => (
+                <span class="block">{part}</span>
+              ))}
+            </p>
+          </div>
 
-      <section
-        data-col="trajetoria"
-        class="min-w-0 basis-full"
-      >
+          <div class="">
+            <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutMainStackTitle}</span>
+            <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
+              {profile.hero.mainStack.split(' · ').map((stack, i) => (
+                <>
+                  {i > 0 && <Sep />}
+                  {stack}
+                </>
+              ))}
+            </p>
+          </div>
 
-        <!-- HEADER -->
+          <div class="">
+            <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutLocationTitle}</span>
+            <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
+              {profile.hero.location}
+            </p>
+          </div>
 
-        <div
-          class="
-            relative
-            flex
-            items-center
-            justify-between
-            border-b
-            border-border
-            py-6
-            sm:py-8
-          "
-        >
-          <span class={`${TYPE.label} text-muted-foreground`}>{t.aboutTrajectoryColumn}</span>
-          <span class={`${TYPE.label} text-muted-foreground/50`}>02</span>
+          <div class="">
+            <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutBioTitle}</span>
+            <Reveal>
+              <div class="mt-2 space-y-3">
+                {t.aboutBio.map((paragraph) => (
+                  <p class={`${TYPE.body} text-muted-foreground`}>
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </Reveal>
+          </div>
         </div>
-
-        <div class="py-6 sm:py-8">
-          <TrajectoryClean locale={locale} />
-        </div>
-
       </section>
-
     </div>
+
+    <!-- TRAJETÓRIA — abaixo das duas colunas, largura total -->
+
+    <section data-col="trajetoria" class="min-w-0 border-t border-border">
+      <header
+        class="
+          flex
+          items-center
+          gap-2
+          py-6
+          sm:py-8
+        "
+      >
+        <span class={`${TYPE.label} text-muted-foreground/50`}>02</span>
+        <span class={`${TYPE.label} text-muted-foreground`}>{t.aboutTrajectoryColumn}</span>
+      </header>
+
+      <div class="py-6 sm:py-8">
+        <TrajectoryClean locale={locale} />
+      </div>
+    </section>
 
   </div>
 
