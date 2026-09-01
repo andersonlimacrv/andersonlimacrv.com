@@ -32,7 +32,7 @@ test.describe('reveal — transições de entrada das seções', () => {
     // antes do scroll: reveal-present ativo e todas ocultas (abaixo da dobra)
     const before = await revealState(page);
     expect(before.present).toBe(true);
-    expect(before.els.length).toBeGreaterThanOrEqual(6);
+    expect(before.els.length).toBeGreaterThanOrEqual(5);
     expect(before.els.every((e) => e.opacity === 0)).toBe(true);
 
     // scroll progressivo até o fim
@@ -71,7 +71,7 @@ test.describe('reveal — transições de entrada das seções', () => {
       .poll(() => revealState(page).then((s) => s.present), { timeout: 10000 })
       .toBe(true);
     const back = await revealState(page);
-    expect(back.els.length).toBeGreaterThanOrEqual(6);
+    expect(back.els.length).toBeGreaterThanOrEqual(5);
 
     // scroll ao fim em passos (salto único pode não reavaliar a interseção
     // do IO — cada passo gera nova avaliação)

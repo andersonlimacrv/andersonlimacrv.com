@@ -1,4 +1,4 @@
-# Auditoria CSS — 2026-09-01T15:05:23.280Z
+# Auditoria CSS — 2026-09-01T15:36:42.786Z
 
 Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 

@@ -38,7 +38,7 @@ test.describe('seção Sobre reformulada', () => {
         await gotoHome(page);
         const data = await page.evaluate(() => {
           const grid = document.querySelector(
-            '#sobre-content > div.grid',
+            '#sobre-content > div.flex',
           ) as HTMLElement | null;
           if (!grid) return null;
           const cs = getComputedStyle(grid);
@@ -51,18 +51,18 @@ test.describe('seção Sobre reformulada', () => {
           const trajRect = trajetoria?.getBoundingClientRect();
           return {
             display: cs.display,
-            cols: cs.gridTemplateColumns.split(' ').length,
+            flexDirection: cs.flexDirection,
             order,
             trajBelow: trajRect !== undefined && trajRect.top >= gridRect.bottom - 1,
           };
         });
         expect(data).not.toBeNull();
-        expect(data!.display).toBe('grid');
+        expect(data!.display).toBe('flex');
         expect(data!.order).toEqual(['perfil', 'dados']);
         expect(data!.trajBelow).toBe(true);
-        // desktop: 2 colunas; mobile: 1
-        if (vp.name === 'desktop') expect(data!.cols).toBe(2);
-        else expect(data!.cols).toBe(1);
+        // desktop: row; mobile: column
+        if (vp.name === 'desktop') expect(data!.flexDirection).toBe('row');
+        else expect(data!.flexDirection).toBe('column');
       });
 
       test('colunas lado a lado no desktop, empilhadas no mobile', async ({

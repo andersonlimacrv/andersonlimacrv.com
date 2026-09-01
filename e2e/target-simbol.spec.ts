@@ -10,14 +10,14 @@ async function gotoHome(page: Page, path = '/') {
 }
 
 async function simbol(page: Page) {
-  const el = page.locator('[data-target-simbol]').first();
+  const el = page.locator('#contato [data-target-simbol]').first();
   await el.scrollIntoViewIfNeeded();
   return el;
 }
 
 async function spins(page: Page) {
   return Number(
-    (await page.locator('[data-target-simbol]').first().getAttribute('data-spins')) ??
+    (await page.locator('#contato [data-target-simbol]').first().getAttribute('data-spins')) ??
       '0',
   );
 }
@@ -65,7 +65,7 @@ test.describe('target simbol — mira com spin roleta', () => {
   test('hover gira', async ({ page }) => {
     await gotoHome(page);
     const el = await simbol(page);
-    await page.waitForTimeout(1500); // espera o spin do reveal terminar
+    await page.waitForTimeout(1800); // espera o spin do reveal terminar (1600ms)
     const before = await spins(page);
     await el.hover();
     await page.waitForTimeout(200);
@@ -77,7 +77,7 @@ test.describe('target simbol — mira com spin roleta', () => {
   }) => {
     await gotoHome(page);
     const el = await simbol(page);
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(1800);
     const before = await spins(page);
     await el.click({ position: { x: 24, y: 24 } });
     await page.waitForTimeout(200);
@@ -89,18 +89,18 @@ test.describe('target simbol — mira com spin roleta', () => {
   }) => {
     await gotoHome(page);
     const el = await simbol(page);
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(1800);
     const before = await spins(page);
 
-    // dois clicks rápidos (dentro do spin de 1s) = apenas 1 spin
+    // dois clicks rápidos (dentro do spin de 1.6s) = apenas 1 spin
     await el.click({ position: { x: 24, y: 24 } });
     await page.waitForTimeout(150);
     await el.click({ position: { x: 24, y: 24 } });
     await page.waitForTimeout(200);
     expect(await spins(page)).toBe(before + 1);
 
-    // após o spin terminar, novo click gira
-    await page.waitForTimeout(1200);
+    // após o spin terminar (1600ms), novo click gira
+    await page.waitForTimeout(1700);
     await el.click({ position: { x: 24, y: 24 } });
     await page.waitForTimeout(200);
     expect(await spins(page)).toBe(before + 2);
@@ -113,8 +113,8 @@ test.describe('target simbol — mira com spin roleta', () => {
     await gotoHome(page);
     await simbol(page);
     await page.waitForTimeout(500);
-    await page.locator('[data-target-simbol]').first().hover();
-    await page.locator('[data-target-simbol]').first().click({ position: { x: 24, y: 24 } });
+    await page.locator('#contato [data-target-simbol]').first().hover();
+    await page.locator('#contato [data-target-simbol]').first().click({ position: { x: 24, y: 24 } });
     await page.waitForTimeout(300);
     expect(await spins(page)).toBe(0);
   });
