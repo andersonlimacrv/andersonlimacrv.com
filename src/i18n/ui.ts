@@ -43,8 +43,8 @@ export const ui = {
     },
     heroEyebrow: "Perfil",
     heroSubtitle:
-      "Desenvolvedor de software que acredita em interfaces rápidas, legíveis e com personalidade — a tecnologia a serviço da clareza.",
-    figCaption: "AndersonLimaCRV",
+      "Anderson de Lima Carvalho é desenvolvedor de software brasileiro e empreendedor. Cria softwares, automações e soluções com IA para transformar desafios complexos em produtos e sistemas que capacitam empresas a operar de forma mais inteligente, escalar com eficiência e transformar ideias em realidade.",
+    figCaption: "ANDERSONLIMACRV",
     portraitAlt: "Retrato em preto e branco de",
     ogImageAlt: "{name} — Desenvolvedor",
     meta: {
@@ -148,8 +148,8 @@ export const ui = {
     },
     heroEyebrow: "Perfil",
     heroSubtitle:
-      "Desarrollador de software que cree en interfaces rápidas, legibles y con personalidad: la tecnología al servicio de la claridad.",
-    figCaption: "AndersonLimaCRV",
+      "Anderson de Lima Carvalho es desarrollador de software brasileño y emprendedor. Crea software, automatizaciones y soluciones con IA para transformar desafíos complejos en productos y sistemas que permiten a las empresas operar de forma más inteligente, escalar eficientemente y convertir ideas en realidad.",
+    figCaption: "ANDERSONLIMACRV",
     portraitAlt: "Retrato en blanco y negro de",
     ogImageAlt: "{name} — Desarrollador",
     meta: {
@@ -253,8 +253,8 @@ export const ui = {
     },
     heroEyebrow: "Profile",
     heroSubtitle:
-      "Software developer who believes in fast, legible interfaces with personality — technology at the service of clarity.",
-    figCaption: "AndersonLimaCRV",
+      "Anderson de Lima Carvalho is a Brazilian software developer and entrepreneur. He creates software, automation, and AI-powered solutions to transform complex challenges into products and systems that empower companies to operate smarter, scale efficiently, and turn ideas into reality.",
+    figCaption: "ANDERSONLIMACRV",
     portraitAlt: "Black and white portrait of",
     ogImageAlt: "{name} — Developer",
     meta: {
