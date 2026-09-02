@@ -25,6 +25,20 @@ const socials = [
   { label: 'WhatsApp', href: socialLinks.whatsapp, external: true },
   { label: 'Email', href: `mailto:${socialLinks.email}`, external: false },
 ];
+
+// Helper para ler src/data/profile.ts -> about[] (fácil de preencher via data)
+const getAbout = (label: string) => profile.about.find((a) => a.label === label)?.value ?? "";
+const focus = getAbout("Focus");
+const stackDetailed = getAbout("Stack");
+const experience = getAbout("Experience");
+const teaching = getAbout("Teaching");
+const superpower = getAbout("Superpower");
+// Stack detalhado pode vir com ", " ou " · " — normaliza para Sep
+const stackItems = stackDetailed
+  ? stackDetailed.includes(",")
+    ? stackDetailed.split(",").map((s) => s.trim()).filter(Boolean)
+    : stackDetailed.split("·").map((s) => s.trim()).filter(Boolean)
+  : [];
 ---
 
 <SectionHeading
@@ -191,6 +205,56 @@ const socials = [
               ))}
             </p>
           </div>
+
+          {focus && (
+            <div class="py-2">
+              <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutFocusTitle}</span>
+              <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
+                {focus}
+              </p>
+            </div>
+          )}
+
+          {stackItems.length > 0 && (
+            <div class="py-2">
+              <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutStackTitle}</span>
+              <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
+                {stackItems.map((item, i) => (
+                  <>
+                    {i > 0 && <Sep />}
+                    {item}
+                  </>
+                ))}
+              </p>
+            </div>
+          )}
+
+          {experience && (
+            <div class="py-2">
+              <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutExperienceTitle}</span>
+              <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
+                {experience}
+              </p>
+            </div>
+          )}
+
+          {teaching && (
+            <div class="py-2">
+              <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutTeachingTitle}</span>
+              <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
+                {teaching}
+              </p>
+            </div>
+          )}
+
+          {superpower && (
+            <div class="py-2">
+              <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutSuperpowerTitle}</span>
+              <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
+                {superpower}
+              </p>
+            </div>
+          )}
 
           <div class="py-2">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutLocationTitle}</span>
