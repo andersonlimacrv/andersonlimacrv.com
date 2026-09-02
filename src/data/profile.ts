@@ -4,7 +4,6 @@ export interface ProfileHero {
   name: string;
   title: string;
   mainStack: string;
-  bio: string;
   location: string;
 }
 
@@ -24,9 +23,8 @@ export interface Profile {
 export const profile: Profile = {
   hero: {
     name: site.name,
-    title: "Engenheiro de Software · Enterpreneur · Arquiteto de Soluções",
-    mainStack: "Python · TypeScript · C/C++ · ESP32 · React",
-    bio: "Minha carreira começou no hardware. Hoje atuo projetando e desenvolvendo soluções end-to-end, integrando firmware, backend, frontend, cloud e infraestrutura, atuando em todo o ciclo de desenvolvimento, da arquitetura à operação em produção. Acredito que o papel da engenharia de software é transformar problemas complexos em soluções simples, escaláveis e sustentáveis.",
+    title: "Engenheiro de Software · Empreendedor · Arquiteto de Soluções",
+    mainStack: "Python · TypeScript · C/C++ · ESP32 · SQL/ NoSQL · CI/CD · Cloud · IA",
     location: "Pelotas, Rio Grande do Sul, Brasil",
   },
   about: [
@@ -37,26 +35,21 @@ export const profile: Profile = {
     {
       label: "Focus",
       value:
-        "Soluções end-to-end integrando IoT, sistemas distribuídos e aplicações orientadas por IA.",
-    },
-    {
-      label: "Stack",
-      value:
-        "Python, FastAPI, Django, Node.js, React, Next.js, TypeScript, Tailwind CSS, C++, ESP32, MQTT, PostgreSQL, Docker, AWS.",
+        "Soluções end-to-end integrando IoT, sistemas distribuídos e IA aplicada.",
     },
     {
       label: "Experience",
       value:
-        "6+ anos de experiência, com origem em hardware/eletrônica antes de migrar para desenvolvimento full stack.",
+        "14+ anos de experiência em empresas de tecnologia, entre hardware/eletrônica e desenvolvimento full stack.",
     },
     {
       label: "Superpower",
       value:
-        "Transformar problemas complexos em soluções simples, escaláveis e sustentáveis, do design de arquitetura até a operação em produção.",
+        "Transformar problemas complexos em soluções simples, escaláveis e sustentáveis",
     },
     {
-      label: "Teaching",
-      value: "",
+      label: "Expertise",
+      value: "Backend · Frontend · Fullstack · Cloud & DevOps · IA & Automação",
     },
     { label: "Location", value: "Pelotas, Rio Grande do Sul, Brasil." },
   ],

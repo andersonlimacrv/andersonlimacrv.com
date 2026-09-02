@@ -74,10 +74,9 @@ export const ui = {
     aboutMainStackTitle: "Stack principal",
     aboutFocusTitle: "Focus",
     aboutExperienceTitle: "Experience",
-    aboutTeachingTitle: "Teaching",
+    aboutExpertiseTitle: "Expertise",
     aboutSuperpowerTitle: "Superpower",
     aboutLocationTitle: "Localização",
-    aboutBioTitle: "Sobre mim",
     aboutBadgeWork: "Trabalho",
     aboutBadgeEducation: "Formação",
     blueprint: {
@@ -165,10 +164,9 @@ export const ui = {
     aboutMainStackTitle: "Stack principal",
     aboutFocusTitle: "Focus",
     aboutExperienceTitle: "Experiencia",
-    aboutTeachingTitle: "Enseñanza",
+    aboutExpertiseTitle: "Experto",
     aboutSuperpowerTitle: "Superpoder",
     aboutLocationTitle: "Ubicación",
-    aboutBioTitle: "Sobre mí",
     aboutBadgeWork: "Trabajo",
     aboutBadgeEducation: "Formación",
     blueprint: {
@@ -244,10 +242,6 @@ export const ui = {
     },
     aboutQuote:
       "I build for the web with readers in mind: fast to load, clear to understand, and with a personality you remember.",
-    aboutBio: [
-      "I'm Anderson Carvalho, a developer focused on frontend and web engineering. I work on digital products where clean code, editorial design and performance go hand in hand — performance is a requirement, not a privilege.",
-      "I like turning real problems into simple interfaces: reducing friction, respecting people's time and measuring results instead of decorating.",
-    ],
     aboutStackTitle: "Stack",
     aboutContactTitle: "Social media",
     aboutProfileColumn: "Profile",
@@ -256,10 +250,9 @@ export const ui = {
     aboutMainStackTitle: "Main stack",
     aboutFocusTitle: "Focus",
     aboutExperienceTitle: "Experience",
-    aboutTeachingTitle: "Teaching",
+    aboutExpertiseTitle: "Expertise",
     aboutSuperpowerTitle: "Superpower",
     aboutLocationTitle: "Location",
-    aboutBioTitle: "About me",
     aboutBadgeWork: "Work",
     aboutBadgeEducation: "Education",
     blueprint: {

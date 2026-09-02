@@ -31,7 +31,7 @@ const getAbout = (label: string) => profile.about.find((a) => a.label === label)
 const focus = getAbout("Focus");
 const stackDetailed = getAbout("Stack");
 const experience = getAbout("Experience");
-const teaching = getAbout("Teaching");
+const expertise = getAbout("Expertise");
 const superpower = getAbout("Superpower");
 // Stack detalhado pode vir com ", " ou " · " — normaliza para Sep
 const stackItems = stackDetailed
@@ -185,16 +185,18 @@ const stackItems = stackDetailed
       <!-- COLUNA 02 — DADOS (padrão título → conteúdo, 3 tipos) -->
       <section data-col="dados" class="flex min-w-0 flex-1 flex-col lg:basis-[50%] lg:pl-8">
         <div class="flex flex-col">
-          <div class="py-2">
+         <div class="py-2">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutRoleTitle}</span>
             <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
-              {profile.hero.title.split(' · ').map((part) => (
-                <span class="block group"> <TargetSimbol size={16} class="inline-block align-middle mr-2" />{part}</span>
+              {profile.hero.title.split(' · ').map((stack, i) => (
+                <>
+                  {i > 0 && <Sep />}
+                  {stack}
+                </>
               ))}
             </p>
           </div>
-
-         <div class="py-2">
+           <div class="py-2">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutMainStackTitle}</span>
             <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
               {profile.hero.mainStack.split(' · ').map((stack, i) => (
@@ -238,11 +240,11 @@ const stackItems = stackDetailed
             </div>
           )}
 
-          {teaching && (
+          {expertise && (
             <div class="py-2">
-              <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutTeachingTitle}</span>
+              <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutExpertiseTitle}</span>
               <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
-                {teaching}
+                {expertise}
               </p>
             </div>
           )}
@@ -262,23 +264,12 @@ const stackItems = stackDetailed
               {profile.hero.location}
             </p>
           </div>
-
-         <div class="py-2">
-            <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutBioTitle}</span>
-            <div class="mt-2 space-y-3">
-              {t.aboutBio.map((paragraph) => (
-                <p class={`${TYPE.body} text-muted-foreground`}>
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
     </div>
 
     <!-- TRAJETÓRIA — abaixo das duas colunas, largura total -->
-    <section data-col="trajetoria" class="min-w-0 border-t border-border mt-8">
+    <section data-col="trajetoria" class="min-w-0 border-t border-border">
       <header
         class="
         mt-4 md:mt-8
