@@ -18,23 +18,14 @@ export interface TimelineData {
 }
 
 // Fonte única da trajetória — localizada por idioma.
+// careerJourney = só Trabalho (4); Formação vive em `education` (3) — sem duplicatas.
 export const timeline: Record<Locale, TimelineData> = {
   pt: {
     careerJourney: [
       {
-        role: "Pós-graduação, Inteligência Artificial e Machine Learning",
-        company: "Universidade Católica de Pelotas",
-        period: "maio de 2026 — maio de 2027",
-      },
-      {
         role: "Software Developer",
         company: "CESS - Computational Energy Saving Solution",
         period: "dezembro de 2022 — presente",
-      },
-      {
-        role: "CST, Análise de Sistemas de Computação",
-        company: "Universidade Católica de Pelotas",
-        period: "dezembro de 2022 — dezembro de 2024",
       },
       {
         role: "Analista de Suporte Técnico",
@@ -50,11 +41,6 @@ export const timeline: Record<Locale, TimelineData> = {
         role: "Técnico em eletrônica",
         company: "Argus Agro Industrial Ltda.",
         period: "março de 2012 — abril de 2014",
-      },
-      {
-        role: "Curso Técnico Integrado, Eletrônica",
-        company: "IFSUL - Instituto Federal Sul-rio-grandense",
-        period: "julho de 2007 — novembro de 2011",
       },
     ],
     education: [
@@ -80,19 +66,9 @@ export const timeline: Record<Locale, TimelineData> = {
   es: {
     careerJourney: [
       {
-        role: "Posgrado, Inteligencia Artificial y Machine Learning",
-        company: "Universidade Católica de Pelotas",
-        period: "mayo de 2026 — mayo de 2027",
-      },
-      {
         role: "Software Developer",
         company: "CESS - Computational Energy Saving Solution",
         period: "diciembre de 2022 — presente",
-      },
-      {
-        role: "CST, Análisis de Sistemas de Computación",
-        company: "Universidade Católica de Pelotas",
-        period: "diciembre de 2022 — diciembre de 2024",
       },
       {
         role: "Analista de Soporte Técnico",
@@ -108,11 +84,6 @@ export const timeline: Record<Locale, TimelineData> = {
         role: "Técnico en electrónica",
         company: "Argus Agro Industrial Ltda.",
         period: "marzo de 2012 — abril de 2014",
-      },
-      {
-        role: "Curso Técnico Integrado, Electrónica",
-        company: "IFSUL - Instituto Federal Sul-rio-grandense",
-        period: "julio de 2007 — noviembre de 2011",
       },
     ],
     education: [
@@ -137,19 +108,9 @@ export const timeline: Record<Locale, TimelineData> = {
   en: {
     careerJourney: [
       {
-        role: "Postgraduate, Artificial Intelligence and Machine Learning",
-        company: "Universidade Católica de Pelotas",
-        period: "May 2026 — May 2027",
-      },
-      {
         role: "Software Developer",
         company: "CESS - Computational Energy Saving Solution",
         period: "December 2022 — present",
-      },
-      {
-        role: "CST, Computer Systems Analysis",
-        company: "Universidade Católica de Pelotas",
-        period: "December 2022 — December 2024",
       },
       {
         role: "Technical Support Analyst",
@@ -165,11 +126,6 @@ export const timeline: Record<Locale, TimelineData> = {
         role: "Electronics Technician",
         company: "Argus Agro Industrial Ltda.",
         period: "March 2012 — April 2014",
-      },
-      {
-        role: "Integrated Technical Course, Electronics",
-        company: "IFSUL - Instituto Federal Sul-rio-grandense",
-        period: "July 2007 — November 2011",
       },
     ],
     education: [

@@ -108,14 +108,14 @@ test.describe('seção Sobre reformulada', () => {
 
         const dados = page.locator('#sobre-content section[data-col="dados"]');
         await expect(dados.getByText('Engenheiro de Software')).toBeVisible();
-        await expect(dados.getByText('Enterpreneur')).toBeVisible();
+        await expect(dados.getByText('Empreendedor')).toBeVisible();
         await expect(dados.getByText('Arquiteto de Soluções')).toBeVisible();
         await expect(dados.getByText('TypeScript').first()).toBeVisible();
-        await expect(dados.getByText('React').first()).toBeVisible();
+        await expect(dados.getByText('CI/CD').first()).toBeVisible();
         await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brasil').first()).toBeVisible();
-        // stack principal separado por Sep (4 separadores) — isola da stack detalhada
+        // stack principal separado por Sep (8 itens → 7 separadores)
         const stackRow = dados.locator('div.py-2', { hasText: 'Stack principal' }).locator('p');
-        await expect(stackRow.locator('span[aria-hidden="true"]')).toHaveCount(4);
+        await expect(stackRow.locator('span[aria-hidden="true"]')).toHaveCount(7);
 
         const perfil = page.locator('#sobre-content section[data-col="perfil"]');
         const quote = perfil.locator('blockquote p');
@@ -272,6 +272,14 @@ test.describe('seção Sobre reformulada', () => {
         const dados = page.locator('#sobre-content section[data-col="dados"]');
         await expect(dados.getByText('Role')).toBeVisible();
         await expect(dados.getByText('Main stack')).toBeVisible();
+        await expect(dados.getByText('Software Engineer')).toBeVisible();
+        await expect(dados.getByText('Entrepreneur')).toBeVisible();
+        await expect(dados.getByText('Solutions Architect')).toBeVisible();
+        await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brazil').first()).toBeVisible();
+        await expect(dados.getByText('TypeScript').first()).toBeVisible();
+        await expect(dados.getByText('CI/CD').first()).toBeVisible();
+        const stackRowEn = dados.locator('div.py-2', { hasText: 'Main stack' }).locator('p');
+        await expect(stackRowEn.locator('span[aria-hidden="true"]')).toHaveCount(7);
         await expect(page.locator('#sobre-content blockquote p')).toContainText(
           'I build for the web',
         );
@@ -283,6 +291,34 @@ test.describe('seção Sobre reformulada', () => {
         );
         await expect(page.locator('ul[aria-label="Work"] > li')).toHaveCount(4);
         await expect(page.locator('ul[aria-label="Education"] > li')).toHaveCount(3);
+      });
+
+      test('localização: rótulos e trajetória em espanhol em /es/', async ({
+        page,
+      }) => {
+        await gotoHome(page, '/es/');
+        const dados = page.locator('#sobre-content section[data-col="dados"]');
+        await expect(dados.getByText('Rol', { exact: true })).toBeVisible();
+        await expect(dados.getByText('Stack principal')).toBeVisible();
+        await expect(dados.getByText('Ingeniero de Software')).toBeVisible();
+        await expect(dados.getByText('Emprendedor')).toBeVisible();
+        await expect(dados.getByText('Arquitecto de Soluciones')).toBeVisible();
+        await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brasil').first()).toBeVisible();
+        await expect(dados.getByText('TypeScript').first()).toBeVisible();
+        await expect(dados.getByText('CI/CD').first()).toBeVisible();
+        const stackRowEs = dados.locator('div.py-2', { hasText: 'Stack principal' }).locator('p');
+        await expect(stackRowEs.locator('span[aria-hidden="true"]')).toHaveCount(7);
+        await expect(page.locator('#sobre-content blockquote p')).toContainText(
+          'Hago web pensando',
+        );
+        await expect(page.locator('#trajectory-work-title')).toHaveText('Trabajo');
+        await expect(page.locator('#trajectory-edu-title')).toHaveText('Formación');
+        await expect(page.locator('ul[aria-label="Trabajo"] > li').first()).toContainText('CESS');
+        await expect(page.locator('ul[aria-label="Formación"] > li').first()).toContainText(
+          'Universidade Católica',
+        );
+        await expect(page.locator('ul[aria-label="Trabajo"] > li')).toHaveCount(4);
+        await expect(page.locator('ul[aria-label="Formación"] > li')).toHaveCount(3);
       });
     });
   }

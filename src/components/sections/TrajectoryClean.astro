@@ -25,20 +25,7 @@ function extractYear(period: string): number {
   return m ? Number(m[0]) : 0;
 }
 
-function isEducationRole(role: string): boolean {
-  const r = role.toLowerCase();
-  return (
-    r.includes('pós') ||
-    r.includes('posgrado') ||
-    r.includes('postgraduate') ||
-    r.includes('cst') ||
-    r.includes('curso técnico') ||
-    r.includes('integrated technical')
-  );
-}
-
 const workRows: Row[] = timeline.careerJourney
-  .filter((e) => !isEducationRole(e.role))
   .map((e) => ({
     company: e.company,
     role: e.role,

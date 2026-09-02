@@ -7,9 +7,8 @@ import TrajectoryClean from './TrajectoryClean.astro';
 import Sep from '../ui/Sep.astro';
 import portrait from '../../assets/me.png';
 import { site, socialLinks } from '../../data/site';
-import { profile } from '../../data/profile';
+import { getProfile } from '../../data/profile';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
-import TargetSimbol from '../ui/TargetSimbol.astro';
 
 interface Props {
   locale?: Locale;
@@ -17,6 +16,7 @@ interface Props {
 
 const locale = Astro.props.locale ?? defaultLocale;
 const t = ui[locale];
+const profile = getProfile(locale);
 
 const socials = [
   { label: 'GitHub', href: socialLinks.github, external: true },
@@ -26,19 +26,12 @@ const socials = [
   { label: 'Email', href: `mailto:${socialLinks.email}`, external: false },
 ];
 
-// Helper para ler src/data/profile.ts -> about[] (fácil de preencher via data)
+// Helper para ler src/data/profile.ts -> about[] por locale
 const getAbout = (label: string) => profile.about.find((a) => a.label === label)?.value ?? "";
 const focus = getAbout("Focus");
-const stackDetailed = getAbout("Stack");
 const experience = getAbout("Experience");
 const expertise = getAbout("Expertise");
 const superpower = getAbout("Superpower");
-// Stack detalhado pode vir com ", " ou " · " — normaliza para Sep
-const stackItems = stackDetailed
-  ? stackDetailed.includes(",")
-    ? stackDetailed.split(",").map((s) => s.trim()).filter(Boolean)
-    : stackDetailed.split("·").map((s) => s.trim()).filter(Boolean)
-  : [];
 ---
 
 <SectionHeading
@@ -213,20 +206,6 @@ const stackItems = stackDetailed
               <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutFocusTitle}</span>
               <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
                 {focus}
-              </p>
-            </div>
-          )}
-
-          {stackItems.length > 0 && (
-            <div class="py-2">
-              <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutStackTitle}</span>
-              <p class={`${TYPE.body} mt-2 text-muted-foreground`}>
-                {stackItems.map((item, i) => (
-                  <>
-                    {i > 0 && <Sep />}
-                    {item}
-                  </>
-                ))}
               </p>
             </div>
           )}

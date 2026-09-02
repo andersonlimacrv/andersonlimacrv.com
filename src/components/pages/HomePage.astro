@@ -10,7 +10,7 @@ import Blog from '../sections/Blog.astro';
 import Contact from '../sections/Contact.astro';
 import portrait from '../../assets/me.png';
 import { siteUrl, site, socialLinks, authorName } from '../../data/site';
-import { profile } from '../../data/profile';
+import { getProfile } from '../../data/profile';
 import { defaultLocale, translateTitle, ui, type Locale } from '../../i18n/ui';
 
 interface Props {
@@ -28,6 +28,7 @@ const portraitMeta = await getImage({
 
 const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
 const homeUrl = `${baseUrl}/`;
+const profile = getProfile(locale);
 
 const personJsonLd = {
   '@context': 'https://schema.org',
