@@ -1,0 +1,56 @@
+{
+  "pt": [
+    {
+      "question": "Que tipo de projeto você atende?",
+      "answer": "Automações, IoT com ESP32, SaaS e integrações com IA — do firmware ao backend, frontend e deploy na nuvem. Foco em transformar processos complexos em produtos escaláveis e confiáveis."
+    },
+    {
+      "question": "Você atende remoto?",
+      "answer": "Sim. Atendo remoto para todo o Brasil a partir de Pelotas (RS), com reuniões online e entregas semanais. Presencial sob consulta."
+    },
+    {
+      "question": "Qual sua stack principal?",
+      "answer": "Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · Cloud · IA — 14+ anos entre eletrônica e full stack, com foco em eficiência e confiabilidade."
+    },
+    {
+      "question": "Qual prazo típico para um MVP?",
+      "answer": "MVPs em 4 a 6 semanas, com evoluções contínuas em sprints semanais. Ideias saem do papel à produção com planejamento e medição de resultados."
+    }
+  ],
+  "en": [
+    {
+      "question": "What kind of projects do you work on?",
+      "answer": "Automation, ESP32 IoT, SaaS and AI integrations — from firmware to backend, frontend and cloud deploy. I turn complex processes into scalable and reliable products."
+    },
+    {
+      "question": "Do you work remotely?",
+      "answer": "Yes. I work remotely across Brazil from Pelotas (RS), with online meetings and weekly deliveries. On-site upon request."
+    },
+    {
+      "question": "What is your main stack?",
+      "answer": "Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · Cloud · AI — 14+ years across electronics and full stack, focused on efficiency and reliability."
+    },
+    {
+      "question": "What is the typical MVP timeline?",
+      "answer": "MVPs in 4–6 weeks, with continuous evolution in weekly sprints. Ideas go from design to production with planning and measured results."
+    }
+  ],
+  "es": [
+    {
+      "question": "¿Qué tipo de proyecto atiendes?",
+      "answer": "Automatizaciones, IoT con ESP32, SaaS e integraciones con IA — del firmware al backend, frontend y deploy en la nube. Transformo procesos complejos en productos escalables y confiables."
+    },
+    {
+      "question": "¿Atiendes en remoto?",
+      "answer": "Sí. Atiendo en remoto para todo Brasil desde Pelotas (RS), con reuniones online y entregas semanales. Presencial a consultar."
+    },
+    {
+      "question": "¿Cuál es tu stack principal?",
+      "answer": "Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · Cloud · IA — 14+ años entre electrónica y full stack, con enfoque en eficiencia y confiabilidad."
+    },
+    {
+      "question": "¿Cuál es el plazo típico para un MVP?",
+      "answer": "MVPs en 4–6 semanas, con evolución continua en sprints semanales. Las ideas van del diseño a producción con planificación y medición de resultados."
+    }
+  ]
+}

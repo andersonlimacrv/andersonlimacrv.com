@@ -41,15 +41,16 @@ export const ui = {
       title: "Alternar tema",
     },
     heroEyebrow: "Perfil",
+    heroTitle: "Anderson de Lima Carvalho — Engenheiro de Software",
     heroSubtitle:
-      "Anderson de Lima Carvalho é desenvolvedor de software brasileiro e empreendedor. Cria softwares, automações e soluções com IA para transformar desafios complexos em produtos e sistemas que capacitam empresas a operar de forma mais inteligente, escalar com eficiência e transformar ideias em realidade.",
+      "Anderson de Lima Carvalho é engenheiro de software, brasileiro e empreendedor. Cria softwares e soluções com IA que otimizam operações, escalam com eficiência e transformam ideias em realidade. São 14+ anos entre eletrônica e full stack, com Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · Cloud · IA.",
     figCaption: "ANDERSONLIMACRV",
     portraitAlt: "Retrato em preto e branco de",
     ogImageAlt: "{name} — Desenvolvedor",
     meta: {
       homeTitle: "{name} — Desenvolvedor",
       homeDescription:
-        "Desenvolvedor de software. Este é o meu espaço na web: projetos, pensamentos e um mini-blog sobre tecnologia e design.",
+        "Anderson de Lima Carvalho é engenheiro de software, brasileiro e empreendedor. Cria automações e soluções com IA que otimizam processos, escalam com eficiência e levam ideias do papel à produção — 14+ anos.",
       blogTitle: "Blog — {name}",
       blogDescription:
         "Mini-blog sobre desenvolvimento, tecnologia e design editorial para a web.",
@@ -63,8 +64,8 @@ export const ui = {
     aboutQuote:
       "Faço web pensando em quem lê: rápida para carregar, clara para entender e com personalidade para lembrar.",
     aboutBio: [
-      "Sou Anderson Carvalho, desenvolvedor com foco em frontend e engenharia web. Trabalho com produtos digitais onde código limpo, design editorial e performance caminham juntos — performance é requisito, não privilégio.",
-      "Gosto de transformar problemas reais em interfaces simples: reduzir atrito, respeitar o tempo de quem usa e medir o resultado em vez de decorar.",
+      "Sou Anderson Carvalho, engenheiro de software com 14+ anos entre hardware e full stack. Transformo problemas complexos em sistemas simples — com Python, TypeScript, C/C++, ESP32, SQL/NoSQL, CI/CD, Cloud e IA.",
+      "Levo ideias do papel à produção com confiabilidade: reduzindo atrito, respeitando o tempo de quem usa e medindo resultados — com foco em eficiência, escalabilidade e qualidade.",
     ],
     aboutStackTitle: "Stack",
     aboutContactTitle: "Redes sociais",
@@ -131,15 +132,16 @@ export const ui = {
       title: "Cambiar tema",
     },
     heroEyebrow: "Perfil",
+    heroTitle: "Anderson de Lima Carvalho — Ingeniero de Software",
     heroSubtitle:
-      "Anderson de Lima Carvalho es desarrollador de software brasileño y emprendedor. Crea software, automatizaciones y soluciones con IA para transformar desafíos complejos en productos y sistemas que permiten a las empresas operar de forma más inteligente, escalar eficientemente y convertir ideas en realidad.",
+      "Anderson de Lima Carvalho es ingeniero de software brasileño y emprendedor. Crea software y soluciones con IA que optimizan operaciones, escalan con eficiencia y entregan productos confiables. 14+ años entre electrónica y full stack, con Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · Cloud · IA.",
     figCaption: "ANDERSONLIMACRV",
     portraitAlt: "Retrato en blanco y negro de",
     ogImageAlt: "{name} — Desarrollador",
     meta: {
       homeTitle: "{name} — Desarrollador",
       homeDescription:
-        "Desarrollador de software. Este es mi espacio en la web: proyectos, pensamientos y un mini-blog sobre tecnología y diseño.",
+        "Anderson de Lima Carvalho es ingeniero de software y emprendedor. Crea automatizaciones y soluciones con IA que optimizan procesos, escalan con eficiencia y llevan ideas a producción — 14+ años.",
       blogTitle: "Blog — {name}",
       blogDescription:
         "Mini-blog sobre desarrollo, tecnología y diseño editorial para la web.",
@@ -153,8 +155,8 @@ export const ui = {
     aboutQuote:
       "Hago web pensando en quien lee: rápida de cargar, clara de entender y con personalidad para recordar.",
     aboutBio: [
-      "Soy Anderson Carvalho, desarrollador enfocado en frontend e ingeniería web. Trabajo con productos digitales donde el código limpio, el diseño editorial y el rendimiento caminan juntos — el rendimiento es requisito, no privilegio.",
-      "Me gusta convertir problemas reales en interfaces sencillas: reducir la fricción, respetar el tiempo de quien usa y medir el resultado en lugar de decorar.",
+      "Soy Anderson Carvalho, ingeniero de software con 14+ años entre hardware y full stack. Transformo problemas complejos en sistemas simples — con Python, TypeScript, C/C++, ESP32, SQL/NoSQL, CI/CD, Cloud e IA.",
+      "Llevo ideas del diseño a producción con confiabilidad: reduzco fricción, respeto el tiempo de quien usa y mido resultados — con foco en eficiencia, escalabilidad y calidad.",
     ],
     aboutStackTitle: "Stack",
     aboutContactTitle: "Redes sociales",
@@ -221,15 +223,16 @@ export const ui = {
       title: "Toggle theme",
     },
     heroEyebrow: "Profile",
+    heroTitle: "Anderson de Lima Carvalho — Software Engineer",
     heroSubtitle:
-      "Anderson de Lima Carvalho is a Brazilian software developer and entrepreneur. He creates software, automation, and AI-powered solutions to transform complex challenges into products and systems that empower companies to operate smarter, scale efficiently, and turn ideas into reality.",
+      "Anderson de Lima Carvalho is a Brazilian software engineer and entrepreneur. He builds software and AI solutions that optimize operations, scale efficiently and deliver reliable products. 14+ years across electronics and full stack, with Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · Cloud · AI.",
     figCaption: "ANDERSONLIMACRV",
     portraitAlt: "Black and white portrait of",
     ogImageAlt: "{name} — Developer",
     meta: {
       homeTitle: "{name} — Developer",
       homeDescription:
-        "Software developer. This is my corner of the web: projects, thoughts and a mini-blog about technology and design.",
+        "Anderson de Lima Carvalho is a Brazilian software engineer and entrepreneur. He builds automation and AI solutions that optimize operations, scale efficiently and take ideas to production — 14+ years.",
       blogTitle: "Blog — {name}",
       blogDescription:
         "Mini-blog about development, technology and editorial design for the web.",
@@ -242,6 +245,10 @@ export const ui = {
     },
     aboutQuote:
       "I build for the web with readers in mind: fast to load, clear to understand, and with a personality you remember.",
+    aboutBio: [
+      "I'm Anderson Carvalho, a software engineer with 14+ years across hardware and full stack. I turn complex problems into simple systems — with Python, TypeScript, C/C++, ESP32, SQL/NoSQL, CI/CD, Cloud and AI.",
+      "I take ideas from design to production with reliability: reducing friction, respecting users' time and measuring results — focused on efficiency, scalability and quality.",
+    ],
     aboutStackTitle: "Stack",
     aboutContactTitle: "Social media",
     aboutProfileColumn: "Profile",
