@@ -43,6 +43,10 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
                 {relatedPost.data.title}
               </span>
               <TargetSimbol size={25} class="shrink-0 self-center md:hidden mr-4" />
+              <span
+                aria-hidden="true"
+                class={`hidden shrink-0 self-center ${TYPE.label} text-muted-foreground transition-micro group-hover:translate-x-1 group-hover:text-foreground md:inline`}
+              >&rarr;</span>
               <time
                 datetime={relatedPost.data.pubDate.toISOString()}
                 class={`hidden shrink-0 self-center ${TYPE.label} text-muted-foreground sm:inline`}

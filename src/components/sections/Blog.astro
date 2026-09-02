@@ -44,6 +44,7 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
     >
       {t.viewAllPosts}
         <TargetSimbol size={25} class="md:hidden" />
+      <span aria-hidden="true" class="hidden transition-micro group-hover:translate-x-1 md:inline">&rarr;</span>
     </a>
   </div>
 </SectionHeading>

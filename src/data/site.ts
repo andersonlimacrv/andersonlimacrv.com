@@ -3,8 +3,6 @@ const phone = '53981004874';
 export const site = {
   url: 'https://andersonlimacrv.com',
   name: 'Anderson Carvalho',
-  email: 'contato@andersonlimacrv.com',
-  phone,
   heroEyebrowYear: '2026',
   sections: {
     about: '01',

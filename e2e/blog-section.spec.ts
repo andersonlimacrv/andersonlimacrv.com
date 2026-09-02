@@ -89,8 +89,7 @@ test.describe('seção Blog com SectionHeading numerado', () => {
         return {
           afterLast: linkBox.top > lastBox.bottom,
           leftAligned: Math.abs(linkBox.left - sectionBox.left) < 80,
-          arrow: (link.querySelector('span[aria-hidden="true"]')?.textContent ?? '')
-            .includes('→'),
+          arrow: (link.textContent ?? '').includes('→'),
         };
       });
       expect(position.afterLast, path).toBe(true);

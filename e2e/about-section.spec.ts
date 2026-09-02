@@ -110,11 +110,11 @@ test.describe('seção Sobre reformulada', () => {
         await expect(dados.getByText('Engenheiro de Software')).toBeVisible();
         await expect(dados.getByText('Enterpreneur')).toBeVisible();
         await expect(dados.getByText('Arquiteto de Soluções')).toBeVisible();
-        await expect(dados.getByText('TypeScript')).toBeVisible();
-        await expect(dados.getByText('React')).toBeVisible();
-        await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brasil')).toBeVisible();
-        // stack separado por Sep (4 separadores)
-        const stackRow = dados.locator('p', { hasText: 'Python' });
+        await expect(dados.getByText('TypeScript').first()).toBeVisible();
+        await expect(dados.getByText('React').first()).toBeVisible();
+        await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brasil').first()).toBeVisible();
+        // stack principal separado por Sep (4 separadores) — isola da stack detalhada
+        const stackRow = dados.locator('div.py-2', { hasText: 'Stack principal' }).locator('p');
         await expect(stackRow.locator('span[aria-hidden="true"]')).toHaveCount(4);
 
         const perfil = page.locator('#sobre-content section[data-col="perfil"]');

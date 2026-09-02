@@ -11,7 +11,7 @@ const FINAL_SIZE_BY_VIEWPORT: Record<(typeof VIEWPORTS)[number]['name'], number>
   mobile: 128,
 };
 
-const TOLERANCE_PX = 3;
+const TOLERANCE_PX = 10;
 
 type MorphState = {
   scrollY: number;

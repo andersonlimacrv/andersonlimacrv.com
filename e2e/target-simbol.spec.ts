@@ -31,8 +31,8 @@ test.describe('target simbol — mira com spin roleta', () => {
     await expect(el).toBeVisible();
     const box = await el.boundingBox();
     expect(box).not.toBeNull();
-    expect(Math.round(box!.width)).toBe(32);
-    expect(Math.round(box!.height)).toBe(32);
+    expect(Math.round(box!.width)).toBe(25);
+    expect(Math.round(box!.height)).toBe(25);
     // dentro da seção de contato (ao lado do email — sem kinetic box)
     const contact = page.locator('#contato');
     const cb = await contact.boundingBox();
