@@ -113,14 +113,14 @@ test.describe('seção Sobre reformulada', () => {
         await expect(dados.getByText('TypeScript').first()).toBeVisible();
         await expect(dados.getByText('CI/CD').first()).toBeVisible();
         await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brasil').first()).toBeVisible();
-        // stack principal separado por Sep (8 itens → 7 separadores)
+        // stack principal separado por Sep (7 itens → 6 separadores)
         const stackRow = dados.locator('div.py-2', { hasText: 'Stack principal' }).locator('p');
-        await expect(stackRow.locator('span[aria-hidden="true"]')).toHaveCount(7);
+        await expect(stackRow.locator('span[aria-hidden="true"]')).toHaveCount(6);
 
         const perfil = page.locator('#sobre-content section[data-col="perfil"]');
         const quote = perfil.locator('blockquote p');
         await expect(quote).not.toHaveText('');
-        await expect(perfil.locator('blockquote')).toContainText('Faço web pensando em quem lê');
+        await expect(perfil.locator('blockquote')).toContainText('Minha carreira tem sido movida');
 
         await expect(page.locator('#sobre-content footer').getByText('GitHub')).toBeVisible();
         await expect(page.locator('#sobre-content footer').getByText('Instagram')).toBeVisible();
@@ -279,9 +279,9 @@ test.describe('seção Sobre reformulada', () => {
         await expect(dados.getByText('TypeScript').first()).toBeVisible();
         await expect(dados.getByText('CI/CD').first()).toBeVisible();
         const stackRowEn = dados.locator('div.py-2', { hasText: 'Main stack' }).locator('p');
-        await expect(stackRowEn.locator('span[aria-hidden="true"]')).toHaveCount(7);
+        await expect(stackRowEn.locator('span[aria-hidden="true"]')).toHaveCount(6);
         await expect(page.locator('#sobre-content blockquote p')).toContainText(
-          'I build for the web',
+          'My career has been driven',
         );
         await expect(page.locator('#trajectory-work-title')).toHaveText('Work');
         await expect(page.locator('#trajectory-edu-title')).toHaveText('Education');
@@ -307,9 +307,9 @@ test.describe('seção Sobre reformulada', () => {
         await expect(dados.getByText('TypeScript').first()).toBeVisible();
         await expect(dados.getByText('CI/CD').first()).toBeVisible();
         const stackRowEs = dados.locator('div.py-2', { hasText: 'Stack principal' }).locator('p');
-        await expect(stackRowEs.locator('span[aria-hidden="true"]')).toHaveCount(7);
+        await expect(stackRowEs.locator('span[aria-hidden="true"]')).toHaveCount(6);
         await expect(page.locator('#sobre-content blockquote p')).toContainText(
-          'Hago web pensando',
+          'Mi carrera ha estado impulsada',
         );
         await expect(page.locator('#trajectory-work-title')).toHaveText('Trabajo');
         await expect(page.locator('#trajectory-edu-title')).toHaveText('Formación');

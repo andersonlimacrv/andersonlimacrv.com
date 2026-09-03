@@ -26,7 +26,7 @@ export const profile: Record<Locale, Profile> = {
     hero: {
       name: site.name,
       title: 'Engenheiro de Software · Empreendedor · Arquiteto de Soluções',
-      mainStack: 'Python · TypeScript · C/C++ · ESP32 · SQL/ NoSQL · CI/CD · Cloud · IA',
+      mainStack: 'Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · IA',
       location: 'Pelotas, Rio Grande do Sul, Brasil',
     },
     about: [
@@ -53,7 +53,7 @@ export const profile: Record<Locale, Profile> = {
     hero: {
       name: site.name,
       title: 'Software Engineer · Entrepreneur · Solutions Architect',
-      mainStack: 'Python · TypeScript · C/C++ · ESP32 · SQL/ NoSQL · CI/CD · Cloud · IA',
+      mainStack: 'Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · IA',
       location: 'Pelotas, Rio Grande do Sul, Brazil',
     },
     about: [
@@ -80,7 +80,7 @@ export const profile: Record<Locale, Profile> = {
     hero: {
       name: site.name,
       title: 'Ingeniero de Software · Emprendedor · Arquitecto de Soluciones',
-      mainStack: 'Python · TypeScript · C/C++ · ESP32 · SQL/ NoSQL · CI/CD · Cloud · IA',
+      mainStack: 'Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · IA',
       location: 'Pelotas, Rio Grande do Sul, Brasil',
     },
     about: [

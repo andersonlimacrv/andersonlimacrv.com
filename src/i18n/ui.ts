@@ -43,7 +43,7 @@ export const ui = {
     heroEyebrow: "Perfil",
     heroTitle: "Anderson de Lima Carvalho — Engenheiro de Software",
     heroSubtitle:
-      "Anderson de Lima Carvalho é engenheiro de software, brasileiro e empreendedor. Cria softwares e soluções com IA que otimizam operações, escalam com eficiência e transformam ideias em realidade. São 14+ anos entre eletrônica e full stack, com Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · Cloud · IA.",
+      "Anderson de Lima Carvalho é engenheiro de software, brasileiro e empreendedor. Cria softwares e soluções com IA que otimizam operações, escalam com eficiência e transformam ideias em realidade.",
     figCaption: "ANDERSONLIMACRV",
     portraitAlt: "Retrato em preto e branco de",
     ogImageAlt: "{name} — Desenvolvedor",
@@ -62,7 +62,7 @@ export const ui = {
       contact: { title: "Contato", eyebrow: "Fale comigo" },
     },
     aboutQuote:
-      "Faço web pensando em quem lê: rápida para carregar, clara para entender e com personalidade para lembrar.",
+      "Minha carreira tem sido movida por resolver problemas técnicos complexos, não apenas por trabalhar com uma tecnologia específica.",
     aboutBio: [
       "Sou Anderson Carvalho, engenheiro de software com 14+ anos entre hardware e full stack. Transformo problemas complexos em sistemas simples — com Python, TypeScript, C/C++, ESP32, SQL/NoSQL, CI/CD, Cloud e IA.",
       "Levo ideias do papel à produção com confiabilidade: reduzindo atrito, respeitando o tempo de quem usa e medindo resultados — com foco em eficiência, escalabilidade e qualidade.",
@@ -153,7 +153,7 @@ export const ui = {
       contact: { title: "Contacto", eyebrow: "Hablemos" },
     },
     aboutQuote:
-      "Hago web pensando en quien lee: rápida de cargar, clara de entender y con personalidad para recordar.",
+      "Mi carrera ha estado impulsada por resolver problemas técnicos complejos, no solo por trabajar con una tecnología específica.",
     aboutBio: [
       "Soy Anderson Carvalho, ingeniero de software con 14+ años entre hardware y full stack. Transformo problemas complejos en sistemas simples — con Python, TypeScript, C/C++, ESP32, SQL/NoSQL, CI/CD, Cloud e IA.",
       "Llevo ideas del diseño a producción con confiabilidad: reduzco fricción, respeto el tiempo de quien usa y mido resultados — con foco en eficiencia, escalabilidad y calidad.",
@@ -244,7 +244,7 @@ export const ui = {
       contact: { title: "Contact", eyebrow: "Get in touch" },
     },
     aboutQuote:
-      "I build for the web with readers in mind: fast to load, clear to understand, and with a personality you remember.",
+      "My career has been driven by solving complex technical problems, not just by working with a specific technology.",
     aboutBio: [
       "I'm Anderson Carvalho, a software engineer with 14+ years across hardware and full stack. I turn complex problems into simple systems — with Python, TypeScript, C/C++, ESP32, SQL/NoSQL, CI/CD, Cloud and AI.",
       "I take ideas from design to production with reliability: reducing friction, respecting users' time and measuring results — focused on efficiency, scalability and quality.",

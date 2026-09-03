@@ -217,7 +217,7 @@
      --tracking-caps/caps-wide: rótulos mono em caixa alta.
      Unidade de rótulo: text-eyebrow (10→12px) — micro deixou de existir como
      estilo separado (consolidado em eyebrow, componente Text). */
-  --text-hero: clamp(2.75rem, 7vw, 6.25rem);
+  --text-hero: clamp(2.75rem, 4.5vw, 4rem);
   --text-h1: clamp(1.875rem, 4vw, 3.25rem);
   --text-h2: clamp(1.5rem, 3vw, 2rem);
   --text-h3: 1.25rem;
