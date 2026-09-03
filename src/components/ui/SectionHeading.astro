@@ -1,6 +1,7 @@
 ---
 import { TYPE } from '../ui/typography';
 import KineticGrid from '../ui/KineticGrid.astro';
+import TextScramble from '../ui/TextScramble.astro';
 
 interface Props {
   number: string;
@@ -22,7 +23,7 @@ const titleId = id ? `${id}-title` : undefined;
                     <span class={`${TYPE.sectionNumber} text-primary`}>{number}</span>
                 </div>
                 <span class="h-px flex-1 " aria-hidden="true"></span>
-                <h2 id={titleId} class={`shrink-0 ${TYPE.sectionTitle}`}>[{title}]</h2>
+                <h2 id={titleId} class={`shrink-0 ${TYPE.sectionTitle}`}>[<TextScramble text={title} variant="sectionTitle" />]</h2>
             </div>
         </KineticGrid>
     <div class="mt-8">

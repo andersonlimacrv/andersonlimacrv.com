@@ -1,0 +1,68 @@
+---
+/* TextScramble — invólucro Astro do efeito scramble (lógica em ./text-scramble).
+ * Espelha Reveal.astro / ElasticLine.astro: o texto final nasce no HTML
+ * (visível sem JS) e o módulo só o anima com JS ativo.
+ * A cor base vem do contexto (currentColor); a variante de letra vem do
+ * registro TYPE via prop `variant`, como em Text.astro. */
+import { TYPE, type Variant } from './typography';
+
+interface Props {
+  /* Frase única a exibir e animar (também espelhada em data-text). */
+  text: string;
+  /* Variante do registro TYPE (default body). */
+  variant?: Variant;
+  /* Tag renderizada (default span, para uso em linha). */
+  as?: any;
+  /* Id do elemento (ex.: alvo de aria-labelledby). */
+  id?: string;
+  /* Classes de arranjo/cor via Tailwind (sem letra — ver nota acima). */
+  class?: string;
+  /* Alfabeto dos caracteres temporários (default igual à referência). */
+  chars?: string;
+  /* Multiplicador de velocidade (1 = ritmo da referência; 2 = 2x). */
+  speed?: number;
+  /* Re-anima em hover/tap (default false). */
+  onHover?: boolean;
+  /* Anima ao entrar na viewport (default true). */
+  onEntry?: boolean;
+}
+
+const {
+  text,
+  variant = 'body',
+  as: Tag = 'span',
+  id,
+  class: className = '',
+  chars = '!<>-_\\/[]{}—=+*^?#________',
+  speed = 1,
+  onHover = false,
+  onEntry = true,
+} = Astro.props as Props;
+const typeClass = TYPE[variant] ?? TYPE.body;
+---
+
+<Tag
+  id={id}
+  class:list={[typeClass, className]}
+  data-text-scramble
+  data-text={text}
+  data-chars={chars}
+  data-speed={speed}
+  data-on-hover={onHover}
+  data-on-entry={onEntry}
+>
+  {text}
+</Tag>
+
+<style>
+  /* :global — os spans .scramble-dud nascem em runtime via innerHTML
+   * (sem o atributo de escopo do Astro); sem isso a regra nunca casa. */
+  [data-text-scramble] :global(.scramble-dud) {
+    color: var(--muted-foreground);
+    opacity: 0.8;
+  }
+</style>
+
+<script>
+  import './text-scramble';
+</script>
