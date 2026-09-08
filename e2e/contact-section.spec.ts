@@ -39,7 +39,7 @@ test.describe('seção Contato enriquecida', () => {
         else expect(data!.flexDirection).toBe('column');
       });
 
-      test('coluna esquerda: título, descrição e 4 canais com COPIAR', async ({
+      test('coluna esquerda: título, descrição e 3 canais com COPIAR', async ({
         page,
       }) => {
         await gotoHome(page);
@@ -49,12 +49,11 @@ test.describe('seção Contato enriquecida', () => {
         );
         await expect(info).toContainText('Resposta em');
         const items = info.locator('ul > li');
-        await expect(items).toHaveCount(4);
+        await expect(items).toHaveCount(3);
         await expect(info.getByText('in/andersonlimacrv')).toBeVisible();
         await expect(info.getByText('+55 53 98100-4874')).toBeVisible();
         await expect(info.getByText('contato@andersonlimacrv.com')).toBeVisible();
-        await expect(info.getByText('Pelotas, Rio Grande do Sul, Brasil')).toBeVisible();
-        await expect(info.getByRole('button', { name: 'COPIAR' })).toHaveCount(4);
+        await expect(info.getByRole('button', { name: 'COPIAR' })).toHaveCount(3);
       });
 
       test('formulário: campos, 8 assuntos (CONTATO default) e contador 0/1000', async ({

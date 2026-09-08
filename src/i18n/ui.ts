@@ -41,17 +41,17 @@ export const ui = {
       title: "Alternar tema",
     },
     heroEyebrow: "Perfil",
-    heroTitle: "Anderson de Lima Carvalho — Engenheiro de Software",
+    heroTitle: "Anderson Carvalho",
     heroSubtitle:
       "Anderson de Lima Carvalho é engenheiro de software, brasileiro e empreendedor. Cria softwares e soluções com IA que otimizam operações, escalam com eficiência e transformam ideias em realidade.",
-    figCaption: "ANDERSONLIMACRV",
+    figCaption: "ANDERSONLIMACRV   ·  ENGENHEIRO DE SOFTWARE",
     portraitAlt: "Retrato em preto e branco de",
-    ogImageAlt: "{name} — Desenvolvedor",
+    ogImageAlt: "{name} · Desenvolvedor",
     meta: {
-      homeTitle: "{name} — Desenvolvedor",
+      homeTitle: "{name} · Desenvolvedor",
       homeDescription:
         "Anderson de Lima Carvalho é engenheiro de software, brasileiro e empreendedor. Cria automações e soluções com IA que otimizam processos, escalam com eficiência e levam ideias do papel à produção — 14+ anos.",
-      blogTitle: "Blog — {name}",
+      blogTitle: "Blog · {name}",
       blogDescription:
         "Mini-blog sobre desenvolvimento, tecnologia e design editorial para a web.",
     },
@@ -166,17 +166,17 @@ export const ui = {
       title: "Cambiar tema",
     },
     heroEyebrow: "Perfil",
-    heroTitle: "Anderson de Lima Carvalho — Ingeniero de Software",
+    heroTitle: "Anderson Carvalho",
     heroSubtitle:
-      "Anderson de Lima Carvalho es ingeniero de software brasileño y emprendedor. Crea software y soluciones con IA que optimizan operaciones, escalan con eficiencia y entregan productos confiables. 14+ años entre electrónica y full stack, con Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · Cloud · IA.",
-    figCaption: "ANDERSONLIMACRV",
+      "Anderson de Lima Carvalho es ingeniero de software brasileño y emprendedor. Crea software y soluciones con IA que optimizan operaciones, escalan con eficiencia y entregan productos confiables.",
+    figCaption: "ANDERSONLIMACRV  · INGENIERO DE SOFTWARE",
     portraitAlt: "Retrato en blanco y negro de",
-    ogImageAlt: "{name} — Desarrollador",
+    ogImageAlt: "{name} · Desarrollador",
     meta: {
-      homeTitle: "{name} — Desarrollador",
+      homeTitle: "{name} · Desarrollador",
       homeDescription:
         "Anderson de Lima Carvalho es ingeniero de software y emprendedor. Crea automatizaciones y soluciones con IA que optimizan procesos, escalan con eficiencia y llevan ideas a producción — 14+ años.",
-      blogTitle: "Blog — {name}",
+      blogTitle: "Blog · {name}",
       blogDescription:
         "Mini-blog sobre desarrollo, tecnología y diseño editorial para la web.",
     },
@@ -207,7 +207,7 @@ export const ui = {
     aboutBadgeEducation: "Formación",
     blueprint: {
       figName: "IMG01",
-      morphTag: "MORPH — EVOLUCIÓN",
+      morphTag: "MORPH · EVOLUCIÓN",
       initial: "Inicial",
       final: "Final",
       position: "Posición",
@@ -291,17 +291,17 @@ export const ui = {
       title: "Toggle theme",
     },
     heroEyebrow: "Profile",
-    heroTitle: "Anderson de Lima Carvalho — Software Engineer",
+    heroTitle: "Anderson Carvalho",
     heroSubtitle:
-      "Anderson de Lima Carvalho is a Brazilian software engineer and entrepreneur. He builds software and AI solutions that optimize operations, scale efficiently and deliver reliable products. 14+ years across electronics and full stack, with Python · TypeScript · C/C++ · ESP32 · SQL/NoSQL · CI/CD · Cloud · AI.",
-    figCaption: "ANDERSONLIMACRV",
+      "Anderson de Lima Carvalho is a Brazilian software engineer and entrepreneur. He builds software and AI solutions that optimize operations, scale efficiently and deliver reliable products.",
+    figCaption: "ANDERSONLIMACRV · SOFTWARE ENGINEER",
     portraitAlt: "Black and white portrait of",
-    ogImageAlt: "{name} — Developer",
+    ogImageAlt: "{name} · Developer",
     meta: {
-      homeTitle: "{name} — Developer",
+      homeTitle: "{name} · Developer",
       homeDescription:
         "Anderson de Lima Carvalho is a Brazilian software engineer and entrepreneur. He builds automation and AI solutions that optimize operations, scale efficiently and take ideas to production — 14+ years.",
-      blogTitle: "Blog — {name}",
+      blogTitle: "Blog · {name}",
       blogDescription:
         "Mini-blog about development, technology and editorial design for the web.",
     },
@@ -332,14 +332,14 @@ export const ui = {
     aboutBadgeEducation: "Education",
     blueprint: {
       figName: "IMG01",
-      morphTag: "MORPH — EVOLUTION",
+      morphTag: "MORPH · EVOLUTION",
       initial: "Initial",
       final: "Final",
       position: "Position",
     },
     projects: [
       {
-        description: "This site — portfolio and mini-blog in Astro.",
+        description: "This site · portfolio and mini-blog in Astro.",
       },
       {
         description: "Open source, experiments and personal projects.",

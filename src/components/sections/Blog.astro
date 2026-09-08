@@ -40,11 +40,10 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
   <div class="mt-8">
     <a
       href={`${baseUrl}/blog`}
-      class={`cursor-target transition-micro group inline-flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
+      class={`cursor-target transition-micro inline-flex min-h-11 items-center gap-2 ${TYPE.label} text-muted-foreground hover:text-foreground`}
     >
       {t.viewAllPosts}
         <TargetSimbol size={25} class="md:hidden" />
-      <span aria-hidden="true" class="hidden transition-micro group-hover:translate-x-1 md:inline">&rarr;</span>
     </a>
   </div>
 </SectionHeading>

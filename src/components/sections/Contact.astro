@@ -4,7 +4,6 @@ import { TYPE } from '../ui/typography';
 import SectionHeading from '../ui/SectionHeading.astro';
 import TargetSimbol from '../ui/TargetSimbol.astro';
 import { site, socialLinks } from '../../data/site';
-import { getProfile } from '../../data/profile';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
 
 interface Props {
@@ -14,7 +13,6 @@ interface Props {
 const locale = Astro.props.locale ?? defaultLocale;
 const t = ui[locale];
 const c = t.contact;
-const profile = getProfile(locale);
 
 // Exibição derivada da fonte única (site.ts). O botão COPIAR copia
 // exatamente o texto exibido.
@@ -27,28 +25,18 @@ const channels = [
     display: linkedinDisplay,
     href: socialLinks.linkedin,
     external: true,
-    simbol: false,
   },
   {
     label: c.channelWhatsapp,
     display: whatsappDisplay,
     href: socialLinks.whatsapp,
     external: true,
-    simbol: false,
   },
   {
     label: c.channelEmail,
     display: socialLinks.email,
     href: `mailto:${socialLinks.email}`,
     external: false,
-    simbol: true,
-  },
-  {
-    label: c.channelLocation,
-    display: profile.hero.location,
-    href: undefined,
-    external: false,
-    simbol: false,
   },
 ] as const;
 
@@ -76,22 +64,14 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
         {channels.map((ch) => (
           <li class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-3">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{ch.label}</span>
-            {ch.href ? (
-              <span class="flex min-w-0 items-center gap-3">
-                <a
-                  href={ch.href}
-                  {...(ch.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                  class={`${TYPE.body} min-w-0 cursor-target break-words text-foreground transition-micro hover:underline hover:underline-offset-4`}
-                >
-                  {ch.display}
-                </a>
-                {ch.simbol && <TargetSimbol size={25} class="shrink-0" />}
-              </span>
-            ) : (
-              <span class={`${TYPE.body} min-w-0 break-words text-foreground`}>
-                {ch.display}
-              </span>
-            )}
+            <a
+              href={ch.href}
+              {...(ch.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              class={`${TYPE.body} inline-flex min-h-11 min-w-0 cursor-target items-center gap-2 break-words text-foreground transition-micro hover:underline hover:underline-offset-4`}
+            >
+              <span class="min-w-0 break-words">{ch.display}</span>
+              <TargetSimbol size={25} class="shrink-0 md:hidden" />
+            </a>
             <button
               type="button"
               data-copy={ch.display}

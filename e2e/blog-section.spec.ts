@@ -90,11 +90,13 @@ test.describe('seção Blog com SectionHeading numerado', () => {
           afterLast: linkBox.top > lastBox.bottom,
           leftAligned: Math.abs(linkBox.left - sectionBox.left) < 80,
           arrow: (link.textContent ?? '').includes('→'),
+          simbol: !!link.querySelector('[data-target-simbol]'),
         };
       });
       expect(position.afterLast, path).toBe(true);
       expect(position.leftAligned, path).toBe(true);
-      expect(position.arrow, path).toBe(true);
+      expect(position.arrow, `${path} sem seta → (padrão TargetSimbol)`).toBe(false);
+      expect(position.simbol, `${path} link acompanha TargetSimbol`).toBe(true);
     }
   });
 

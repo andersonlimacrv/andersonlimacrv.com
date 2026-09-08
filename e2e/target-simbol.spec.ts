@@ -1,5 +1,9 @@
 import { test, expect, type Page } from '@playwright/test';
 
+// Símbolos do #contato seguem o padrão do site: visíveis só no mobile
+// (md:hidden) — no desktop o feedback é o TargetHover (corners).
+test.use({ viewport: { width: 390, height: 844 } });
+
 async function gotoHome(page: Page, path = '/') {
   await page.goto(path, { waitUntil: 'networkidle' });
   await page
@@ -23,7 +27,7 @@ async function spins(page: Page) {
 }
 
 test.describe('target simbol — mira com spin roleta', () => {
-  test('presente no #contato, 32px, sempre visível (desktop e mobile)', async ({
+  test('presente no #contato, 25px, visível no mobile', async ({
     page,
   }) => {
     await gotoHome(page);
@@ -117,6 +121,16 @@ test.describe('target simbol — mira com spin roleta', () => {
     await page.locator('#contato [data-target-simbol]').first().click({ position: { x: 24, y: 24 } });
     await page.waitForTimeout(300);
     expect(await spins(page)).toBe(0);
+  });
+
+  test('oculto no desktop (md:hidden) — feedback lá é o TargetHover', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await gotoHome(page);
+    await expect(
+      page.locator('#contato [data-target-simbol]').first(),
+    ).toBeHidden();
   });
 
   test('tema: retículo em foreground suave e ponto em --primary (computed)', async ({

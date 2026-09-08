@@ -131,6 +131,7 @@ test.describe('Leia também editorial', () => {
             hasTitle: (title?.length ?? 0) > 0,
             hasTime: !!a.querySelector('time'),
             hasArrow: (a.textContent ?? '').includes('→'),
+            hasSimbol: !!a.querySelector('[data-target-simbol]'),
           };
         });
       });
@@ -141,7 +142,14 @@ test.describe('Leia também editorial', () => {
       expect(structure.every((r) => r.hasTitle)).toBe(true);
       expect(structure.every((r) => r.href?.includes('/blog/'))).toBe(true);
       expect(structure.every((r) => r.hasTime)).toBe(true);
-      expect(structure.every((r) => r.hasArrow)).toBe(true);
+      expect(
+        structure.every((r) => r.hasArrow),
+        'sem seta → (padrão TargetSimbol)',
+      ).toBe(false);
+      expect(
+        structure.every((r) => r.hasSimbol),
+        'linha acompanha TargetSimbol',
+      ).toBe(true);
 
       // data à direita ≥640px e oculta <640px
       const time = ol.locator('time').first();
