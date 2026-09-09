@@ -44,6 +44,8 @@ export const ui = {
     heroTitle: "Anderson Carvalho",
     heroSubtitle:
       "Anderson de Lima Carvalho é engenheiro de software, brasileiro e empreendedor. Cria softwares e soluções com IA que otimizam operações, escalam com eficiência e transformam ideias em realidade.",
+    heroCtaProjects: "Ver projetos",
+    heroCtaContact: "Fale comigo",
     figCaption: "ANDERSONLIMACRV   ·  ENGENHEIRO DE SOFTWARE",
     portraitAlt: "Retrato em preto e branco de",
     ogImageAlt: "{name} · Desenvolvedor",
@@ -169,6 +171,8 @@ export const ui = {
     heroTitle: "Anderson Carvalho",
     heroSubtitle:
       "Anderson de Lima Carvalho es ingeniero de software brasileño y emprendedor. Crea software y soluciones con IA que optimizan operaciones, escalan con eficiencia y entregan productos confiables.",
+    heroCtaProjects: "Ver proyectos",
+    heroCtaContact: "Contáctame",
     figCaption: "ANDERSONLIMACRV  · INGENIERO DE SOFTWARE",
     portraitAlt: "Retrato en blanco y negro de",
     ogImageAlt: "{name} · Desarrollador",
@@ -294,6 +298,8 @@ export const ui = {
     heroTitle: "Anderson Carvalho",
     heroSubtitle:
       "Anderson de Lima Carvalho is a Brazilian software engineer and entrepreneur. He builds software and AI solutions that optimize operations, scale efficiently and deliver reliable products.",
+    heroCtaProjects: "View projects",
+    heroCtaContact: "Get in touch",
     figCaption: "ANDERSONLIMACRV · SOFTWARE ENGINEER",
     portraitAlt: "Black and white portrait of",
     ogImageAlt: "{name} · Developer",

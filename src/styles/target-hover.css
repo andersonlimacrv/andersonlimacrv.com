@@ -64,6 +64,13 @@
   opacity: 1;
 }
 
+/* Alvo preenchido (ex.: botão submit bg-primary): os cantos herdam
+   currentColor do texto claro e somem no fundo da página — força
+   --primary, que contrasta com --background nos dois temas. */
+.cursor-target-filled .target-hover-corner {
+  color: var(--primary);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .target-hover-corner {
     transition: opacity 0.15s ease;

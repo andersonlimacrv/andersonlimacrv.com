@@ -184,6 +184,26 @@ test.describe('seção Contato enriquecida', () => {
     });
   }
 
+  test('submit tem TargetHover visível no desktop (alvo preenchido)', async ({
+    page,
+  }) => {
+    await gotoHome(page);
+    const submit = page.locator('#contact-form button[type="submit"]');
+    await expect(submit).toHaveClass(/cursor-target-filled/);
+    await expect(submit.locator('.target-hover-corner')).toHaveCount(4);
+    await submit.scrollIntoViewIfNeeded();
+    await submit.hover();
+    await expect(submit).toHaveClass(/is-target-hovering/, { timeout: 2000 });
+    // cantos contrastam com o fundo da página (não herdam o texto claro)
+    const colors = await submit
+      .locator('.target-hover-corner--tl')
+      .evaluate((el) => getComputedStyle(el).borderTopColor);
+    const bg = await page.evaluate(
+      () => getComputedStyle(document.body).backgroundColor,
+    );
+    expect(colors).not.toBe(bg);
+  });
+
   test('localização: título e ações em inglês em /en/', async ({ page }) => {
     await gotoHome(page, '/en/');
     await expect(
