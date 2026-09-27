@@ -52,7 +52,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
 >
   <div
     id="contato-content"
-    class="flex flex-col divide-y divide-border lg:flex-row lg:divide-x lg:divide-y-0"
+    class="flex flex-col lg:flex-row"
   >
     <!-- COLUNA ESQUERDA — chamada + canais -->
     <Reveal class="flex min-w-0 flex-1 flex-col gap-6 py-6 sm:py-8 lg:basis-[50%] lg:pr-8">
@@ -67,7 +67,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
             <a
               href={ch.href}
               {...(ch.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              class={`${TYPE.body} inline-flex min-h-11 min-w-0 cursor-target items-center gap-2 break-words text-foreground transition-micro hover:underline hover:underline-offset-4`}
+              class={`${TYPE.body} inline-flex min-h-11 min-w-0 max-w-full cursor-target items-center justify-self-start gap-2 break-words text-foreground transition-micro hover:underline hover:underline-offset-4`}
             >
               <span class="min-w-0 break-words">{ch.display}</span>
               <TargetSimbol size={25} class="shrink-0 md:hidden" />
@@ -78,7 +78,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
               data-copy-label={c.copy}
               data-copied-label={c.copied}
               aria-live="polite"
-              class={`${TYPE.label} min-h-11 cursor-target border border-border px-3 text-muted-foreground transition-micro hover:text-foreground`}
+              class={`${TYPE.label} min-h-11 w-32 cursor-target border border-border px-4 text-center text-muted-foreground transition-micro hover:text-foreground`}
             >
               {c.copy}
             </button>
@@ -154,7 +154,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
             <legend class={`${TYPE.label} text-muted-foreground`}>{c.subjectLabel}</legend>
             <div class="mt-2 flex flex-wrap gap-2">
               {c.subjects.map((subject, i) => (
-                <label class="cursor-target">
+                <label class="cursor-target grow">
                   <input
                     type="radio"
                     name="subject"
@@ -163,7 +163,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
                     class="peer sr-only"
                   />
                   <span
-                    class={`inline-flex min-h-11 items-center border border-border px-3 py-2 ${TYPE.label} text-muted-foreground transition-micro peer-checked:border-primary peer-checked:bg-primary peer-checked:text-primary-foreground peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background`}
+                    class={`inline-flex min-h-11 w-full items-center justify-center whitespace-nowrap border border-border px-4 py-2 text-center ${TYPE.label} text-muted-foreground transition-micro peer-checked:border-primary peer-checked:bg-primary peer-checked:text-primary-foreground peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background`}
                   >
                     {subject}
                   </span>
@@ -201,7 +201,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
               href={socialLinks.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              class={`inline-flex min-h-11 flex-1 cursor-target items-center justify-center border border-border px-4 py-2.5 ${TYPE.label} text-muted-foreground transition-micro hover:text-foreground`}
+              class={`inline-flex min-h-11 flex-1 cursor-target items-center justify-center border border-foreground/30 px-4 py-2.5 ${TYPE.label} text-foreground transition-micro hover:border-foreground`}
             >
               {c.direct}
             </a>

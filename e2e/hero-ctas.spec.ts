@@ -47,6 +47,34 @@ test.describe('hero CTAs', () => {
     await expect(primary).toHaveClass(/is-target-hovering/, { timeout: 2000 });
   });
 
+  test('CTAs com larguras iguais preenchendo a linha no desktop', async ({
+    page,
+  }) => {
+    await gotoHome(page, '/');
+    const hero = page.locator('#hero');
+    const primary = hero.getByRole('link', { name: 'Ver projetos' });
+    const secondary = hero.getByRole('link', { name: 'Fale comigo' });
+    const pw = (await primary.boundingBox())!.width;
+    const sw = (await secondary.boundingBox())!.width;
+    expect(Math.abs(pw - sw)).toBeLessThanOrEqual(1);
+  });
+
+  test('CTA secundário com contraste foreground nos dois temas', async ({
+    page,
+  }) => {
+    for (const theme of ['light', 'dark'] as const) {
+      await page.emulateMedia({ colorScheme: theme });
+      await gotoHome(page, '/');
+      const hero = page.locator('#hero');
+      const secondary = hero.getByRole('link', { name: 'Fale comigo' });
+      const title = hero.locator('#hero-title');
+      const color = (el: typeof secondary) =>
+        el.evaluate((e: HTMLElement) => window.getComputedStyle(e).color);
+      // mesma cor do título = token foreground (escuro no claro, claro no escuro)
+      expect(await color(secondary)).toBe(await color(title));
+    }
+  });
+
   test('CTA ancora navega até a seção sem trocar de página', async ({
     page,
   }) => {

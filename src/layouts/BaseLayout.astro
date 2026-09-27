@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import '../styles/target-hover.css';
+import '../styles/edge-reveal.css';
 import { getImage } from 'astro:assets';
 import { TYPE } from '../components/ui/typography';
 import { ClientRouter } from 'astro:transitions';
@@ -155,6 +156,9 @@ const ogImageMeta = image === portraitOg.src
     <div class="screen-fade screen-fade-bottom" aria-hidden="true" />
     <script>
       import { initTargetHover } from '../lib/target-hover.ts';
+      // EdgeReveal global (sociais, trajetória): módulo auto-init com
+      // dedupe + ciclo View Transitions (cf. src/lib/edge-reveal.ts).
+      import '../lib/edge-reveal.ts';
 
       // Inicializa na primeira carga
       initTargetHover({

@@ -39,6 +39,27 @@ test.describe('seção Contato enriquecida', () => {
         else expect(data!.flexDirection).toBe('column');
       });
 
+      test('estrutura clean: sem divide vertical no desktop', async ({
+        page,
+      }) => {
+        await gotoHome(page);
+        const second = page.locator('#contato-content > div').nth(1);
+        await second.scrollIntoViewIfNeeded();
+        const left = await second.evaluate(
+          (el: HTMLElement) => window.getComputedStyle(el).borderLeftWidth,
+        );
+        if (vp.name === 'desktop') expect(left).toBe('0px');
+        else {
+          // mobile: sem divisor entre colunas empilhadas (design clean)
+          const first = page.locator('#contato-content > div').first();
+          const bottom = await first.evaluate(
+            (el: HTMLElement) =>
+              window.getComputedStyle(el).borderBottomWidth,
+          );
+          expect(bottom).toBe('0px');
+        }
+      });
+
       test('coluna esquerda: título, descrição e 3 canais com COPIAR', async ({
         page,
       }) => {
@@ -181,6 +202,104 @@ test.describe('seção Contato enriquecida', () => {
           expect(data!.emailLeft).toBeGreaterThan(data!.nameLeft);
         }
       });
+
+      test('canais: corners abraçam só o link (desktop)', async ({
+        page,
+      }) => {
+        if (vp.name !== 'desktop') return;
+        await gotoHome(page);
+        const row = page.locator('#contato-content ul > li').first();
+        await row.scrollIntoViewIfNeeded();
+        // reveal (translateY 0.6s) precisa terminar antes de comparar caixas
+        await page.waitForTimeout(800);
+        const link = row.locator('a.cursor-target');
+        const linkBox = (await link.boundingBox())!;
+        const rowBox = (await row.boundingBox())!;
+        // link encolhido ao conteúdo, bem mais estreito que a linha
+        expect(linkBox.width).toBeLessThan(rowBox.width - 100);
+        await link.hover();
+        await expect(link).toHaveClass(/is-target-hovering/, {
+          timeout: 5_000,
+        });
+        await page.waitForTimeout(400);
+        for (const corner of await link
+          .locator('.target-hover-corner')
+          .all()) {
+          const cb = (await corner.boundingBox())!;
+          // offset padrão 8px: canto dentro do link ± 9px
+          expect(cb.x).toBeGreaterThanOrEqual(linkBox.x - 9);
+          expect(cb.x + cb.width).toBeLessThanOrEqual(
+            linkBox.x + linkBox.width + 9,
+          );
+        }
+      });
+
+      test('assuntos preenchem a linha sem tocar as bordas', async ({
+        page,
+      }) => {
+        for (const path of ['/', '/es/', '/en/']) {
+          await gotoHome(page, path);
+          const container = page.locator('#contact-form fieldset div.flex');
+          await container.scrollIntoViewIfNeeded();
+          // reveal (translateY 0.6s) precisa terminar: boundingBox no meio
+          // da transição quebra o agrupamento por linha
+          await page.waitForTimeout(800);
+          const cbox = (await container.boundingBox())!;
+          // PASSADA ÚNICA de medidas — nada de re-query entre asserções
+          const items: Array<{
+            x: number;
+            y: number;
+            width: number;
+            single: boolean;
+            fits: boolean;
+          }> = [];
+          for (const label of await container
+            .locator('label.cursor-target')
+            .all()) {
+            const b = (await label.boundingBox())!;
+            const span = label.locator('span').first();
+            const m = await span.evaluate(
+              (el: HTMLElement, w: number) => {
+                const cs = window.getComputedStyle(el);
+                const pad =
+                  parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+                const range = document.createRange();
+                range.selectNodeContents(el.firstChild!);
+                const tw = range.getBoundingClientRect().width;
+                return {
+                  single: el.scrollHeight <= el.clientHeight + 2,
+                  fits: tw + pad <= w + 1,
+                };
+              },
+              b.width,
+            );
+            items.push({ x: b.x, y: b.y, width: b.width, ...m });
+          }
+          expect(items.length).toBeGreaterThanOrEqual(2);
+          const rows = new Map<number, typeof items>();
+          for (const it of items) {
+            const key = Math.round(it.y);
+            if (!rows.has(key)) rows.set(key, []);
+            rows.get(key)!.push(it);
+            // texto em linha única e sem encostar/transbordar as bordas
+            expect(it.single).toBe(true);
+            expect(it.fits).toBe(true);
+          }
+          for (const row of rows.values()) {
+            // fileira cheia (larguras variam por conteúdo — sem exigência
+            // de igualdade): primeira borda ≈ container, última ≈ container
+            const lefts = row.map((it) => it.x);
+            const rights = row.map((it) => it.x + it.width);
+            expect(Math.min(...lefts)).toBeLessThanOrEqual(cbox.x + 3);
+            expect(Math.max(...rights)).toBeGreaterThanOrEqual(
+              cbox.x + cbox.width - 3,
+            );
+          }
+          // padding mínimo da página nos pills
+          const pill = container.locator('label.cursor-target > span').first();
+          await expect(pill).toHaveCSS('padding-left', '16px');
+        }
+      });
     });
   }
 
@@ -202,6 +321,65 @@ test.describe('seção Contato enriquecida', () => {
       () => getComputedStyle(document.body).backgroundColor,
     );
     expect(colors).not.toBe(bg);
+  });
+
+  test('copiar: mesma largura antes e depois, nos 3 idiomas', async ({
+    page,
+  }) => {
+    for (const path of ['/', '/es/', '/en/']) {
+      await gotoHome(page, path);
+      const btns = page.locator('#contato-content button[data-copy]');
+      expect(await btns.count()).toBe(3);
+      const widths = async () => {
+        const ws: number[] = [];
+        for (const b of await btns.all()) {
+          ws.push((await b.boundingBox())!.width);
+        }
+        return ws;
+      };
+      const before = await widths();
+      expect(Math.max(...before) - Math.min(...before)).toBeLessThanOrEqual(
+        1,
+      );
+      await btns.first().click();
+      await page.waitForTimeout(400); // troca para COPIADO
+      const after = await widths();
+      expect(Math.max(...after) - Math.min(...after)).toBeLessThanOrEqual(1);
+      // sem overflow do TEXTO (corners absolutos extrapolam 8px de
+      // propósito e incham o scrollWidth — mede só o nó de texto)
+      for (const b of await btns.all()) {
+        const fits = await b.evaluate((el: HTMLElement) => {
+          const cs = window.getComputedStyle(el);
+          const pad =
+            parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+          const range = document.createRange();
+          range.selectNodeContents(el.firstChild!);
+          return (
+            range.getBoundingClientRect().width + pad <= el.clientWidth + 1
+          );
+        });
+        expect(fits).toBe(true);
+        const pad = await b.evaluate(
+          (el: HTMLElement) => window.getComputedStyle(el).paddingLeft,
+        );
+        expect(pad).toBe('16px');
+      }
+    }
+  });
+
+  test('mensagem direta com contraste foreground nos dois temas', async ({
+    page,
+  }) => {
+    for (const theme of ['light', 'dark'] as const) {
+      await page.emulateMedia({ colorScheme: theme });
+      await gotoHome(page);
+      const direct = page.locator('#contact-direct');
+      await direct.scrollIntoViewIfNeeded();
+      const ref = page.locator('#contato-content h3').first();
+      const color = (loc: typeof direct) =>
+        loc.evaluate((el: HTMLElement) => window.getComputedStyle(el).color);
+      expect(await color(direct)).toBe(await color(ref));
+    }
   });
 
   test('localização: título e ações em inglês em /en/', async ({ page }) => {

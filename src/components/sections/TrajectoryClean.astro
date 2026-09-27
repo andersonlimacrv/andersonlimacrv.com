@@ -59,22 +59,23 @@ function formatPeriodShort(period: string): string {
     <ul aria-label={t.aboutBadgeWork} class="flex flex-col">
       {
         workRows.map((row) => (
-          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
+          <li data-edge-reveal class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border px-4 py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
             <span class="min-w-0 flex-1 truncate">
-              <span class={`${TYPE.body} text-foreground`}>
+              <span class={`${TYPE.body} edge-ink text-foreground`}>
                 {row.role}
               </span>
-              <Sep class="mx-1" />
-              <span class={`${TYPE.body} text-muted-foreground/80`}>
+              <Sep class="mx-1 edge-ink" />
+              <span class={`${TYPE.body} edge-ink text-muted-foreground/80`}>
                 {row.company}
               </span>
             </span>
             <span
-              class={`trajectory-period shrink-0 ${TYPE.label} text-muted-foreground whitespace-nowrap sm:text-right`}
+              class={`trajectory-period shrink-0 ${TYPE.label} edge-ink text-muted-foreground whitespace-nowrap sm:text-right`}
               title={row.period}
             >
               {formatPeriodShort(row.period)}
             </span>
+            <span data-reveal-layer aria-hidden="true"></span>
           </li>
         ))
       }
@@ -85,22 +86,23 @@ function formatPeriodShort(period: string): string {
     <ul aria-label={t.aboutBadgeEducation} class="flex flex-col">
       {
         eduRows.map((row) => (
-          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
+          <li data-edge-reveal class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border px-4 py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
             <span class="min-w-0 flex-1 truncate">
-              <span class={`${TYPE.body} text-foreground`}>
+              <span class={`${TYPE.body} edge-ink text-foreground`}>
                 {row.role}
               </span>
-              <Sep class="mx-2" />
-              <span class={`${TYPE.body} text-muted-foreground/80`}>
+              <Sep class="mx-2 edge-ink" />
+              <span class={`${TYPE.body} edge-ink text-muted-foreground/80`}>
                 {row.company}
               </span>
             </span>
             <span
-              class={`trajectory-period shrink-0 ${TYPE.label} text-muted-foreground whitespace-nowrap sm:text-right`}
+              class={`trajectory-period shrink-0 ${TYPE.label} edge-ink text-muted-foreground whitespace-nowrap sm:text-right`}
               title={row.period}
             >
               {formatPeriodShort(row.period)}
             </span>
+            <span data-reveal-layer aria-hidden="true"></span>
           </li>
         ))
       }

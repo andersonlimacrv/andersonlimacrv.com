@@ -114,7 +114,7 @@ test.describe('seção Sobre reformulada', () => {
         await expect(dados.getByText('CI/CD').first()).toBeVisible();
         await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brasil').first()).toBeVisible();
         // stack principal separado por Sep (7 itens → 6 separadores)
-        const stackRow = dados.locator('div.py-2', { hasText: 'Stack principal' }).locator('p');
+        const stackRow = dados.locator('div[data-profile-row]', { hasText: 'Stack principal' }).locator('p');
         await expect(stackRow.locator('span[aria-hidden="true"]')).toHaveCount(6);
 
         const perfil = page.locator('#sobre-content section[data-col="perfil"]');
@@ -278,7 +278,7 @@ test.describe('seção Sobre reformulada', () => {
         await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brazil').first()).toBeVisible();
         await expect(dados.getByText('TypeScript').first()).toBeVisible();
         await expect(dados.getByText('CI/CD').first()).toBeVisible();
-        const stackRowEn = dados.locator('div.py-2', { hasText: 'Main stack' }).locator('p');
+        const stackRowEn = dados.locator('div[data-profile-row]', { hasText: 'Main stack' }).locator('p');
         await expect(stackRowEn.locator('span[aria-hidden="true"]')).toHaveCount(6);
         await expect(page.locator('#sobre-content blockquote p')).toContainText(
           'My career has been driven',
@@ -306,7 +306,7 @@ test.describe('seção Sobre reformulada', () => {
         await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brasil').first()).toBeVisible();
         await expect(dados.getByText('TypeScript').first()).toBeVisible();
         await expect(dados.getByText('CI/CD').first()).toBeVisible();
-        const stackRowEs = dados.locator('div.py-2', { hasText: 'Stack principal' }).locator('p');
+        const stackRowEs = dados.locator('div[data-profile-row]', { hasText: 'Stack principal' }).locator('p');
         await expect(stackRowEs.locator('span[aria-hidden="true"]')).toHaveCount(6);
         await expect(page.locator('#sobre-content blockquote p')).toContainText(
           'Mi carrera ha estado impulsada',

@@ -28,16 +28,16 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
     <p class={`mt-6 max-w-md ${TYPE.quote} not-italic text-muted-foreground`}>
       {t.heroSubtitle}
     </p>
-    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+    <div class="mt-10 flex flex-col gap-3 sm:flex-row">
       <a
         href={`${baseUrl}/#projetos`}
-        class={`inline-flex min-h-11 w-full cursor-target cursor-target-filled items-center justify-center border border-primary bg-primary px-4 py-2.5 sm:w-auto ${TYPE.label} text-primary-foreground transition-micro hover:opacity-90`}
+        class={`inline-flex min-h-11 w-full cursor-target cursor-target-filled items-center justify-center border border-primary bg-primary px-4 py-2.5 sm:flex-1 ${TYPE.label} text-primary-foreground transition-micro hover:opacity-90`}
       >
         {t.heroCtaProjects}
       </a>
       <a
         href={`${baseUrl}/#contato`}
-        class={`inline-flex min-h-11 w-full cursor-target items-center justify-center border border-border px-4 py-2.5 sm:w-auto ${TYPE.label} text-muted-foreground transition-micro hover:text-foreground`}
+        class={`inline-flex min-h-11 w-full cursor-target items-center justify-center border border-foreground/30 px-4 py-2.5 sm:flex-1 ${TYPE.label} text-foreground transition-micro hover:border-foreground`}
       >
         {t.heroCtaContact}
       </a>
