@@ -1,7 +1,10 @@
 ---
+import { getImage } from 'astro:assets';
 import Reveal from '../ui/Reveal.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
-import ProjectLink from '../ui/ProjectLink.astro';
+import FlowingMenu from '../ui/FlowingMenu.astro';
+import { TYPE } from '../ui/typography';
+import portrait from '../../assets/me.png';
 import { getProjects } from '../../data/projects';
 import { site } from '../../data/site';
 import { defaultLocale, ui, type Locale } from '../../i18n/ui';
@@ -13,6 +16,15 @@ interface Props {
 const locale = Astro.props.locale ?? defaultLocale;
 const t = ui[locale];
 const projects = getProjects(locale);
+
+// Thumb 16:9 local (crop exato 448×252, 2x para retina) — exibida em 224×126.
+const thumb169 = await getImage({
+  src: portrait,
+  format: 'webp',
+  width: 448,
+  height: 252,
+  fit: 'cover',
+});
 ---
 
 <SectionHeading
@@ -21,11 +33,21 @@ const projects = getProjects(locale);
   id="projetos"
   eyebrow={t.sections.projects.eyebrow}
 >
-  <Reveal>
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {projects.map((project) => (
-        <ProjectLink {...project} />
-      ))}
-    </div>
+  {/* Mesmo formato dos subtítulos do perfil (Role, Stack…): eyebrow mono. */}
+  <p class={`max-w-2xl pt-6 ${TYPE.label} text-muted-foreground`}>{t.sections.projects.subtitle}</p>
+  <Reveal class="mt-8">
+    <FlowingMenu
+      navLabel={t.sections.projects.title}
+      variant="full"
+      id="projects-flowing"
+      images={[{ src: thumb169.src, w: 224, h: 126 }]}
+      items={projects.map((project) => ({
+        href: project.url,
+        label: project.title,
+        description: project.description,
+        tags: project.tags,
+        external: true,
+      }))}
+    />
   </Reveal>
 </SectionHeading>

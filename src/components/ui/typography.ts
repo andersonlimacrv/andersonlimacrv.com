@@ -15,6 +15,9 @@ export const TYPE = {
   titleH1: 'font-sans font-bold text-h1 leading-[1.1] tracking-tight',
   titleH2: 'font-sans font-bold text-h2 leading-[1.2] tracking-tight',
   titleH3: 'font-sans font-semibold text-h3 leading-[1.3] tracking-tight',
+  // Títulos do FlowingMenu (linha estática + marquee): mesma voz nos dois
+  // estados; o uppercase vive aqui porque caixa é controlada pelo registro.
+  flowingTitle: 'font-sans font-semibold text-h2 leading-[1.2] tracking-tight uppercase',
   sectionTitle: 'font-sans font-bold text-h1 leading-[1.1] tracking-tight uppercase',
   sectionNumber: 'font-mono font-semibold text-[90px] md:text-[120px] leading-none tracking-[0.01em]',
   sectionEyebrow: 'font-mono text-xs uppercase tracking-[0.3em]',

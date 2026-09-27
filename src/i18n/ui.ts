@@ -59,7 +59,7 @@ export const ui = {
     },
     sections: {
       about: { title: "Sobre", eyebrow: "Sobre" },
-      projects: { title: "Projetos", eyebrow: "Trabalho" },
+      projects: { title: "Projetos", eyebrow: "Trabalho", subtitle: "Trabalhos em destaque / Projetos paralelos" },
       blog: { title: "Blog", eyebrow: "Escritos" },
       contact: { title: "Contato", eyebrow: "Fale comigo" },
     },
@@ -186,7 +186,7 @@ export const ui = {
     },
     sections: {
       about: { title: "Sobre mí", eyebrow: "Sobre mí" },
-      projects: { title: "Proyectos", eyebrow: "Trabajo" },
+      projects: { title: "Proyectos", eyebrow: "Trabajo", subtitle: "Trabajos destacados / Proyectos paralelos" },
       blog: { title: "Blog", eyebrow: "Escritos" },
       contact: { title: "Contacto", eyebrow: "Hablemos" },
     },
@@ -313,7 +313,7 @@ export const ui = {
     },
     sections: {
       about: { title: "About", eyebrow: "About" },
-      projects: { title: "Projects", eyebrow: "Work" },
+      projects: { title: "Projects", eyebrow: "Work", subtitle: "Highlighted work / Side projects" },
       blog: { title: "Blog", eyebrow: "Writings" },
       contact: { title: "Contact", eyebrow: "Get in touch" },
     },

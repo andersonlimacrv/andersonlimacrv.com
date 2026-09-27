@@ -1,0 +1,379 @@
+---
+import { getImage } from 'astro:assets';
+import { TYPE } from './typography';
+import TargetSimbol from './TargetSimbol.astro';
+import portrait from '../../assets/me.png';
+
+export interface FlowingItem {
+  href: string;
+  label: string;
+  description?: string;
+  tags?: readonly string[];
+  /** Links externos abrem em nova aba com noopener (ex.: projetos). */
+  external?: boolean;
+}
+
+/** Foto do marquee com proporção explícita (a proporção é escolhida aqui). */
+export interface FlowingMedia {
+  src: string;
+  /** Largura de exibição em px. */
+  w: number;
+  /** Altura de exibição em px. */
+  h: number;
+}
+
+interface Props {
+  /** Rótulo acessível do nav (localizado via chamador). */
+  navLabel?: string;
+  items?: FlowingItem[];
+  /** Segundos para percorrer uma largura de parte (equivale ao `speed` da ref). */
+  speed?: number;
+  id?: string;
+  /**
+   * `full`: linha estática com título + descrição + tags (paridade sem JS /
+   * reduced-motion) e marquee só com rótulo + imagem.
+   * `minimal`: linha só com o título (demo original da lab).
+   */
+  variant?: 'full' | 'minimal';
+  /**
+   * Fotos do marquee (src + proporção w/h explícita — a proporção é
+   * escolhida aqui, por imagem). Quando omitido, 1 thumb compacta local;
+   * A, B e Projetos não passam nada. O bloco C passa 3 quadrados.
+   */
+  images?: FlowingMedia[];
+}
+
+const {
+  navLabel = 'FlowingMenu demo',
+  items = [
+    { href: '#', label: 'Mojave' },
+    { href: '#', label: 'Sonoma' },
+    { href: '#', label: 'Monterey' },
+    { href: '#', label: 'Sequoia' },
+  ],
+  speed = 15,
+  id = 'flowing-menu-demo',
+  variant = 'full',
+  images: propImages,
+} = Astro.props;
+
+// Thumb compacta padrão (A, B e Projetos): crop local B&W via astro:assets.
+// Quem precisa de outras fotos/proporções passa `images` (ex.: bloco C
+// com 3 quadrados) — a referência usava imagens remotas do Unsplash.
+const defaultThumb = await getImage({
+  src: portrait,
+  format: 'webp',
+  width: 400,
+  height: 280,
+  fit: 'cover',
+});
+const displayImages: FlowingMedia[] =
+  propImages && propImages.length > 0
+    ? propImages
+    : [{ src: defaultThumb.src, w: 160, h: 56 }];
+// Partes SSR por item: conteúdo visível sem JS; o enhance ajusta a
+// quantidade exata via `ensureParts` (delta, sem reconstruir tudo).
+const SSR_PARTS = 4;
+---
+
+<div
+  id={id}
+  class:list={['flowing-menu', variant === 'minimal' && 'flowing-menu--minimal']}
+  data-flowing-menu
+  data-speed={speed}
+>
+  <nav aria-label={navLabel}>
+    {
+      items.map((item, i) => (
+        <div
+          class:list={['menu-item', i === 0 && 'is-first']}
+          data-flowing-item
+          data-label={item.label}
+          data-images={displayImages.map((t) => t.src).join(',')}
+          data-sizes={displayImages.map((t) => `${t.w}x${t.h}`).join(',')}
+        >
+          <a
+            class="menu-link"
+            href={item.href}
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noopener noreferrer' : undefined}
+          >
+            <span class="menu-link-main">
+              <span class="menu-link-text">
+                {/* menu-link-label é hook de teste/estilo (tipografia vem do TYPE) */}
+                <span class={`menu-link-label ${TYPE.flowingTitle}`}>{item.label}</span>
+                {variant === 'full' && item.description && (
+                  <span class={`${TYPE.body} menu-link-desc text-muted-foreground`}>
+                    {item.description}
+                  </span>
+                )}
+              </span>
+              {variant === 'full' && item.tags && item.tags.length > 0 && (
+                <span class="menu-link-tags">
+                  {item.tags.map((tag) => (
+                    <span class={`border border-border px-2 py-0.5 ${TYPE.label} text-muted-foreground`}>
+                      {tag}
+                    </span>
+                  ))}
+                </span>
+              )}
+              {/* Mira à direita SOMENTE na variante full (A): a minimal (B)
+                  é a demo original sem affordance extra. Sem `cursor-target`
+                  de propósito — nada de corners aqui. */}
+              {variant === 'full' && (
+                <TargetSimbol size={25} class="menu-link-simbol" />
+              )}
+            </span>
+          </a>
+          <div class="marquee" aria-hidden="true">
+            <div class="marquee-inner">
+              {Array.from({ length: SSR_PARTS }).map(() => (
+                <div class="marquee-part">
+                  {/* Sem hook de teste aqui: `.menu-link-label` é só o título
+                      estático (seletores e2e contam 1 por item). */}
+                  <span class={TYPE.flowingTitle}>{item.label}</span>
+                  {displayImages.map((t) => (
+                    <img
+                      class="marquee-media"
+                      src={t.src}
+                      width={t.w * 2}
+                      height={t.h * 2}
+                      style={`width:${t.w}px;height:${t.h}px`}
+                      loading="lazy"
+                      decoding="async"
+                      alt=""
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </nav>
+</div>
+
+<script>
+  import './flowing-menu';
+</script>
+
+<style>
+  /* Escopado na lab de propósito: NÃO vai para global.css para não ser
+     inlineado nas 15 páginas (cf. `inlineStylesheets: 'auto'`). Tokens
+     mapeados para o tema do site — nada hardcoded fora do escopo. */
+  .flowing-menu {
+    --fm-bg: var(--background);
+    --fm-text: var(--foreground);
+    --fm-marquee-bg: var(--primary);
+    --fm-marquee-text: var(--primary-foreground);
+    --fm-border: var(--border);
+    width: 100%;
+    height: 480px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: var(--fm-bg);
+  }
+
+  /* Linhas full (título + descrição + tags) precisam de mais altura. */
+  .flowing-menu:not(.flowing-menu--minimal) {
+    height: 560px;
+  }
+
+  .flowing-menu nav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .menu-item {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    border-top: 1px solid var(--fm-border);
+  }
+
+  .menu-item.is-first {
+    border-top: none;
+  }
+
+  /* Primeira fileira sem padding-top: o texto encosta no topo óptico da
+     fileira, igualando o gap título→texto às demais sections (o mt-12 do
+     SectionHeading já conta o respiro; 12px aqui somavam ~+12px só aqui). */
+  .menu-item.is-first .menu-link-main {
+    padding-top: 0;
+  }
+
+  .menu-link {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--fm-text);
+  }
+
+  /* Variante full: bloco informativo à esquerda, tags à direita. */
+  .menu-link-main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-width: 0;
+    padding: 0.75rem clamp(1rem, 3vw, 2rem);
+  }
+
+  .menu-link-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    text-align: left;
+    min-width: 0;
+  }
+
+  .menu-link-desc {
+    opacity: 0.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .menu-link-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.375rem;
+    margin-left: auto;
+    padding-left: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* Variante minimal: título centralizado (demo original da lab). */
+  .flowing-menu--minimal .menu-link {
+    justify-content: center;
+  }
+
+  .flowing-menu--minimal .menu-link-main {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.75rem 1rem;
+  }
+
+  .menu-link:focus-visible {
+    outline: 2px solid var(--fm-marquee-bg);
+    outline-offset: -2px;
+  }
+
+  /* Mira à direita da linha (último item do row), com respiro generoso
+     após as tags. `:global()` porque a mira é renderizada pelo componente
+     filho `TargetSimbol` (sem o `data-astro-cid` deste escopo).
+     No mobile empilha abaixo — na verdade some (ver media query). */
+  .flowing-menu :global(.menu-link-simbol) {
+    align-self: center;
+    flex-shrink: 0;
+    margin-left: 2.5rem;
+  }
+
+  .marquee {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: var(--fm-marquee-bg);
+    /* fallback no-JS: fora da tela; com JS o repouso é inline `translate`. */
+    transform: translateY(101%);
+    will-change: transform, translate;
+  }
+
+  /* Regras do marquee em `:global()` de propósito: `ensureParts()` cria
+     `.marquee-part`/`.marquee-media` via JS (sem `data-astro-cid`) ao
+     recalcular repetições — com seletor escopado, as partes adicionadas
+     nasceriam sem estilo (sem raio, sem tamanho). O container mantém o
+     escopo; só o interior dinâmico é global. */
+  .flowing-menu :global(.marquee-inner) {
+    height: 100%;
+    width: max-content;
+    display: flex;
+    will-change: transform, translate;
+  }
+
+  .flowing-menu :global(.marquee-part) {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: var(--fm-marquee-text);
+  }
+
+  .flowing-menu :global(.marquee-part span) {
+    white-space: nowrap;
+    padding-left: 1vw;
+    padding-right: 1vw;
+  }
+
+  .flowing-menu :global(.marquee-media) {
+    margin: 1em 1.5vw;
+    border: 0;
+    /* Raio do DS (nunca pill): acompanha cards/botões do layout. */
+    border-radius: var(--radius);
+    object-fit: cover;
+    background-color: rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+  }
+
+  /* Mobile (mesmo corte do menu mobile e do TargetHover): tags
+     centralizadas abaixo do texto. */
+  @media (max-width: 768px) {
+    .flowing-menu {
+      height: 420px;
+    }
+    .flowing-menu:not(.flowing-menu--minimal) {
+      height: 500px;
+    }
+    .menu-link-main {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 0.5rem;
+    }
+    .flowing-menu :global(.menu-link-simbol) {
+      display: none;
+    }
+    .menu-link-text {
+      align-items: center;
+      text-align: center;
+    }
+    .menu-link-tags {
+      justify-content: center;
+      margin-left: 0;
+      padding-left: 0;
+    }
+    /* Mobile mantém as larguras por índice (inline): o teste mostra o
+       comportamento real com partes largas. */
+  }
+
+  /* movimento reduzido: links estáticos, sem marquee nem reveal. */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      display: none;
+    }
+    .marquee-inner {
+      transform: none !important;
+    }
+  }
+</style>
