@@ -210,7 +210,6 @@ function init() {
     return;
   }
 
-  console.log("[TargetHover] init: encontrados", targets().length, "targets");
   targets().forEach(setupTarget);
 
   if (observer) {
@@ -234,7 +233,6 @@ function init() {
 }
 
 function cleanup() {
-  console.log("[TargetHover] cleanup: limpando", targets().length, "targets");
   // Limpa apenas os que estão no DOM atual; WeakMap guarda os handlers para remover
   const current = targets();
   current.forEach((target) => {
