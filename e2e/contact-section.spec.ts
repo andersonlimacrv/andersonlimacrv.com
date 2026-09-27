@@ -50,7 +50,6 @@ test.describe('seção Contato enriquecida', () => {
         );
         if (vp.name === 'desktop') expect(left).toBe('0px');
         else {
-          // mobile: sem divisor entre colunas empilhadas (design clean)
           const first = page.locator('#contato-content > div').first();
           const bottom = await first.evaluate(
             (el: HTMLElement) =>
@@ -96,7 +95,6 @@ test.describe('seção Contato enriquecida', () => {
         await expect(
           form.getByRole('button', { name: /enviar por e-mail/i }),
         ).toBeVisible();
-        // sem JS o href é o wa.me base; com JS ele já nasce com ?text= (campos vazios)
         await expect(form.getByRole('link', { name: /mensagem direta/i })).toHaveAttribute(
           'href',
           /^https:\/\/wa\.me\/5553981004874/,
@@ -125,7 +123,6 @@ test.describe('seção Contato enriquecida', () => {
           'Campo obrigatório.',
         );
         expect(page.url()).toContain('/');
-        // sem alert(): nenhum dialog nativo
         let dialoged = false;
         page.on('dialog', () => {
           dialoged = true;
@@ -197,7 +194,6 @@ test.describe('seção Contato enriquecida', () => {
         if (vp.name === 'mobile') {
           expect(data!.emailTop).toBeGreaterThanOrEqual(data!.nameBottom - 2);
         } else {
-          // desktop: lado a lado (mesma linha)
           expect(Math.abs(data!.emailTop - data!.nameBottom)).toBeGreaterThan(0);
           expect(data!.emailLeft).toBeGreaterThan(data!.nameLeft);
         }
@@ -210,12 +206,10 @@ test.describe('seção Contato enriquecida', () => {
         await gotoHome(page);
         const row = page.locator('#contato-content ul > li').first();
         await row.scrollIntoViewIfNeeded();
-        // reveal (translateY 0.6s) precisa terminar antes de comparar caixas
         await page.waitForTimeout(800);
         const link = row.locator('a.cursor-target');
         const linkBox = (await link.boundingBox())!;
         const rowBox = (await row.boundingBox())!;
-        // link encolhido ao conteúdo, bem mais estreito que a linha
         expect(linkBox.width).toBeLessThan(rowBox.width - 100);
         await link.hover();
         await expect(link).toHaveClass(/is-target-hovering/, {
@@ -226,7 +220,6 @@ test.describe('seção Contato enriquecida', () => {
           .locator('.target-hover-corner')
           .all()) {
           const cb = (await corner.boundingBox())!;
-          // offset padrão 8px: canto dentro do link ± 9px
           expect(cb.x).toBeGreaterThanOrEqual(linkBox.x - 9);
           expect(cb.x + cb.width).toBeLessThanOrEqual(
             linkBox.x + linkBox.width + 9,
@@ -241,11 +234,8 @@ test.describe('seção Contato enriquecida', () => {
           await gotoHome(page, path);
           const container = page.locator('#contact-form fieldset div.flex');
           await container.scrollIntoViewIfNeeded();
-          // reveal (translateY 0.6s) precisa terminar: boundingBox no meio
-          // da transição quebra o agrupamento por linha
           await page.waitForTimeout(800);
           const cbox = (await container.boundingBox())!;
-          // PASSADA ÚNICA de medidas — nada de re-query entre asserções
           const items: Array<{
             x: number;
             y: number;
@@ -281,13 +271,10 @@ test.describe('seção Contato enriquecida', () => {
             const key = Math.round(it.y);
             if (!rows.has(key)) rows.set(key, []);
             rows.get(key)!.push(it);
-            // texto em linha única e sem encostar/transbordar as bordas
             expect(it.single).toBe(true);
             expect(it.fits).toBe(true);
           }
           for (const row of rows.values()) {
-            // fileira cheia (larguras variam por conteúdo — sem exigência
-            // de igualdade): primeira borda ≈ container, última ≈ container
             const lefts = row.map((it) => it.x);
             const rights = row.map((it) => it.x + it.width);
             expect(Math.min(...lefts)).toBeLessThanOrEqual(cbox.x + 3);
@@ -295,7 +282,6 @@ test.describe('seção Contato enriquecida', () => {
               cbox.x + cbox.width - 3,
             );
           }
-          // padding mínimo da página nos pills
           const pill = container.locator('label.cursor-target > span').first();
           await expect(pill).toHaveCSS('padding-left', '16px');
         }
@@ -313,7 +299,6 @@ test.describe('seção Contato enriquecida', () => {
     await submit.scrollIntoViewIfNeeded();
     await submit.hover();
     await expect(submit).toHaveClass(/is-target-hovering/, { timeout: 2000 });
-    // cantos contrastam com o fundo da página (não herdam o texto claro)
     const colors = await submit
       .locator('.target-hover-corner--tl')
       .evaluate((el) => getComputedStyle(el).borderTopColor);
@@ -345,8 +330,6 @@ test.describe('seção Contato enriquecida', () => {
       await page.waitForTimeout(400); // troca para COPIADO
       const after = await widths();
       expect(Math.max(...after) - Math.min(...after)).toBeLessThanOrEqual(1);
-      // sem overflow do TEXTO (corners absolutos extrapolam 8px de
-      // propósito e incham o scrollWidth — mede só o nó de texto)
       for (const b of await btns.all()) {
         const fits = await b.evaluate((el: HTMLElement) => {
           const cs = window.getComputedStyle(el);

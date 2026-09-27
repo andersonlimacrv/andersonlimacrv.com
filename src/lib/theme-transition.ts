@@ -13,10 +13,6 @@
  * - No attribution required with Skiper UI Pro.
  */
 
-// Apenas a variante `circle`/`center` (sem blur) é usada pelo site. Demais
-// variantes (rectangle, gif, polygon, circle-blur, circle com start ≠ center)
-// e os helpers getPositionCoords/generateSVG/getTransformOrigin foram
-// removidos para emagrecer o bundle do ThemeToggle (13.1 KB → < 6 KB).
 
 interface Animation {
   name: string;

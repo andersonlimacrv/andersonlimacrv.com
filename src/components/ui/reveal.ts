@@ -1,23 +1,8 @@
-// Reveal — transição de entrada das seções (vanilla, cf. elastic-line.ts).
-//
-// Progressive enhancement: o conteúdo nasce visível no HTML; quando o JS roda,
-// `reveal-present` é adicionado ao <html> e os [data-reveal] abaixo da dobra
-// ficam ocultos até o IntersectionObserver adicionar `is-visible`.
-//
-// POR QUE ESTE MÓDULO EXISTE (e não um <script> solto no componente):
-// com View Transitions (ClientRouter), o Astro restaura os atributos do <html>
-// a partir do HTML estático da página seguinte — o que apaga `reveal-present`,
-// `theme-applied` etc. — e os módulos já carregados NÃO re-executam (cache de
-// módulo do browser). O componente antigo perdia o reveal após a 1ª navegação.
-// Aqui o init roda em astro:page-load / astro:after-swap, re-arma a classe e
-// observa os elementos novos (dedupe por WeakSet).
-
 let io: IntersectionObserver | null = null;
 const observed = new WeakSet<Element>();
 
 function init() {
   const root = document.documentElement;
-  // Reaplica após navegação (o swap limpa os atributos do <html>).
   if (!root.classList.contains('reveal-present')) {
     root.classList.add('reveal-present');
   }
@@ -60,6 +45,4 @@ document.addEventListener('astro:page-load', init);
 document.addEventListener('astro:after-swap', init);
 init();
 
-// Marca o arquivo como módulo ES (evita colisão no escopo global do tsc com
-// outros scripts sem import/export, ex.: elastic-line.ts).
 export {};

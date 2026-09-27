@@ -73,11 +73,7 @@ test.describe('scrollbar personalizada', () => {
       return rgb;
     }, token ?? '');
 
-    // getComputedStyle pseudo:hover retorna vazio fora do estado ativo;
-    // lemos a regra CSS injetada em global.css para confirmar o destino do hover.
     const hoverTarget = await page.evaluate(() => {
-      // As regras vivem em @layer (base/components) — atravessa blocos de
-      // camada e media queries para achar CSSStyleRule.
       const collect = (rules: CSSRuleList, out: CSSStyleRule[]) => {
         for (const rule of Array.from(rules)) {
           if (rule instanceof CSSStyleRule) out.push(rule);
@@ -109,9 +105,6 @@ test.describe('scrollbar personalizada', () => {
       return found;
     });
     expect(hoverTarget).not.toBeNull();
-    // O valor escrito na regra é `var(--foreground)`; convertemos para cor
-    // computada num elemento temporário usando setProperty (shorthand */
-    // background rejeita var()).
     const composed = await page.evaluate((css) => {
       const el = document.createElement('div');
       (el.style as CSSStyleDeclaration).setProperty('background-color', css ?? '');
@@ -158,7 +151,6 @@ test.describe('scrollbar personalizada', () => {
       return getComputedStyle(document.documentElement, '::-webkit-scrollbar-thumb')
         .transition;
     });
-    // Sob prefers-reduced-motion a regra `@media` zera a transição.
     expect(transition).toMatch(/none|0s/);
   });
 });

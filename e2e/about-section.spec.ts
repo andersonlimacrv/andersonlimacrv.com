@@ -60,7 +60,6 @@ test.describe('seção Sobre reformulada', () => {
         expect(data!.display).toBe('flex');
         expect(data!.order).toEqual(['perfil', 'dados']);
         expect(data!.trajBelow).toBe(true);
-        // desktop: row; mobile: column
         if (vp.name === 'desktop') expect(data!.flexDirection).toBe('row');
         else expect(data!.flexDirection).toBe('column');
       });
@@ -86,11 +85,9 @@ test.describe('seção Sobre reformulada', () => {
         });
         expect(data).not.toBeNull();
         if (vp.name === 'desktop') {
-          // lado a lado: dados à direita do perfil, com sobreposição vertical
           expect(data!.dadosLeft).toBeGreaterThan(data!.perfilRight - TOLERANCE_PX);
           expect(data!.dadosTop).toBeLessThan(data!.perfilBottom - TOLERANCE_PX);
         } else {
-          // empilhado: dados abaixo do perfil
           expect(data!.dadosTop).toBeGreaterThanOrEqual(data!.perfilBottom - TOLERANCE_PX);
         }
       });
@@ -100,7 +97,6 @@ test.describe('seção Sobre reformulada', () => {
       }) => {
         await gotoHome(page);
 
-        // sem dl/dt/dd — blocos "título + conteúdo" diretos
         const dlCount = await page.evaluate(
           () => document.querySelectorAll('#sobre-content dl').length,
         );
@@ -113,7 +109,6 @@ test.describe('seção Sobre reformulada', () => {
         await expect(dados.getByText('TypeScript').first()).toBeVisible();
         await expect(dados.getByText('CI/CD').first()).toBeVisible();
         await expect(dados.getByText('Pelotas, Rio Grande do Sul, Brasil').first()).toBeVisible();
-        // stack principal separado por Sep (7 itens → 6 separadores)
         const stackRow = dados.locator('div[data-profile-row]', { hasText: 'Stack principal' }).locator('p');
         await expect(stackRow.locator('span[aria-hidden="true"]')).toHaveCount(6);
 
@@ -127,17 +122,13 @@ test.describe('seção Sobre reformulada', () => {
         await expect(page.locator('#sobre-content footer').getByText('WhatsApp')).toBeVisible();
         await expect(page.locator('#sobre-content footer').getByText('+55 53 98100-4874')).toHaveCount(0);
 
-        // Trajetória clean: 7 rows separadas em Trabalho (4) + Formação (3)
         const entries = page.locator('#sobre-content section[data-col="trajetoria"] li');
         await expect(entries).toHaveCount(7);
         await expect(entries.first()).toContainText('CESS');
-        // Headings de seção Trabalho / Formação visíveis
         await expect(page.locator('#trajectory-work-title')).toHaveText('Trabalho');
         await expect(page.locator('#trajectory-edu-title')).toHaveText('Formação');
-        // Sem summary longo, sem linha vertical
         await expect(entries.first()).not.toContainText('Especialização em IA e ML aplicada');
         await expect(page.locator('#sobre-content section[data-col="trajetoria"] .cross-mark')).toHaveCount(0);
-        // Trabalho 4 + Formação 3
         await expect(page.locator('ul[aria-label="Trabalho"] > li')).toHaveCount(4);
         await expect(page.locator('ul[aria-label="Formação"] > li')).toHaveCount(3);
       });
@@ -163,13 +154,10 @@ test.describe('seção Sobre reformulada', () => {
             quoteStyle: csQuote?.fontStyle ?? '',
           };
         });
-        // label eyebrow 10→12px
         expect(data.titleSize).toBeGreaterThanOrEqual(10);
         expect(data.titleSize).toBeLessThanOrEqual(12);
-        // conteúdo body: responsivo 12px (mobile) → 14px (desktop)
         const expectedContent = vp.name === 'mobile' ? 12 : 14;
         expect(data.contentSize).toBe(expectedContent);
-        // frase: serif itálico (estilo à parte)
         expect(data.quoteFamily).toContain('Fraunces');
         expect(data.quoteStyle).toBe('italic');
       });
@@ -227,14 +215,11 @@ test.describe('seção Sobre reformulada', () => {
         expect(data).not.toBeNull();
         expect(data!.workItems.length).toBe(4);
         expect(data!.eduItems.length).toBe(3);
-        // Primeiro trabalho deve ser CESS 2022 — presente (mais recente work)
         expect(data!.workItems[0].period).toContain('2022');
         expect(data!.workItems[0].companyRole).toContain('CESS');
-        // Sem yearRange e sem linha vertical / CrossMark
         const hasYearRange = await page.evaluate(() =>
           document.body.textContent?.includes('2007—2027') ?? false,
         );
-        // yearRange foi removido da trajetória; pode ainda existir em outro lugar? Verifica especificamente na coluna
         const trajetoriaText = await page.locator('section[data-col="trajetoria"]').textContent();
         expect(trajetoriaText).not.toContain('2007—2027');
         expect(hasYearRange).toBe(false);
@@ -250,7 +235,6 @@ test.describe('seção Sobre reformulada', () => {
           expect(item.period).not.toHaveLength(0);
           expect(item.companyRole).not.toHaveLength(0);
         }
-        // Headings existem
         await expect(page.locator('#trajectory-work-title')).toHaveText('Trabalho');
         await expect(page.locator('#trajectory-edu-title')).toHaveText('Formação');
       });

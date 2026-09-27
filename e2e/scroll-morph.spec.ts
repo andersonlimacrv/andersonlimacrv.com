@@ -5,7 +5,6 @@ const VIEWPORTS = [
   { name: 'mobile', width: 390, height: 844 },
 ] as const;
 
-// Diâmetro final responsivo do morph (--morph-final-size no :root).
 const FINAL_SIZE_BY_VIEWPORT: Record<(typeof VIEWPORTS)[number]['name'], number> = {
   desktop: 160,
   mobile: 128,
@@ -141,7 +140,6 @@ test.describe('morph do retrato hero', () => {
         const mid = start + (end - start) * 0.5;
         await scrollTo(page, mid);
 
-        // Simula a barra de endereço do mobile / redimensionamento de janela.
         await page.setViewportSize({
           width: vp.width,
           height: vp.height - 104,
@@ -209,7 +207,6 @@ test.describe('prefers-reduced-motion', () => {
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.waitForTimeout(100);
     const s = await morphState(page);
-    // Viewport default do describe: 1280×720 → final 160px.
     expect(Math.abs(s.img.width - FINAL_SIZE_BY_VIEWPORT.desktop)).toBeLessThanOrEqual(
       TOLERANCE_PX,
     );

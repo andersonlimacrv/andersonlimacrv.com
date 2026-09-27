@@ -1,21 +1,8 @@
-// EdgeReveal ("Rover") — port vanilla do script inline de
-// `references/components/ManyHovers.html` para Astro.
-//
-// Comportamento preservado: overlay entra pela borda mais próxima (4 lados),
-// 600 ms expo-out via WAAPI na propriedade `translate` + commit do repouso.
-// SÓ o fundo se move — o texto (`.hv-ink`) nunca é animado, contrasta via
-// `mix-blend-mode: difference`.
-//
-// Adaptações ao projeto (cf. `reveal.ts`):
-// - dedupe por `WeakSet` + re-init em `astro:page-load` / `astro:after-swap`
-//   (módulos não re-executam após o swap do ClientRouter).
-
 const REVEAL_MS = 600;
-const REVEAL_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'; // expo.out
+const REVEAL_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)';
 
 type RevealEdge = 'top' | 'right' | 'bottom' | 'left';
 
-// Distância mínima até cada borda (direction-aware clássico).
 function findClosestEdge(
   mouseX: number,
   mouseY: number,
@@ -33,7 +20,6 @@ function findClosestEdge(
   return 'top';
 }
 
-// Vetor `translate` fora da tela para cada borda (fundo 100% para fora).
 function edgeVector(edge: RevealEdge): string {
   switch (edge) {
     case 'top':
@@ -43,7 +29,7 @@ function edgeVector(edge: RevealEdge): string {
     case 'left':
       return '-101% 0';
     default:
-      return '101% 0'; // right
+      return '101% 0';
   }
 }
 
@@ -79,7 +65,6 @@ function attachEdgeReveal(el: HTMLElement) {
       try {
         a.cancel();
       } catch {
-        // noop
       }
     }
     anims = [];
@@ -92,12 +77,10 @@ function attachEdgeReveal(el: HTMLElement) {
     try {
       anim.commitStyles?.();
     } catch {
-      // noop
     }
     try {
       anim.cancel();
     } catch {
-      // noop
     }
     layer.style.translate = resting;
   };
@@ -111,7 +94,6 @@ function attachEdgeReveal(el: HTMLElement) {
       layer.style.translate = '0 0';
       return;
     }
-    // Parte da borda de entrada (salto instantâneo invisível), nunca do repouso.
     const start = edgeVector(edge);
     const a = layer.animate(
       [{ translate: start }, { translate: '0 0' }],
@@ -162,12 +144,8 @@ function attachEdgeReveal(el: HTMLElement) {
   el.addEventListener('mouseleave', (ev) => hide(edgeFromEvent(ev, el)));
   el.addEventListener('focus', () => show('top'));
   el.addEventListener('blur', () => hide('bottom'));
-  // Links (<a>) nunca alternam no toque: o tap precisa navegar de verdade.
-  // Sem unload (ex.: mailto:) o overlay apenas permanece — a ação principal
-  // nunca quebra. Hover/focus continuam valendo para links.
   if (el instanceof HTMLAnchorElement) return;
   el.addEventListener('click', (ev) => {
-    // touch (sem hover): alterna; com mouse o hover já cuida.
     if (window.matchMedia('(hover: hover)').matches) return;
     ev.preventDefault();
     if (open) hide(edgeFromEvent(ev, el));

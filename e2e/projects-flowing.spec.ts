@@ -68,7 +68,6 @@ test.describe('projetos como flowing menu', () => {
     const img = menu.locator('.marquee-part').first().locator('img.marquee-media');
     expect(await img.count()).toBe(1);
     const box = (await img.first().boundingBox())!;
-    // 16:9 com tolerância de 2px
     expect(Math.abs(box.width - (box.height * 16) / 9)).toBeLessThanOrEqual(2);
     const radius = await img.first().evaluate(
       (el: HTMLElement) => window.getComputedStyle(el).borderRadius,
@@ -103,7 +102,6 @@ test.describe('projetos como flowing menu', () => {
     const itemBox = (await item.boundingBox())!;
     const textBox = (await item.locator('.menu-link-text').boundingBox())!;
     const tagsBox = (await item.locator('.menu-link-tags').boundingBox())!;
-    // tags à direita do bloco de texto, centralizadas verticalmente na linha
     expect(tagsBox.x).toBeGreaterThan(textBox.x);
     const itemCY = itemBox.y + itemBox.height / 2;
     const tagsCY = tagsBox.y + tagsBox.height / 2;
@@ -118,12 +116,10 @@ test.describe('projetos como flowing menu', () => {
     const itemBox = (await item.boundingBox())!;
     const descBox = (await item.locator('.menu-link-desc').boundingBox())!;
     const tagsBox = (await item.locator('.menu-link-tags').boundingBox())!;
-    // tags abaixo da descrição e centralizadas na linha
     expect(tagsBox.y).toBeGreaterThanOrEqual(descBox.y + descBox.height - 1);
     const itemCX = itemBox.x + itemBox.width / 2;
     const tagsCX = tagsBox.x + tagsBox.width / 2;
     expect(Math.abs(tagsCX - itemCX)).toBeLessThanOrEqual(24);
-    // sem mira no mobile
     await expect(item.locator('[data-target-simbol]')).toBeHidden();
   });
 
@@ -137,14 +133,12 @@ test.describe('projetos como flowing menu', () => {
     await link.scrollIntoViewIfNeeded();
     const simbol = item.locator('[data-target-simbol]');
     await expect(simbol).toBeVisible();
-    // mira na metade direita da linha
     const itemBox = (await item.boundingBox())!;
     const simBox = (await simbol.boundingBox())!;
     expect(simBox.x + simBox.width).toBeLessThanOrEqual(
       itemBox.x + itemBox.width + 1,
     );
     expect(simBox.x).toBeGreaterThan(itemBox.x + itemBox.width / 2);
-    // spin de entrada na viewport aconteceu
     await expect
       .poll(
         async () =>
@@ -152,7 +146,6 @@ test.describe('projetos como flowing menu', () => {
         { timeout: 5_000 },
       )
       .toBeGreaterThanOrEqual(1);
-    // aguarda o spin terminar (1.6s) para o hover não ser ignorado
     await page.waitForTimeout(1_800);
     const before = Number((await simbol.getAttribute('data-spins')) ?? '0');
     await link.hover();

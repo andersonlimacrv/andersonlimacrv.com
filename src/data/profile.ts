@@ -19,8 +19,6 @@ export interface Profile {
   about: AboutItem[];
 }
 
-// Fonte trilíngue — фактов traduzidos por locale (espelha timeline.ts).
-// hero.mainStack é técnico e idêntico nos 3; hero.title/location e about são localizados.
 export const profile: Record<Locale, Profile> = {
   pt: {
     hero: {
@@ -109,5 +107,4 @@ export function getProfile(locale: Locale): Profile {
   return profile[locale] ?? profile[defaultLocale];
 }
 
-// Compat: código legado que importa `profile` direto espera o pt.
 export const profilePt = profile.pt;

@@ -1,7 +1,3 @@
-/* TargetHover — Estilos para os corners e animação ao hover
-   Isolado em arquivo separado para evitar conflitos com transition-micro
-   e permitir reinicialização sem rerenderizar componente */
-
 .target-hover-corner {
   position: absolute;
   width: var(--target-corner-size);
@@ -64,9 +60,6 @@
   opacity: 1;
 }
 
-/* Alvo preenchido (ex.: botão submit bg-primary): os cantos herdam
-   currentColor do texto claro e somem no fundo da página — força
-   --primary, que contrasta com --background nos dois temas. */
 .cursor-target-filled .target-hover-corner {
   color: var(--primary);
 }

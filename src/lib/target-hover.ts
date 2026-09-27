@@ -1,18 +1,3 @@
-/**
- * TargetHover — Sistema de hover com corners animados
- *
- * Script separado para garantir reinicialização após View Transitions
- * sem depender de bundling ou refetch do componente.
- *
- * Exporta função initTargetHover() que deve ser chamada ao carregar página e
- * após cada transição do Astro (astro:page-load / astro:after-swap).
- * Mudanças vs versão anterior:
- *  - escuta em `document` (não `window`) e também `astro:page-load`
- *  - reavalia `isMobile`/`prefers-reduced-motion` a cada `init()`
- *  - `WeakMap` + `cleanup` destrutivo evita duplicação no header persistido
- *  - singleton guard impede dupla inscrição
- */
-
 interface TargetHoverOptions {
   targetSelector?: string;
   hoverDuration?: number;
@@ -193,7 +178,6 @@ function setupTarget(target: HTMLElement) {
     });
     target.classList.remove("is-target-hovering");
     delete target.dataset.targetHoverReady;
-    // zera transform residual se houver
     state.currentX = 0;
     state.currentY = 0;
   };
@@ -205,7 +189,6 @@ function init() {
   if (typeof document === "undefined") return;
 
   if (getIsMobile()) {
-    // Mobile: garante que não sobrem corners de desktop anterior
     cleanup();
     return;
   }
@@ -224,7 +207,6 @@ function init() {
     targets().forEach(setupTarget);
   });
 
-  // Observa body; se body ainda não existir (SSR edge), observa documentElement
   const root = document.body ?? document.documentElement;
   observer.observe(root, {
     childList: true,
@@ -233,7 +215,6 @@ function init() {
 }
 
 function cleanup() {
-  // Limpa apenas os que estão no DOM atual; WeakMap guarda os handlers para remover
   const current = targets();
   current.forEach((target) => {
     const entry = targetRegistry.get(target);
@@ -243,7 +224,6 @@ function cleanup() {
       } catch {}
       targetRegistry.delete(target);
     } else if (target.dataset.targetHoverReady === "true") {
-      // Fallback para nodes que foram marcados por versão antiga sem WeakMap
       target.querySelectorAll(".target-hover-corner").forEach((n) => n.remove());
       target.classList.remove("is-target-hovering");
       delete target.dataset.targetHoverReady;
@@ -270,8 +250,6 @@ export function initTargetHover(options: TargetHoverOptions = {}) {
     ...options,
   };
 
-  // Compat: expõe no window para inspeção/debug e para compartilhar estado entre
-  // múltiplas chamadas (caso o script do BaseLayout reexecute após View Transition)
   (window as unknown as Record<string, unknown>).__targetHoverOptions = currentOptions;
 
   if (!initialized) {
@@ -282,11 +260,9 @@ export function initTargetHover(options: TargetHoverOptions = {}) {
     document.addEventListener("astro:after-swap", init);
     document.addEventListener("astro:page-load", init);
 
-    // Fallback para compat com código que ainda despacha em window
     window.addEventListener("astro:before-swap", cleanup as EventListener);
     window.addEventListener("astro:after-swap", init as EventListener);
 
-    // Reavalia ao cruzar breakpoint mobile/desktop sem navegação
     try {
       const mql = window.matchMedia("(max-width: 768px)");
       const handler = () => init();
@@ -299,8 +275,6 @@ export function initTargetHover(options: TargetHoverOptions = {}) {
 
     init();
   } else {
-    // Já inicializado (ex.: segunda chamada do BaseLayout após View Transition):
-    // apenas re-executa init com novas opções se houver
     init();
   }
 }

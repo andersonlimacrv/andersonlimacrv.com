@@ -42,23 +42,12 @@ const { finalSize = 160 } = Astro.props;
     z-index: 20;
     pointer-events: none;
     color: var(--muted-foreground);
-    /* Contraste ≥3:1 sobre o fundo (WCAG 1.4.11 — elementos não-texto). */
     --bp-line: color-mix(in oklab, var(--foreground) 48%, transparent);
     --bp-line-strong: color-mix(in oklab, var(--foreground) 60%, transparent);
-    /* Tinta clara constante (= --foreground do dark-mode) usada enquanto a
-       imagem cobre o wireframe. No dark-mode coincide com o --foreground. */
     --bp-ink-covered: oklch(0.967 0 0);
-    /* Escala proporcional dos rótulos de cota (morph-measure.ts define no root:
-       160px → 1). Herdada pelo .bp-ghost. */
     --bp-scale: 1;
   }
 
-  /* Enquanto a imagem cobre o wireframe (classe bp-covered alternada via JS
-     em morph-measure.ts), cantoneiras e círculo usam tinta CLARA constante
-     (= --foreground do dark-mode): a foto é escura, então no light-mode a
-     tinta escura someria. Quando a imagem sai (morph), a classe é removida e
-     volta --foreground do tema (escuro sobre o fundo claro revelado). No
-     dark-mode os dois valores coincidem, então não há mudança visual. */
   .bp-wireframe.bp-start.bp-covered {
     --bp-line: color-mix(in oklab, var(--bp-ink-covered) 48%, transparent);
     --bp-line-strong: color-mix(in oklab, var(--bp-ink-covered) 60%, transparent);
@@ -68,7 +57,6 @@ const { finalSize = 160 } = Astro.props;
     background-color: color-mix(in oklab, var(--bp-ink-covered) 4%, transparent);
   }
 
-  /* Rótulos dentro do círculo acompanham o flip junto com o círculo. */
   .bp-wireframe.bp-start.bp-covered .bp-ghost-r-label,
   .bp-wireframe.bp-start.bp-covered .bp-ghost-q {
     color: var(--bp-ink-covered);
@@ -81,10 +69,8 @@ const { finalSize = 160 } = Astro.props;
     right: 0;
     height: var(--bp-h);
     aspect-ratio: 1122 / 1402;
-    /* Sem borda contínua nem grade — só as cantoneiras marcam o enquadramento. */
   }
 
-  /* Cantoneiras nos 4 cantos exatos do box da imagem */
   .bp-corners {
     position: absolute;
     inset: 0;
@@ -100,10 +86,6 @@ const { finalSize = 160 } = Astro.props;
     vector-effect: non-scaling-stroke;
   }
 
-  /* Círculo final (estado END) como fantasma tracejado sobre o retângulo.
-     Escala proporcional --bp-scale: tipografia e offsets dos rótulos de cota
-     acompanham o diâmetro responsivo (--bp-final-size), mantendo a leitura
-     geométrica constante em qualquer viewport. */
   .bp-ghost {
     position: absolute;
     left: 50%;
@@ -114,7 +96,6 @@ const { finalSize = 160 } = Astro.props;
     border: 1px dashed var(--bp-line-strong);
     border-radius: 9999px;
     background-color: color-mix(in oklab, var(--foreground) 4%, transparent);
-    /* --bp-scale herdado do root (.bp-wireframe). */
   }
 
   .bp-ghost-cross {
@@ -136,10 +117,6 @@ const { finalSize = 160 } = Astro.props;
     width: 1px;
   }
 
-  /* Traços de cota nos 4 pontos cardeais do círculo-fantasma (extensão do
-     círculo): esquerda, superior, inferior e direita. Mesmo estilo/tamanho
-     do traço do r (1rem horizontal). O rótulo r 80px fica no centro do
-     círculo. Tamanhos escalam com --bp-scale. */
   .bp-ghost-tick {
     position: absolute;
     width: calc(1rem * var(--bp-scale));
@@ -167,7 +144,6 @@ const { finalSize = 160 } = Astro.props;
     translate: 0 -50%;
   }
 
-  /* Linha de cota do raio à esquerda do círculo-fantasma, na altura do centro */
   .bp-ghost-r {
     position: absolute;
     left: calc(50% - var(--bp-final-size, 160px) / 2 - 1.5rem * var(--bp-scale));
@@ -182,10 +158,6 @@ const { finalSize = 160 } = Astro.props;
     border-top: 1px solid var(--bp-line-strong);
   }
 
-  /* Rótulos de cota nos quadrantes do círculo-fantasma, fora do cruzamento
-     das linhas-guia (crosshair). Orientação: os da esquerda colados à direita
-     (text-align: right) e os da direita colados à esquerda (text-align: left),
-     de modo que o conteúdo fique simétrico em torno do centro. */
   .bp-ghost-r-label,
   .bp-ghost-q {
     position: absolute;

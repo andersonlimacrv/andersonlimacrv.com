@@ -1,9 +1,6 @@
 ---
 const { delay = 0, as: Tag = 'div', class: className = '' } = Astro.props;
 
-// Progressive enhancement: content is visible by default in HTML.
-// The module (reveal.ts) only hides it when JS runs AND the element is
-// below the fold, and re-arms after View Transitions navigation.
 ---
 
 <Tag

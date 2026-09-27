@@ -1,20 +1,3 @@
-// Port fiel do componente React elastic-line (motion/react) para TS vanilla.
-// Física original preservada:
-//  - extremidades da linha FIXAS no centro (midX/midY);
-//  - só deforma quando o ponteiro "agarra" a linha (dist < grabThreshold até
-//    o eixo central); ao soltar (dist > releaseThreshold) o ponto de controle
-//    volta ao centro com spring (stiffness/damping);
-//  - tracking com multiplicador 2.2 sobre o eixo perpendicular à linha;
-//  - fade-in na entrada. Sem dependência de libs.
-//
-// Uso:
-//   <div data-elastic-line data-grab-threshold="5" data-release-threshold="100"
-//        data-stiffness="300" data-damping="5" data-is-vertical="false">
-//     <svg class="w-full h-full" preserveAspectRatio="none" aria-hidden="true">
-//       <path stroke="currentColor" stroke-width="1" fill="none"/>
-//     </svg>
-//   </div>
-
 interface ElasticLineState {
   svg: SVGSVGElement;
   path: SVGPathElement;
@@ -25,13 +8,11 @@ interface ElasticLineState {
   damping: number;
   width: number;
   height: number;
-  // Ponto de controle (renderizado). Extremidades ficam sempre em midX/midY.
   controlX: number;
   controlY: number;
   vx: number;
   vy: number;
   grabbed: boolean;
-  // Posição do ponteiro relativa ao svg (rastreada para grab/release e pull).
   pointerX: number;
   pointerY: number;
 }
@@ -58,9 +39,6 @@ function midY(state: ElasticLineState) {
   return state.height / 2;
 }
 
-// Aplica novo tamanho: estado + viewBox + volta o controle ao centro.
-// Chamado no bind e a cada resize (ResizeObserver) — sem isso o viewBox
-// fica defasado e a linha renderiza nas coordenadas antigas.
 function applySize(state: ElasticLineState, width: number, height: number) {
   state.width = width;
   state.height = height;
@@ -79,7 +57,6 @@ function measure(state: ElasticLineState) {
   applySize(state, rect.width, rect.height);
 }
 
-// d com extremidades FIXAS no centro e apenas o ponto de controle deformando.
 function dFor(state: ElasticLineState): string {
   const w = state.width;
   const h = state.height;
@@ -90,7 +67,6 @@ function dFor(state: ElasticLineState): string {
     : `M0 ${midY(state)} Q${controlX} ${controlY} ${w} ${midY(state)}`;
 }
 
-// Ponto de controle com multiplicador 2.2 sobre o eixo perpendicular à linha.
 function lifted(state: ElasticLineState, x: number, y: number) {
   return state.vertical
     ? { x: midX(state) + PULL * (x - midX(state)), y }
@@ -114,14 +90,12 @@ function handlePointer(state: ElasticLineState, ev: PointerEvent) {
   const limit = Math.min(state.releaseThreshold, state.vertical ? state.width / 2 : state.height / 2);
 
   if (!state.grabbed && dist < state.grabThreshold) {
-    // Agarrou a linha — passa a deformar seguindo o ponteiro.
     state.grabbed = true;
     const p = lifted(state, state.pointerX, state.pointerY);
     state.controlX = p.x;
     state.controlY = p.y;
     state.path.setAttribute('d', dFor(state));
   } else if (state.grabbed) {
-    // Agarrado: ponto de controle segue o ponteiro (com 2.2x perpendicular).
     const p = lifted(state, state.pointerX, state.pointerY);
     state.controlX = p.x;
     state.controlY = p.y;
@@ -140,12 +114,10 @@ function step(state: ElasticLineState, now: number) {
   const dt = Math.min(Math.max((now - lastFrame) / 1000, 0), 0.05);
 
   if (state.grabbed) {
-    // Continua seguindo o ponteiro entre frames.
     const p = lifted(state, state.pointerX, state.pointerY);
     state.controlX = p.x;
     state.controlY = p.y;
   } else {
-    // Solto: spring de volta ao centro — integração semi-implícita.
     const fx = state.stiffness * (midX(state) - state.controlX) - state.damping * state.vx;
     state.vx += fx * dt;
     state.controlX += state.vx * dt;

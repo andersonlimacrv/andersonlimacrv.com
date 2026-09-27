@@ -6,7 +6,6 @@ async function goto(page: Page, path = '/') {
   await page
     .waitForFunction(() => document.fonts.status !== 'loading', undefined, { timeout: 15_000 })
     .catch(() => undefined);
-  // aguarda hidratação do TargetHover (injeção de corners via JS)
   await page.waitForTimeout(300);
 }
 
@@ -55,7 +54,6 @@ async function getCounts(page: Page) {
   });
 }
 
-// Navega via ClientRouter clicando em link (não page.goto direto)
 async function clickAndWaitForURL(page: Page, selector: string, urlPattern: string) {
   await page.locator(selector).first().click();
   await page.waitForURL(urlPattern, { timeout: 5000 });
@@ -78,20 +76,15 @@ test.describe('TargetHover — persistência via ClientRouter', () => {
       expect(before.blogViewAll).toBe(true);
       expect(before.blogViewAllCorners).toBe(4);
 
-      // Navega para /blog via click no "ver todos" (ClientRouter)
-      // Seletor do link "ver todos" tem href /blog e classe cursor-target
       await clickAndWaitForURL(page, 'a.cursor-target[href="/blog"]', '**/blog');
-      // Em /blog, PostCards devem ter corners
       await waitForDesktopCorners(page);
       const onBlog = await getCounts(page);
       expect(onBlog.targets).toBeGreaterThan(3);
       expect(onBlog.corners).toBe(onBlog.targets * 4);
 
-      // Volta para Home via logo do header (ClientRouter)
       await clickAndWaitForURL(page, 'header a.cursor-target[href="/"]', '**/');
       await waitForDesktopCorners(page);
       const after = await getCounts(page);
-      // Após volta, contagem deve voltar ao mesmo patamar e corners em seções
       expect(after.targets).toBe(before.targets);
       expect(after.corners).toBe(after.targets * 4);
       expect(after.sobreTargets).toBe(5);
@@ -107,7 +100,6 @@ test.describe('TargetHover — persistência via ClientRouter', () => {
 
       await goto(page, '/blog');
       await waitForDesktopCorners(page);
-      // pega primeiro PostCard em /blog
       const firstPostHref = await page.locator('article a.cursor-target').first().getAttribute('href');
       expect(firstPostHref).toBeTruthy();
       if (!firstPostHref) return;
@@ -115,10 +107,8 @@ test.describe('TargetHover — persistência via ClientRouter', () => {
       await clickAndWaitForURL(page, `article a.cursor-target[href="${firstPostHref}"]`, '**/blog/**');
       await waitForDesktopCorners(page);
       const onPost = await getCounts(page);
-      // PostLayout tem links de voltar e shares com cursor-target
       expect(onPost.corners).toBe(onPost.targets * 4);
 
-      // Volta para Home via logo
       await clickAndWaitForURL(page, 'header a.cursor-target[href="/"]', '**/');
       await waitForDesktopCorners(page);
       const after = await getCounts(page);
@@ -146,7 +136,6 @@ test.describe('TargetHover — persistência via ClientRouter', () => {
         () => document.querySelectorAll('header .target-hover-corner').length,
       );
       expect(finalHeaderCorners).toBe(initialHeaderCorners);
-      // cada header target ainda deve ter exatamente 4 corners
       const perTarget = await page.evaluate(() => {
         const targets = Array.from(document.querySelectorAll('header .cursor-target')) as HTMLElement[];
         return targets.map((t) => t.querySelectorAll('.target-hover-corner').length);
@@ -168,7 +157,6 @@ test.describe('TargetHover — persistência via ClientRouter', () => {
       await social.scrollIntoViewIfNeeded();
       await social.hover();
       await expect(social).toHaveClass(/is-target-hovering/, { timeout: 2000 });
-      // corners devem ficar com opacity 1 (via CSS) — aguarda transição 0.2s
       await page.waitForFunction(
         () => {
           const corner = document.querySelector('#sobre-content a.cursor-target .target-hover-corner') as HTMLElement;
@@ -184,7 +172,6 @@ test.describe('TargetHover — persistência via ClientRouter', () => {
       });
       expect(opacity).toBe('1');
 
-      // ao sair, remove classe
       await page.mouse.move(0, 0);
       await page.waitForTimeout(150);
       await expect(social).not.toHaveClass(/is-target-hovering/);
@@ -266,12 +253,10 @@ test.describe('TargetHover — persistência via ClientRouter', () => {
     test('corners existem mesmo com reduced-motion, mas sem parallax brusco', async ({ page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await goto(page, '/');
-      // com reduced, ainda deve ter corners no desktop (apenas easing diferente)
       await waitForDesktopCorners(page);
       const counts = await getCounts(page);
       expect(counts.corners).toBe(counts.targets * 4);
 
-      // navega e volta
       await page.goto('/blog', { waitUntil: 'networkidle' });
       await page.waitForTimeout(400);
       await waitForDesktopCorners(page);

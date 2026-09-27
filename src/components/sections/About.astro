@@ -26,7 +26,6 @@ const socials = [
   { label: 'Email', href: `mailto:${socialLinks.email}`, external: false },
 ];
 
-// Helper para ler src/data/profile.ts -> about[] por locale
 const getAbout = (label: string) => profile.about.find((a) => a.label === label)?.value ?? "";
 const focus = getAbout("Focus");
 const experience = getAbout("Experience");
@@ -64,7 +63,6 @@ const superpower = getAbout("Superpower");
         lg:divide-y-0
       "
     >
-      <!-- COLUNA 01 — PERFIL VISUAL -->
       <section
         data-col="perfil"
         class="flex min-w-0 flex-[0_0_100%] flex-col gap-6 py-6 sm:py-8 lg:basis-[50%] lg:pr-8"
@@ -172,7 +170,6 @@ const superpower = getAbout("Superpower");
         </Reveal>
       </section>
 
-      <!-- COLUNA 02 — DADOS (padrão título → conteúdo, 3 tipos) -->
       <section data-col="dados" class="flex min-w-0 flex-1 flex-col lg:basis-[50%] lg:pl-8">
         <div class="flex flex-col">
          <div data-profile-row data-edge-reveal class="border-b border-border px-4 py-3 last:border-b-0">
@@ -251,7 +248,6 @@ const superpower = getAbout("Superpower");
       </section>
     </div>
 
-    <!-- TRAJETÓRIA — abaixo das duas colunas, largura total -->
     <section data-col="trajetoria" class="min-w-0">
       <header
         class="

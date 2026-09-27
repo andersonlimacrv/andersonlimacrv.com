@@ -14,8 +14,6 @@ const locale = Astro.props.locale ?? defaultLocale;
 const t = ui[locale];
 const c = t.contact;
 
-// Exibição derivada da fonte única (site.ts). O botão COPIAR copia
-// exatamente o texto exibido.
 const whatsappDisplay = '+55 53 98100-4874';
 const linkedinDisplay = 'in/andersonlimacrv';
 
@@ -54,7 +52,6 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
     id="contato-content"
     class="flex flex-col lg:flex-row"
   >
-    <!-- COLUNA ESQUERDA — chamada + canais -->
     <Reveal class="flex min-w-0 flex-1 flex-col gap-6 py-6 sm:py-8 lg:basis-[50%] lg:pr-8">
       <h3 class={`${TYPE.titleH2} uppercase`}>{c.title}</h3>
       <p class={`${TYPE.body} max-w-xl text-muted-foreground`}>
@@ -87,7 +84,6 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
       </ul>
     </Reveal>
 
-    <!-- COLUNA DIREITA — formulário -->
     <Reveal delay={80} class="flex min-w-0 flex-1 flex-col py-6 sm:py-8 lg:basis-[50%] lg:pl-8">
       <form
         id="contact-form"

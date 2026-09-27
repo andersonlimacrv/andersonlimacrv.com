@@ -35,7 +35,6 @@ test.describe('section spacing', () => {
       for (const id of SECTIONS) {
         const section = page.locator(`section#${id}`);
         await section.scrollIntoViewIfNeeded();
-        // reveal (translateY 0.6s) precisa terminar antes de medir caixas
         await page.waitForTimeout(800);
         const grid = section.locator('[data-kinetic-grid]');
         const content = section.locator(':scope > div > div.mt-12');
@@ -50,8 +49,6 @@ test.describe('section spacing', () => {
   test('gap óptico título-texto→corpo-texto uniforme entre sections', async ({
     page,
   }) => {
-    // Padrão VISUAL (não de divs): do fim da tinta do título ao início da
-    // tinta do primeiro texto, via Range. Todas as sections convergem.
     const FIRST_TEXT: Record<string, string> = {
       sobre: '#sobre-content header span',
       projetos: '#projetos div.mt-12 > p',
@@ -99,7 +96,6 @@ test.describe('section spacing', () => {
           expect(gap).toBeGreaterThan(0);
           gaps.push(gap);
         }
-        // uniformidade óptica: spread máximo entre as 4 sections
         expect(Math.max(...gaps) - Math.min(...gaps)).toBeLessThanOrEqual(
           25,
         );

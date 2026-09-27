@@ -79,13 +79,11 @@ const ogImageMeta = image === portraitOg.src
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
 
-    <!-- Hreflang / i18n -->
     {localesList.map((_, i) => (
       <link rel="alternate" hreflang={hreflangCodes[i]} href={hreflangLinks[i]} />
     ))}
     <link rel="alternate" hreflang="x-default" href={new URL('/', siteUrl).toString()} />
 
-    <!-- Open Graph -->
     <meta property="og:type" content={type} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -100,7 +98,6 @@ const ogImageMeta = image === portraitOg.src
     ))}
     <meta property="og:url" content={canonical} />
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -118,7 +115,6 @@ const ogImageMeta = image === portraitOg.src
     <link rel="preload" as="font" type="font/woff2" crossorigin href={frauncesLatinUrl} />
 
     <script is:inline>
-      // Apply theme before first paint to avoid FOUC.
       (() => {
         const root = document.documentElement;
         const stored = (() => {
@@ -156,11 +152,8 @@ const ogImageMeta = image === portraitOg.src
     <div class="screen-fade screen-fade-bottom" aria-hidden="true" />
     <script>
       import { initTargetHover } from '../lib/target-hover.ts';
-      // EdgeReveal global (sociais, trajetória): módulo auto-init com
-      // dedupe + ciclo View Transitions (cf. src/lib/edge-reveal.ts).
       import '../lib/edge-reveal.ts';
 
-      // Inicializa na primeira carga
       initTargetHover({
         targetSelector: '.cursor-target',
         hoverDuration: 0.2,

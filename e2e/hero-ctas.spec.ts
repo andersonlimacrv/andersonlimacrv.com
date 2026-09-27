@@ -70,7 +70,6 @@ test.describe('hero CTAs', () => {
       const title = hero.locator('#hero-title');
       const color = (el: typeof secondary) =>
         el.evaluate((e: HTMLElement) => window.getComputedStyle(e).color);
-      // mesma cor do título = token foreground (escuro no claro, claro no escuro)
       expect(await color(secondary)).toBe(await color(title));
     }
   });

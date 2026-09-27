@@ -1,10 +1,5 @@
 @import "tailwindcss";
 
-/* Fontes — apenas subsets latin/latin-ext (conteúdo pt/es/en).
-   Os imports genéricos do fontsource emitem 13 woff2 (inclui cyrillic,
-   greek, vietnamese, cyrillic-ext) que não são usados. @font-face explícitos
-   reduzem para 6 arquivos. Peso/unicode-range extraídos de
-   node_modules/@fontsource-variable/[pacote]/index.css */
 @font-face {
   font-family: "Manrope Variable";
   font-style: normal;
@@ -79,7 +74,7 @@
 }
 
 @custom-variant dark (&:is(.dark *));
-@source "../src/**/*.{astro,ts,md,mdx,css}";
+@source "../src*.{astro,ts,md,mdx,css}";
 
 :root {
   --background: oklch(1 0 0);
@@ -108,7 +103,6 @@
 
   --radius: 0.25rem;
 
-  /* Sombras (escala shadcn) */
   --shadow-2xs: 0px 1px 6px 0px hsl(0 0% 0% / 0.04);
   --shadow-xs: 0px 1px 6px 0px hsl(0 0% 0% / 0.04);
   --shadow-sm:
@@ -123,14 +117,10 @@
     0px 1px 6px 0px hsl(0 0% 0% / 0.08), 0px 8px 10px -1px hsl(0 0% 0% / 0.08);
   --shadow-2xl: 0px 1px 6px 0px hsl(0 0% 0% / 0.2);
 
-  /* Tokens locais do site */
   --blur: 10px;
   --header-h: 3.8125rem;
   --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Diâmetro do círculo final do morph da imagem. Responsivo: acompanha a
-     caixa do retrato na seção Sobre (coluna esquerda das duas colunas fixas).
-     O JS do morph (scroll-morph.ts) e os wireframes blueprint leem esta var. */
   --morph-final-size: 128px;
   @media (min-width: 640px) {
     --morph-final-size: 128px;
@@ -185,7 +175,6 @@
   --shadow-2xl: 0px 1px 6px 0px hsl(0 0% 0% / 0.75);
 }
 
-/* Mapeamento para utilitários Tailwind */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -211,12 +200,6 @@
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
 
-  /* Escala tipográfica editorial fluida (clamp).
-     Exposta como utilities Tailwind: text-hero, text-h1, text-h2, text-h3, text-lead, text-eyebrow.
-     --measure vira max-width dedicado para texto corrido (.post-content etc).
-     --tracking-caps/caps-wide: rótulos mono em caixa alta.
-     Unidade de rótulo: text-eyebrow (10→12px) — micro deixou de existir como
-     estilo separado (consolidado em eyebrow, componente Text). */
   --text-hero: clamp(2.75rem, 4.5vw, 4rem);
   --text-h1: clamp(1.875rem, 4vw, 3.25rem);
   --text-h2: clamp(1.5rem, 3vw, 2rem);
@@ -225,7 +208,6 @@
   --text-eyebrow: clamp(0.625rem, 0.55rem + 0.3vw, 0.75rem);
   --tracking-caps: 0.16em;
   --tracking-caps-wide: 0.3em;
-  /* Linha de leitura ~65–75ch (texto corrido) */
   --measure: 70ch;
 
   --radius-sm: calc(var(--radius) - 4px);
@@ -259,7 +241,6 @@
 
   html {
     scroll-behavior: smooth;
-    /* Âncoras compensam o header fixo */
     scroll-padding-top: calc(var(--header-h) + 1rem);
     scrollbar-width: thin;
     scrollbar-color: var(--muted-foreground) transparent;
@@ -301,18 +282,8 @@
   }
 }
 
-/* CSS customizado do site em @layer components: na cascata do Tailwind v4
-   (theme < base < components < utilities) os utilitários SEMPRE vencem estas
-   regras — comportamento determinístico e auditável (ver scripts/css-audit.mjs
-   e e2e/reveal.spec.ts "cascata"). Header/menu/locale permanecem aqui por
-   exceção aprovada: estados JS (.is-open/.is-hidden/--menu-open), hooks de
-   teste e risco de regressão visual em breakpoints × temas. */
 @layer components {
 
-/* ------------------------------------------------------------------ */
-/* Header — barra fixa no topo, tamanho constante. Esconde deslizando  */
-/* para cima após inatividade e reaparece com movimento (site-header.ts) */
-/* ------------------------------------------------------------------ */
 
 .site-header {
   position: fixed;
@@ -330,7 +301,6 @@
   transition: transform 0.35s var(--ease-expo-out);
 }
 
-/* Esconder para cima quando ocluir após inatividade (ver site-header.ts) */
 .site-header.is-hidden {
   transform: translateY(-100%);
 }
@@ -465,13 +435,6 @@
   }
 }
 
-/* Idiomas — disclosure de links com o MESMO comportamento do menu
-   hambúrguer mobile (cf. .site-menu e site-header.ts): botão disclosure
-   com aria-expanded, reveal max-height/opacity via --menu-h/--menu-open,
-   fecha em Esc/clique-fora/link/navegação. Em global.css (e não no
-   escopo do componente) porque inlineStylesheets:'auto' inline o CSS
-   de escopo em TODAS as 15 páginas (~+24 KB). Substitui o antigo
-   <select> nativo cujo popup cinza era UI do browser (inestilizável). */
 .site-locale-wrap {
   position: relative;
   display: inline-flex;
@@ -562,11 +525,6 @@
   }
 }
 
-/* Wireframes blueprint — gate anti-FOUC: --bp-w/--bp-h só existem após o
-   morph-measure medir o box da imagem; antes disso o board/legenda nasceriam
-   fora do lugar (top:auto no legend = topo da página). Invisível até
-   data-bp-ready (setado pelo morph-measure após publicar as vars). Sem JS
-   permanece oculto — decorativo e não medido. */
 [data-bp-wireframe]:not([data-bp-ready]) {
   opacity: 0;
 }
@@ -670,7 +628,7 @@
   margin: 2.5rem 0;
 }
 
-} /* /@layer components */
+}
 
 @utility transition-micro {
   transition:

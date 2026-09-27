@@ -17,7 +17,6 @@ const locale = Astro.props.locale ?? defaultLocale;
 const t = ui[locale];
 const projects = getProjects(locale);
 
-// Thumb 16:9 local (crop exato 448×252, 2x para retina) — exibida em 224×126.
 const thumb169 = await getImage({
   src: portrait,
   format: 'webp',
@@ -33,7 +32,6 @@ const thumb169 = await getImage({
   id="projetos"
   eyebrow={t.sections.projects.eyebrow}
 >
-  {/* Mesmo formato dos subtítulos do perfil (Role, Stack…): eyebrow mono. */}
   <p class={`max-w-2xl pt-6 ${TYPE.label} text-muted-foreground`}>{t.sections.projects.subtitle}</p>
   <Reveal class="mt-8">
     <FlowingMenu

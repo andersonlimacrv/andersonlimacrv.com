@@ -47,7 +47,6 @@ function applyTheme(theme: Theme) {
   try {
     localStorage.setItem(THEME_KEY, theme);
   } catch {
-    // Preferência do sistema será usada na próxima visita.
   }
   document.dispatchEvent(
     new CustomEvent<ThemeChangeDetail>(THEME_CHANGE_EVENT, {
@@ -56,12 +55,6 @@ function applyTheme(theme: Theme) {
   );
 }
 
-/**
- * Reaplica o tema armazenado (ou o do sistema) no <html>, sem disparar
- * `themechange` e sem gravar no storage. Usado em `astro:after-swap` para
- * garantir que o tema persista em navegações por view transition, já que o
- * snapshot SSR não carrega a classe `.dark`.
- */
 export function applyStoredTheme() {
   const stored = readStored();
   const theme =
@@ -120,7 +113,6 @@ function setThemeAnimated(next: Theme, animation?: Animation) {
 
   if (transition.finished) {
     transition.finished.then(finish, finish);
-    // Rede de segurança: nunca deixar o <style> órfão.
     window.setTimeout(() => {
       if (transitionActive) finish();
     }, 1600);

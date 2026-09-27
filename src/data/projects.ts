@@ -8,8 +8,6 @@ export interface Project {
   tags: readonly string[];
 }
 
-// Fonte única dos projetos (fatos: título, URL, tags) — compartilhada entre
-// idiomas. Descrições vêm do dicionário i18n via getProjects(locale).
 const projectFacts = [
   { title: 'andersonlimacrv.com', url: site.url, tags: ['Astro', 'Tailwind'] },
   { title: 'GitHub', url: socialLinks.github, tags: ['Open Source'] },

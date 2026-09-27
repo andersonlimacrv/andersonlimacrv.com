@@ -1,27 +1,3 @@
-// TextScramble — port do experimento em references/text-scramble para TS
-// vanilla nos moldes do projeto (cf. reveal.ts, target-simbol.ts).
-//
-// Uso:
-//   <TextScramble text="Engenheiro de Software" variant="label" />
-//   <TextScramble text="..." onHover /> (também re-anima no hover)
-//   <TextScramble text="..." onEntry={false} onHover /> (só no hover)
-//
-// Comportamento:
-//   - SSR entrega o texto final legível (progressive enhancement; sem JS
-//     nada muda — o conteúdo nasce pronto no HTML).
-//   - Com JS: anima UMA vez ao entrar na viewport (IntersectionObserver,
-//     threshold 0.5; re-entrada re-anima) — só se onEntry (default true).
-//     Re-anima em pointerenter / pointerdown (hover no desktop, tap no
-//     mobile — cf. target-simbol) — só se onHover (default false).
-//   - Frase única: anima e para (sem loop — diferente da referência, que
-//     cicla `phrases[]` com setTimeout).
-//   - prefers-reduced-motion: nunca anima, mantém o texto final.
-//   - Re-triggers durante a animação são ignorados (flag `running`).
-//   - Caracteres temporários ("dud") usam a classe .scramble-dud, com estilo
-//     no <style> do .astro (cor via currentColor — sem hardcode).
-//
-// Debug hook p/ e2e: data-scrambled="true" quando a animação conclui.
-
 interface QueueItem {
   from: string;
   to: string;
@@ -31,8 +7,8 @@ interface QueueItem {
 }
 
 const DEFAULT_CHARS = '!<>-_\\/[]{}—=+*^?#________';
-const BASE_FRAMES = 40; // mesma janela aleatória da referência (0–40)
-const DUD_REDRAW_CHANCE = 0.28; // mesma taxa da referência
+const BASE_FRAMES = 40;
+const DUD_REDRAW_CHANCE = 0.28;
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -139,7 +115,6 @@ function bind(el: HTMLElement): void {
 }
 
 function init(): void {
-  // Sem observer/eventos em reduced-motion: o texto final do SSR permanece.
   if (reducedMotion()) return;
   if (!io) {
     io = new IntersectionObserver(
@@ -162,5 +137,4 @@ document.addEventListener('astro:page-load', init);
 document.addEventListener('astro:after-swap', init);
 init();
 
-// Marca o arquivo como módulo ES (evita colisão no escopo global do tsc).
 export {};

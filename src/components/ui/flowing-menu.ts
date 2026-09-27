@@ -1,20 +1,9 @@
-// FlowingMenu — port vanilla de `references/components/script.ts` para Astro.
 import { TYPE } from './typography';
-//
-// Diferenças em relação à referência (auditoria em design.md):
-// - O DOM nasce no SSR (`FlowingMenu.astro` renderiza links + 4 marquee-parts
-//   por item): o JS só faz enhance, nunca cria a estrutura — conteúdo visível
-//   e navegável sem JS.
-// - Um `IntersectionObserver` por root pausa TODOS os loops rAF do menu fora
-//   da viewport (a referência só observava `document.hidden`).
-// - Ciclo de vida View Transitions (`astro:page-load` / `astro:after-swap`)
-//   com dedupe por `WeakSet` e `destroy()` por root (cf. `reveal.ts`).
-// - Imagens e cores vêm do componente (assets locais + tokens do site).
 
 type Edge = 'top' | 'bottom';
 
 const REVEAL_MS = 600;
-const REVEAL_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'; // expo.out
+const REVEAL_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)';
 const MIN_REPETITIONS = 4;
 
 function findClosestEdge(
@@ -54,7 +43,6 @@ const disposers = new WeakMap<Element, () => void>();
 
 interface MarqueeImage {
   src: string;
-  /** Dimensões de exibição em px (reserva proporcional ×2 nos attrs). */
   w: number;
   h: number;
 }
@@ -63,15 +51,10 @@ function buildPart(label: string, images: MarqueeImage[]): HTMLDivElement {
   const part = document.createElement('div');
   part.className = 'marquee-part';
   const span = document.createElement('span');
-  // Mesma voz do título estático (registro TYPE; .ts é ignorado pelo audit).
   span.className = TYPE.flowingTitle;
   span.textContent = label;
   part.append(span);
-  // N imagens lado a lado por parte (idêntico ao SSR): o recalc só ajusta a
-  // QUANTIDADE de partes, nunca o conteúdo delas.
   for (const imgDef of images) {
-    // <img> em vez de div com background: lazy real + dimensões fixas (sem CLS).
-    // Decorativa (marquee tem aria-hidden; a info está na linha estática).
     const media = document.createElement('img');
     media.className = 'marquee-media';
     if (imgDef.src) media.src = imgDef.src;
@@ -108,8 +91,6 @@ function enhanceRoot(root: HTMLElement): () => void {
             for (const entry of entries) {
               if (entry.target !== root) continue;
               const vis = entry.isIntersecting;
-              // Ao voltar à viewport, reacorda os loops (tick para
-              // totalmente fora dela — sem rAF ocioso em background).
               if (vis && !rootVisible) {
                 for (const wake of wakes) wake();
               }
@@ -128,7 +109,6 @@ function enhanceRoot(root: HTMLElement): () => void {
       try {
         fn();
       } catch {
-        // noop
       }
     }
   };
@@ -159,10 +139,6 @@ function enhanceItem(
   });
   if (images.length === 0) images.push({ src: '', w: 160, h: 56 });
 
-  // Pré-decodifica as thumbs fora do caminho do scroll (cf. referência):
-  // quando os bytes chegam durante a rolagem, cada decode progressivo
-  // bloqueia a main thread — decodificando antes, o marquee reaproveita
-  // o bitmap em cache.
   for (const { src } of images) {
     if (src && typeof Image !== 'undefined') {
       try {
@@ -171,14 +147,10 @@ function enhanceItem(
         preload.src = src;
         preload.decode?.().catch(() => undefined);
       } catch {
-        // ambientes sem Image (SSR/testes): segue sem preload
       }
     }
   }
 
-  // O CSS deixa `.marquee` em translateY(101%) como fallback no-JS.
-  // Com JS, o eixo Y passa à propriedade `translate` (compõe com o
-  // `transform: translateX()` do scroll infinito, sem congelá-lo).
   marquee.style.transform = 'translateY(0)';
   marquee.style.translate = '0 101%';
   inner.style.translate = '0 0';
@@ -199,7 +171,6 @@ function enhanceItem(
       try {
         a.cancel();
       } catch {
-        // noop
       }
     }
     revealAnims = [];
@@ -212,18 +183,14 @@ function enhanceItem(
     try {
       anim.commitStyles?.();
     } catch {
-      // noop
     }
     try {
       anim.cancel();
     } catch {
-      // noop
     }
     el.style.translate = resting;
   };
 
-  // Adiciona/remove SÓ o delta (nunca reconstrói tudo): nukear o innerHTML
-  // destruiria os divs de imagem e forçaria re-decode em plena rolagem.
   const ensureParts = (count: number) => {
     while (inner.children.length > count && inner.lastChild) {
       inner.lastChild.remove();
@@ -253,8 +220,6 @@ function enhanceItem(
   const tick = (t: number) => {
     if (destroyed) return;
     rafId = 0;
-    // Fora da viewport: para TOTALMENTE (sem reagendar) — o observer
-    // reacorda via wake(). Escreve zero frames em background.
     if (!isActive()) {
       running = false;
       return;
@@ -264,7 +229,7 @@ function enhanceItem(
     const dt = Math.min(0.05, (t - lastT) / 1000);
     lastT = t;
     if (isActive() && !document.hidden && partWidth > 0 && !prefersReducedMotion()) {
-      const velocity = partWidth / speed; // px/s
+      const velocity = partWidth / speed;
       offsetX -= velocity * dt;
       if (offsetX <= -partWidth) offsetX += partWidth;
       inner.style.transform = `translateX(${offsetX}px)`;
@@ -358,7 +323,6 @@ function enhanceItem(
   const onFocus = () => show('top');
   const onBlur = () => hide('bottom');
   const onClick = (ev: Event) => {
-    // touch (sem hover): alterna; com mouse o hover já cuida.
     if (window.matchMedia('(hover: hover)').matches) return;
     ev.preventDefault();
     if (isOpen) hide(edgeFromEvent(ev, itemEl));
@@ -417,7 +381,6 @@ function init() {
     .querySelectorAll<HTMLElement>('[data-flowing-menu]')
     .forEach((root) => {
       if (enhanced.has(root)) return;
-      // Roots removidos pelo swap do ClientRouter: libera o handle antigo.
       if (!root.isConnected) return;
       enhanced.add(root);
       disposers.set(root, enhanceRoot(root));

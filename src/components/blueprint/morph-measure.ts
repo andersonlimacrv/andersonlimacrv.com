@@ -1,11 +1,3 @@
-// morph-measure.ts — Mede o box real do retrato no hero e publica valores em
-// px para os wireframes blueprint ([data-bp-wireframe]). Os valores vão para
-// CSS vars (--bp-w/--bp-h) e spans [data-bp="w|h|d|a|s"].
-//
-// Performance-first: sem listeners pesados; recalcula em load/resize/fonts.
-// Reaproveita a neutralização de transform do scroll-morph.ts (em estado
-// reduced-motion a imagem já nasce com transform aplicado).
-
 interface Wireframe {
   root: HTMLElement;
   img: HTMLElement | null;
@@ -19,8 +11,6 @@ function fmt(value: number, digits = 0): string {
   return Number.isFinite(value) ? value.toFixed(digits) : '—';
 }
 
-// Diâmetro final responsivo: lê --morph-final-size (definido no :root) e cai
-// para 160px quando ausente — mesma fonte do JS do morph.
 function finalSizeOf(root: HTMLElement): number {
   const raw = getComputedStyle(root).getPropertyValue('--morph-final-size').trim();
   if (raw) {
@@ -66,7 +56,6 @@ function fill(wf: Wireframe): void {
 
   wf.root.style.setProperty('--bp-w', `${w}px`);
   wf.root.style.setProperty('--bp-h', `${h}px`);
-  // Escala adimensional para rótulos de cota do ghost (160px → 1).
   wf.root.style.setProperty('--bp-scale', String(finalSize / DEFAULT_FINAL_SIZE));
 
   const values: Record<string, string> = {
@@ -87,15 +76,9 @@ function fill(wf: Wireframe): void {
     if (key && values[key]) span.textContent = values[key];
   }
 
-  // Gate anti-FOUC: publica data-bp-ready só depois das vars — o wireframe
-  // fica oculto (opacity 0, cf. global.css) até estar com a geometria certa.
   wf.root.setAttribute('data-bp-ready', '');
 }
 
-// --- Leitura ao vivo durante o morph (desacoplado do scroll-morph.ts) ---
-// Lê o transform aplicado no <img> a cada frame agendado (scroll/resize) e
-// publica valores atuais nos rótulos [data-bp-live] dos quadrantes do
-// círculo-fantasma: escala s, área A = W·H·s² e deslocamento do centro x·y.
 let liveRafId: number | null = null;
 let boundLive = false;
 
@@ -125,9 +108,6 @@ function fillLive(wf: Wireframe): void {
     if (text !== null && span.textContent !== text) span.textContent = text;
   }
 
-  // Flip de cor no Start quando a imagem está cobrindo o wireframe (light
-  // mode: a tinta escura someria sobre a foto preta). Histerese 0.99/0.95.
-  // Só a raiz Start (o Board fica atrás da foto; flip não teria efeito).
   if (wf.root.classList.contains('bp-start')) {
     const covered = wf.root.classList.contains('bp-covered');
     if (scale >= 0.99 && !covered) wf.root.classList.add('bp-covered');

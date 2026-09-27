@@ -1,31 +1,3 @@
-// KineticGrid — port vanilla (sem React) do componente SatoriUI KineticGrid
-// (references/background-interactive/background-interactive.tsx, MIT) para o
-// padrão do projeto (cf. elastic-line.ts).
-//
-// Física original preservada:
-//  - grid de linhas (CELL_SIZE 55) + textura de pontos (DOT_SPACING 28);
-//  - warp em direção ao ponteiro com bell falloff (INFLUENCE_RADIUS 260,
-//    MAX_WARP 24, easing (1-t)² com clamp dist/60);
-//  - edge pin quadrático (margin 1.5) travando bordas do grid;
-//  - ripples no click: raio 400px/s, opacidade 1 - 1.2·age, onda de 55px,
-//    deslocamento máx 18·opacidade;
-//  - lerp do mouse (0.08); smoothstep na cor/raio dos nós (1.8→3.2);
-//  - glow radial nos nós com t > 0.3.
-//
-// Adaptações obrigatórias do port (ver openspec/changes/kinetic-grid-contact):
-//  - canvas contido no wrapper (nada de fixed full-screen), fundo transparente;
-//  - listeners de ponteiro no wrapper (coords relativas ao canvas);
-//  - intensidade do efeito controlada por `strength` (0..1): snap a 1 na
-//    entrada (com snap-on-enter do mouse interno), fade ~0.5s no lugar na
-//    saída — sem glide para o canto via sentinela -9999;
-//  - cores lidas dos tokens do site (foreground/primary) e revalidadas na
-//    troca de tema (MutationObserver em html.class);
-//  - DPR correto + ResizeObserver;
-//  - rAF pausado quando o box sai da viewport (IntersectionObserver);
-//  - prefers-reduced-motion: frame único estático (data-static="true");
-//  - init/cleanup via eventos Astro (astro:page-load / before-swap);
-//  - hooks de debug p/ e2e: data-ripple-count e data-static no wrapper.
-
 interface Point {
   x: number;
   y: number;
@@ -46,9 +18,7 @@ interface RGB {
 }
 
 interface ThemeColors {
-  /** textura/linhas/nós em repouso — foreground do tema */
   base: RGB;
-  /** estado ativo (perto do cursor/ondas) — primary (ou foreground em mono) */
   active: RGB;
 }
 
@@ -66,22 +36,17 @@ interface KineticGridState {
   colorMode: 'default' | 'monochrome';
   visible: boolean;
   isStatic: boolean;
-  /** 0..1 — intensidade do warp; 1 com ponteiro dentro, fade a 0 na saída. */
   strength: number;
-  /** ponteiro dentro do box */
   inside: boolean;
-  /** sem efeito ativo (strength 0 e sem ripples) — draw pode ser pulado */
   idle: boolean;
 }
 
-// ─── Constantes (idênticas ao original) ──────────────────────────────────────
 
 const CELL_SIZE = 55;
 const INFLUENCE_RADIUS = 260;
 const MAX_WARP = 24;
 const DOT_SPACING = 28;
 const LERP_SPEED = 0.08;
-/** decaimento do strength na saída do ponteiro (~0.5s até repouso) */
 const STRENGTH_FADE = 0.12;
 
 const LINE_BASE_ALPHA = 0.13;
@@ -90,7 +55,6 @@ const NODE_BASE_ALPHA = 0.2;
 const NODE_BASE_RADIUS = 1.8;
 const NODE_ACTIVE_RADIUS = 3.2;
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function lerpN(a: number, b: number, t: number) {
   return a + (b - a) * t;
@@ -100,11 +64,6 @@ function rgba(c: RGB, a: number): string {
   return `rgba(${c.r},${c.g},${c.b},${a})`;
 }
 
-/**
- * Normaliza QUALQUER cor CSS computada (oklch, color-mix, hex…) para sRGB via
- * snapshot de 1px — o Canvas2D só aceita cores que o parser entenda, e nós
- * precisamos compor alpha manualmente por cima do token.
- */
 const probeCanvas =
   typeof document !== 'undefined'
     ? document.createElement('canvas')
@@ -145,7 +104,6 @@ function readColors(
   return { base, active };
 }
 
-// ─── Estado / registros de módulo ────────────────────────────────────────────
 
 const states: KineticGridState[] = [];
 let rafId: number | null = null;
@@ -154,7 +112,6 @@ let io: IntersectionObserver | null = null;
 let themeMo: MutationObserver | null = null;
 const OFFSCREEN: Point = { x: -9999, y: -9999 };
 
-// ─── Física (port fiel de getWarpedPoint) ────────────────────────────────────
 
 function getWarpedPoint(
   gx: number,
@@ -167,7 +124,6 @@ function getWarpedPoint(
   rows: number,
   strength: number,
 ): { pt: Point; proximity: number } {
-  // Edge pin — trava suavemente as linhas/colunas de borda
   const edgeMargin = 1.5;
   const colPin = Math.min(col / edgeMargin, (cols - 1 - col) / edgeMargin, 1);
   const rowPin = Math.min(row / edgeMargin, (rows - 1 - row) / edgeMargin, 1);
@@ -180,7 +136,6 @@ function getWarpedPoint(
   const proximity =
     Math.max(0, 1 - dist / INFLUENCE_RADIUS) * pinFactor * strength;
 
-  // Deslocamento das ondas (ripples)
   let rx = 0;
   let ry = 0;
   for (const r of ripples) {
@@ -199,7 +154,6 @@ function getWarpedPoint(
     }
   }
 
-  // Warp em direção ao cursor com bell falloff
   if (dist < INFLUENCE_RADIUS && dist > 0 && pinFactor > 0) {
     const t = dist / INFLUENCE_RADIUS;
     const eased = t < 0.01 ? 0 : (1 - t) * (1 - t) * Math.min(1, dist / 60);
@@ -217,7 +171,6 @@ function getWarpedPoint(
   return { pt: { x: gx + rx, y: gy + ry }, proximity };
 }
 
-// ─── Render ──────────────────────────────────────────────────────────────────
 
 function draw(state: KineticGridState, now: number) {
   const { ctx, w: W, h: H, mouse, ripples, colors } = state;
@@ -228,7 +181,6 @@ function draw(state: KineticGridState, now: number) {
 
   ctx.clearRect(0, 0, W, H);
 
-  // Textura estática de pontos de fundo (original: branco 0.05)
   ctx.fillStyle = rgba(base, TEXTURE_ALPHA);
   for (let x = DOT_SPACING / 2; x < W; x += DOT_SPACING) {
     for (let y = DOT_SPACING / 2; y < H; y += DOT_SPACING) {
@@ -238,7 +190,6 @@ function draw(state: KineticGridState, now: number) {
     }
   }
 
-  // Atualiza ripples
   for (let i = ripples.length - 1; i >= 0; i--) {
     const r = ripples[i];
     const age = (now - r.born) / 1000;
@@ -247,7 +198,6 @@ function draw(state: KineticGridState, now: number) {
     if (r.opacity <= 0) ripples.splice(i, 1);
   }
 
-  // ── Grid deformado ────────────────────────────────────────────────────────
   const cols = Math.max(2, Math.ceil(W / CELL_SIZE)) + 1;
   const rows = Math.max(2, Math.ceil(H / CELL_SIZE)) + 1;
   const cellW = W / (cols - 1);
@@ -276,12 +226,11 @@ function draw(state: KineticGridState, now: number) {
     }
   }
 
-  // ── Linhas do grid ────────────────────────────────────────────────────────
   const lineBase: RGB = base;
   const lineActive: RGB = active;
   const drawSeg = (p1: Point, p2: Point, pr1: number, pr2: number) => {
     const avg = (pr1 + pr2) / 2;
-    const t = avg * avg * (3 - 2 * avg); // smoothstep
+    const t = avg * avg * (3 - 2 * avg);
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);
     ctx.lineTo(p2.x, p2.y);
@@ -300,16 +249,14 @@ function draw(state: KineticGridState, now: number) {
     for (let row = 0; row < rows - 1; row++)
       drawSeg(pts[row][col], pts[row + 1][col], prox[row][col], prox[row + 1][col]);
 
-  // ── Nós das interseções ───────────────────────────────────────────────────
   const activeGlow = `${active.r},${active.g},${active.b}`;
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       const p = pts[row][col];
       const pr = prox[row][col];
-      const t = pr * pr * (3 - 2 * pr); // smoothstep
+      const t = pr * pr * (3 - 2 * pr);
       const r = lerpN(NODE_BASE_RADIUS, NODE_ACTIVE_RADIUS, t);
 
-      // Anel de glow nos nós ativos
       if (t > 0.3) {
         const glowR = r + lerpN(0, 6, (t - 0.3) / 0.7);
         const grd = ctx.createRadialGradient(p.x, p.y, r * 0.5, p.x, p.y, glowR);
@@ -321,7 +268,6 @@ function draw(state: KineticGridState, now: number) {
         ctx.fill();
       }
 
-      // Preenchimento do nó
       ctx.beginPath();
       ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(${Math.round(lerpN(base.r, active.r, t))},${Math.round(lerpN(base.g, active.g, t))},${Math.round(lerpN(base.b, active.b, t))},${lerpN(NODE_BASE_ALPHA, 1, t).toFixed(3)})`;
@@ -329,7 +275,6 @@ function draw(state: KineticGridState, now: number) {
     }
   }
 
-  // ── Anéis dos ripples ─────────────────────────────────────────────────────
   for (const r of ripples) {
     const safeRadius = Math.max(0, r.radius);
     ctx.beginPath();
@@ -340,7 +285,6 @@ function draw(state: KineticGridState, now: number) {
   }
 }
 
-// ─── Loop / dimensionamento / eventos ────────────────────────────────────────
 
 function applySize(state: KineticGridState) {
   const rect = state.wrapper.getBoundingClientRect();
@@ -361,7 +305,6 @@ function frame(now: number) {
   for (const state of states) {
     if (!state.visible || state.isStatic) continue;
 
-    // Intensidade: instantânea na entrada, fade suave (~0.5s) na saída.
     if (!state.inside && state.strength > 0) {
       state.strength = lerpN(state.strength, 0, STRENGTH_FADE);
       if (state.strength < 0.01) state.strength = 0;
@@ -370,11 +313,10 @@ function frame(now: number) {
     state.mouse.x = lerpN(state.mouse.x, state.targetMouse.x, LERP_SPEED);
     state.mouse.y = lerpN(state.mouse.y, state.targetMouse.y, LERP_SPEED);
 
-    // Box visível mas sem efeito ativo: pula o draw (grid já em repouso).
     if (state.strength === 0 && state.ripples.length === 0) {
       if (!state.idle) {
         state.idle = true;
-        draw(state, now); // frame final em repouso
+        draw(state, now);
       }
       continue;
     }
@@ -393,14 +335,6 @@ function relativePoint(state: KineticGridState, e: PointerEvent): Point {
   return { x: e.clientX - rect.left, y: e.clientY - rect.top };
 }
 
-/**
- * Snap do mouse interno ao ponteiro quando ele "nasce" longe demais:
- * primeira entrada (sentinela -9999) ou reentrada depois de o mouse ter
- * derivado para longe (pointerleave, refocus de tab). Sem isso o lerp
- * levaria ~0,7-1s para trazer o efeito de volta (~44-58 frames de
- * 10000·0.92^n até INFLUENCE_RADIUS). Durante o movimento normal o lerp
- * segue intacto (cauda suave do original).
- */
 function snapIfNeeded(state: KineticGridState, p: Point) {
   const SNAP_DIST = 2 * INFLUENCE_RADIUS;
   const dx = state.mouse.x - p.x;
@@ -467,8 +401,6 @@ function bindWrapper(wrapper: HTMLElement) {
       { passive: true },
     );
     wrapper.addEventListener('pointerleave', () => {
-      // strength decai no frame loop (fade no lugar); o mouse interno congela
-      // onde estava — sem mais salto para o sentinela off-screen.
       state.inside = false;
     });
     wrapper.addEventListener('pointerdown', (e: PointerEvent) => {
@@ -493,9 +425,6 @@ function revalidateColors() {
   for (const state of states) {
     if (!state.wrapper.isConnected) continue;
     state.colors = readColors(state.wrapper, state.colorMode);
-    // Estados sem loop ativo (reduced-motion ou idle) precisam repintar com
-    // as novas cores — senão o canvas exibe o último frame do tema antigo
-    // (grid "invisível" após trocar de tema).
     if (state.isStatic || state.idle) draw(state, performance.now());
   }
 }
@@ -552,6 +481,4 @@ document.addEventListener('astro:page-load', init);
 document.addEventListener('astro:after-swap', init);
 init();
 
-// Marca o arquivo como módulo ES (evita colisão de nomes no escopo global
-// do tsc com outros scripts sem import/export, ex.: elastic-line.ts).
 export {};

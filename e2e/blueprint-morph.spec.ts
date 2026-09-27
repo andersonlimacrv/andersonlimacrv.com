@@ -5,7 +5,6 @@ const VIEWPORTS = [
   { name: 'mobile', width: 390, height: 844 },
 ] as const;
 
-// Diâmetro final responsivo do morph (--morph-final-size no :root).
 const FINAL_SIZE_BY_VIEWPORT: Record<(typeof VIEWPORTS)[number]['name'], number> = {
   desktop: 160,
   mobile: 128,
@@ -382,7 +381,6 @@ test.describe('wireframe blueprint do morph da imagem', () => {
         page,
       }) => {
         await gotoHome(page);
-        // Responsivo: em <768px o traço/gap caem para 60% (0.6rem = 9.6px).
         const size = vp.name === 'mobile' ? 9.6 : 16;
         const data = await page.evaluate(
           ({ tol, size }) => {
@@ -406,13 +404,10 @@ test.describe('wireframe blueprint do morph da imagem', () => {
               classes: ['top', 'bottom', 'left', 'right'].map((c) =>
                 ticks.some((t) => t.classList.contains(`bp-end-tick-${c}`)),
               ),
-              // gap de 1rem (16px; 9.6px mobile) entre o traço e a borda do
-              // círculo (borda PRÓXIMA do bbox)
               topGap: cr ? cr.top - ((top?.top ?? cr.top) + (top?.height ?? 0)) : -1,
               bottomGap: cr ? (bottom?.top ?? cr.bottom) - cr.bottom : -1,
               leftGap: cr ? cr.left - ((left?.left ?? cr.left) + (left?.width ?? 0)) : -1,
               rightGap: cr ? (right?.left ?? cr.right) - cr.right : -1,
-              // comprimento dos traços (60% em mobile)
               topLen: top?.height ?? -1,
               leftLen: left?.width ?? -1,
               crossesAboveImage:
@@ -487,7 +482,6 @@ test.describe('wireframe blueprint do morph da imagem', () => {
           const fr = rectFrame?.getBoundingClientRect();
           const ir = img?.getBoundingClientRect();
 
-          // gate: sem data-bp-ready o wireframe DEVE estar invisível
           const first = wireframes[0];
           first?.removeAttribute('data-bp-ready');
           const gatedOpacity =
@@ -512,10 +506,8 @@ test.describe('wireframe blueprint do morph da imagem', () => {
 
         expect(state.wireframeCount).toBe(2); // Board + Start
         expect(state.allReady).toBe(true);
-        // gate: sem o atributo, invisível; com o atributo, visível
         expect(state.gatedOpacity).toBe('0');
         expect(state.ungatedOpacity).toBe('1');
-        // lugar correto: a moldura cobre exatamente o box da imagem
         expect(state.frameAligned).toBe(true);
       });
 
@@ -534,10 +526,8 @@ test.describe('wireframe blueprint do morph da imagem', () => {
             const legend = round(document.querySelector('[data-bp-board] .bp-legend'));
             const ghost = round(document.querySelector('.bp-ghost'));
             const endCircle = round(document.querySelector('[data-bp-end] .bp-end-circle'));
-            // medidas publicadas (neutralRect do img) — devem ser o box da imagem
             const measuredW = document.querySelector('[data-bp-board] [data-bp="w"]')?.textContent ?? '';
             const measuredH = document.querySelector('[data-bp-board] [data-bp="h"]')?.textContent ?? '';
-            // caixa de LAYOUT (offset*) — imune ao transform do morph
             const img = document.querySelector<HTMLElement>('[data-scroll-morph] img');
             return {
               rectFrame,
@@ -564,14 +554,11 @@ test.describe('wireframe blueprint do morph da imagem', () => {
           expect(pt[key], `${key} pt`).not.toBeNull();
           expect(es[key], `${key} es`).not.toBeNull();
           expect(en[key], `${key} en`).not.toBeNull();
-          // nenhum item redimensiona com os textos do idioma (±3px)
           expect(Math.abs(es[key]!.w - pt[key]!.w)).toBeLessThanOrEqual(TOLERANCE_PX);
           expect(Math.abs(en[key]!.w - pt[key]!.w)).toBeLessThanOrEqual(TOLERANCE_PX);
           expect(Math.abs(es[key]!.h - pt[key]!.h)).toBeLessThanOrEqual(TOLERANCE_PX);
           expect(Math.abs(en[key]!.h - pt[key]!.h)).toBeLessThanOrEqual(TOLERANCE_PX);
         }
-        // as medidas publicadas acompanham a IMAGEM (geometria da figura,
-        // não dos textos) — "NNNpx" publicado == round(largura/altura do img)
         for (const g of [pt, es, en]) {
           expect(g.measuredW).toBe(`${Math.round(g.imgW!)}px`);
           expect(g.measuredH).toBe(`${Math.round(g.imgH!)}px`);

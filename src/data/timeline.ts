@@ -17,8 +17,6 @@ export interface TimelineData {
   education: EducationEntry[];
 }
 
-// Fonte única da trajetória — localizada por idioma.
-// careerJourney = só Trabalho (4); Formação vive em `education` (3) — sem duplicatas.
 export const timeline: Record<Locale, TimelineData> = {
   pt: {
     careerJourney: [

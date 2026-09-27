@@ -8,11 +8,6 @@ interface Props {
 
 const current = Astro.props.locale ?? defaultLocale;
 
-// Disclosure de idiomas — mesmo comportamento do menu hambúrguer mobile
-// (cf. site-header.ts): botão com aria-expanded, reveal max-height/opacity,
-// fecha em Esc/clique-fora/link/navegação. Enhancement progressivo: sem JS
-// o popup não abre. Estilos em global.css (inline por página custaria
-// ~+24 KB no HTML).
 
 const options = (Object.keys(languages) as Locale[]).map((target) => ({
   locale: target,

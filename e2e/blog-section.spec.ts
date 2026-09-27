@@ -40,14 +40,12 @@ test.describe('seção Blog com SectionHeading numerado', () => {
       const eyebrow = section.locator('p.w-full.text-center');
       await expect(eyebrow).toBeVisible();
 
-      // eyebrow empilhado acima do número: top do eyebrow < top do número
       const stacked = await page.evaluate(() => {
         const p = document.querySelector('#blog p.w-full');
         const num = document.querySelector('#blog span.font-mono');
         if (!p || !num) return null;
         const pTop = p.getBoundingClientRect().top;
         const numTop = num.getBoundingClientRect().top;
-        // mesma largura da palavra: largura do p ≈ largura do box do número
         const pW = p.getBoundingClientRect().width;
         const numW = num.getBoundingClientRect().width;
         return { pTop, numTop, pW, numW };
@@ -73,7 +71,6 @@ test.describe('seção Blog com SectionHeading numerado', () => {
       const box = (await viewAll.boundingBox())!;
       expect(box.height).toBeGreaterThanOrEqual(44);
 
-      // posicionamento: abaixo da última linha de post, alinhado à esquerda
       const position = await page.evaluate(() => {
         const section = document.getElementById('blog')!;
         const link = section.querySelector<HTMLAnchorElement>(
@@ -104,7 +101,6 @@ test.describe('seção Blog com SectionHeading numerado', () => {
     await gotoHome(page, '/#blog');
     const section = page.locator('#blog');
     await expect(section).toBeVisible();
-    // scroll-behavior: smooth → poll até o scroll assentar
     await expect
       .poll(
         () => section.evaluate((el) => el.getBoundingClientRect().top),

@@ -1,7 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
 
-// Símbolos do #contato seguem o padrão do site: visíveis só no mobile
-// (md:hidden) — no desktop o feedback é o TargetHover (corners).
 test.use({ viewport: { width: 390, height: 844 } });
 
 async function gotoHome(page: Page, path = '/') {
@@ -37,7 +35,6 @@ test.describe('target simbol — mira com spin roleta', () => {
     expect(box).not.toBeNull();
     expect(Math.round(box!.width)).toBe(25);
     expect(Math.round(box!.height)).toBe(25);
-    // dentro da seção de contato (ao lado do email — sem kinetic box)
     const contact = page.locator('#contato');
     const cb = await contact.boundingBox();
     expect(cb).not.toBeNull();
@@ -50,14 +47,12 @@ test.describe('target simbol — mira com spin roleta', () => {
     page,
   }) => {
     await gotoHome(page);
-    // começa fora da viewport (abaixo da dobra) → 0 spins
     expect(await spins(page)).toBe(0);
 
     await simbol(page);
     await page.waitForTimeout(300);
     expect(await spins(page)).toBeGreaterThanOrEqual(1);
 
-    // sai da viewport e volta → gira de novo
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(300);
     const before = await spins(page);
@@ -96,14 +91,12 @@ test.describe('target simbol — mira com spin roleta', () => {
     await page.waitForTimeout(1800);
     const before = await spins(page);
 
-    // dois clicks rápidos (dentro do spin de 1.6s) = apenas 1 spin
     await el.click({ position: { x: 24, y: 24 } });
     await page.waitForTimeout(150);
     await el.click({ position: { x: 24, y: 24 } });
     await page.waitForTimeout(200);
     expect(await spins(page)).toBe(before + 1);
 
-    // após o spin terminar (1600ms), novo click gira
     await page.waitForTimeout(1700);
     await el.click({ position: { x: 24, y: 24 } });
     await page.waitForTimeout(200);
@@ -153,7 +146,6 @@ test.describe('target simbol — mira com spin roleta', () => {
     });
     expect(colors.ring).not.toBeNull();
     expect(colors.dot).toBe(colors.primary);
-    // retículo: color-mix de foreground 55% — difere do primary e não é "none"
     expect(colors.ring).not.toBe('none');
     expect(colors.ring).not.toBe(colors.primary);
   });

@@ -136,8 +136,6 @@ test.describe('navegação e sync do switch de idiomas', () => {
   test('popup sincroniza com a página corrente após navegação interna (header persistido)', async ({
     page,
   }) => {
-    // fluxo real: home → blog → post por ClientRouter — o header persiste
-    // com os hrefs da home; o sync (alternates do head) deve corrigi-los
     await gotoHome(page, '/');
     await page.locator('a[href="/blog"]').first().click();
     await page.waitForURL('**/blog');
@@ -153,7 +151,6 @@ test.describe('navegação e sync do switch de idiomas', () => {
     expect(hrefs).toContain(POST.es);
     expect(hrefs).toContain(POST.en);
 
-    // alterna para ES pelo popup — deve ir ao POST traduzido (não à raiz)
     await page.locator('.site-locale-toggle').click();
     await page.locator('.site-locale-menu a', { hasText: 'ES' }).click();
     await page.waitForURL(`**${POST.es}`);

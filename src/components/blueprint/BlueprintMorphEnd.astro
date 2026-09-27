@@ -45,8 +45,6 @@ const centerStyle = {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    /* Tamanho e gap dos traços cardeais: 60% em telas < 768px (círculo
-       menor — --morph-final-size 128px) para manter a proporção. */
     --bp-tick-size: 1rem;
     --bp-tick-gap: 1rem;
   }
@@ -84,10 +82,6 @@ const centerStyle = {
     height: var(--bp-final-size, 160px);
   }
 
-  /* Traços cardeais (mesmo padrão do bp-ghost-tick do hero): 2 verticais
-     (topo/base) e 2 horizontais (lados), com gap de 1rem do círculo
-     (0.6rem em <768px). Sem rotate — top/bottom usam border-left explícito
-     (bbox previsível). Tamanho/gap vêm de --bp-tick-size/--bp-tick-gap. */
   .bp-end-tick {
     position: absolute;
     width: var(--bp-tick-size);

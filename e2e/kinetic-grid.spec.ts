@@ -42,11 +42,8 @@ test.describe('kinetic grid do contato', () => {
     expect(dims.cssH).toBeGreaterThan(0);
     const dpr = await page.evaluate(() => window.devicePixelRatio || 1);
     const scale = Math.min(dpr, 2);
-    // tolerância de 1 CSS px para variação sub-pixel entre resize e medida
     expect(Math.abs(dims.bmpW - dims.cssW * scale)).toBeLessThanOrEqual(scale);
     expect(Math.abs(dims.bmpH - dims.cssH * scale)).toBeLessThanOrEqual(scale);
-    // o BOX não transborda a viewport (overflow global da home é pré-existente
-    // e coberto por scroll-morph.spec)
     expect(dims.left).toBeGreaterThanOrEqual(-1);
     expect(dims.right).toBeLessThanOrEqual(dims.vw + 1);
   });
@@ -89,7 +86,6 @@ test.describe('kinetic grid do contato', () => {
       await gotoHome(page, path);
       const body = await page.locator('body').innerHTML();
       expect(body).not.toContain('teste o background aqui');
-      // o KineticGrid agora vive no SectionHeading (cada seção numerada)
       const grids = page.locator('[data-kinetic-grid]');
       expect(await grids.count()).toBeGreaterThanOrEqual(1);
     }
@@ -118,7 +114,6 @@ test.describe('kinetic grid do contato', () => {
     await gotoHome(page);
     await gridBox(page);
 
-    // volta ao topo e desce de novo via ClientRouter (swap do header/página)
     for (let i = 0; i < 2; i++) {
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.waitForTimeout(150);
@@ -141,8 +136,6 @@ test.describe('kinetic grid do contato', () => {
     await gotoHome(page);
     const grid = await gridBox(page);
 
-    // idle (mouse fora do box): o loop pula o draw — o repaint no toggle
-    // precisa vir do MutationObserver de tema.
     await page.waitForTimeout(500);
 
     const sample = () =>

@@ -1,14 +1,3 @@
-// contact-form.ts — progressive enhancement do formulário de contato.
-//
-// O HTML nasce funcional sem JS: maxlength/contador nativo, radios de assunto
-// com default, action="mailto:" no form e href wa.me no link direto.
-// Quando o JS roda, este módulo adiciona: contador dinâmico, validação inline
-// (sem alert), Clipboard API nos botões COPIAR e composição de mailto/wa.me
-// com os dados digitados.
-//
-// Segue o padrão de reveal.ts: init em astro:page-load / astro:after-swap
-// (ClientRouter) com dedupe por WeakSet, sem estado global.
-
 const boundForms = new WeakSet<HTMLFormElement>();
 const boundCopyButtons = new WeakSet<HTMLButtonElement>();
 const copyTimers = new WeakMap<HTMLButtonElement, number>();
@@ -106,7 +95,6 @@ function readForm(form: HTMLFormElement) {
 function bindForm(form: HTMLFormElement) {
   if (boundForms.has(form)) return;
   boundForms.add(form);
-  // Desliga a validação nativa só quando o JS assume (sem JS ela continua valendo).
   form.noValidate = true;
 
   const name = form.querySelector<HTMLInputElement>('#contact-name');
@@ -214,6 +202,4 @@ document.addEventListener('astro:page-load', init);
 document.addEventListener('astro:after-swap', init);
 init();
 
-// Marca o arquivo como módulo ES (evita colisão no escopo global do tsc com
-// outros scripts sem import/export, ex.: elastic-line.ts).
 export {};

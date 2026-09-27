@@ -29,13 +29,11 @@ test.describe('reveal — transições de entrada das seções', () => {
     await gotoHome(page);
     await page.waitForTimeout(500);
 
-    // antes do scroll: reveal-present ativo e todas ocultas (abaixo da dobra)
     const before = await revealState(page);
     expect(before.present).toBe(true);
     expect(before.els.length).toBeGreaterThanOrEqual(5);
     expect(before.els.every((e) => e.opacity === 0)).toBe(true);
 
-    // scroll progressivo até o fim
     const height = await page.evaluate(() => document.body.scrollHeight);
     const steps = Math.max(4, Math.ceil(height / 500));
     for (let i = 1; i <= steps; i++) {
@@ -56,7 +54,6 @@ test.describe('reveal — transições de entrada das seções', () => {
     await gotoHome(page);
     await page.waitForTimeout(400);
 
-    // navega para /blog (ClientRouter) e volta
     await page.click('a[href="/blog"]');
     await page.waitForURL('**/blog');
     await expect
@@ -73,8 +70,6 @@ test.describe('reveal — transições de entrada das seções', () => {
     const back = await revealState(page);
     expect(back.els.length).toBeGreaterThanOrEqual(5);
 
-    // scroll ao fim em passos (salto único pode não reavaliar a interseção
-    // do IO — cada passo gera nova avaliação)
     const height = await page.evaluate(() => document.body.scrollHeight);
     const steps = Math.max(4, Math.ceil(height / 500));
     for (let i = 1; i <= steps; i++) {
@@ -123,9 +118,6 @@ test.describe('reveal — transições de entrada das seções', () => {
     await gotoHome(page);
     await page.waitForTimeout(400);
 
-    // Elemento com regra custom [data-reveal].is-visible (opacity:1 em
-    // @layer components) + utilitário opacity-0 (@layer utilities): o
-    // utilitário DEVE vencer — prova da ordem de camadas do Tailwind v4.
     const opacity = await page.evaluate(() => {
       const probe = document.createElement('div');
       probe.setAttribute('data-reveal', '');

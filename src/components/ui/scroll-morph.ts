@@ -1,20 +1,3 @@
-// Morph de scroll da imagem hero: retângulo (topo) → círculo (seção Sobre).
-// Performance-first (plan.md):
-//  - apenas clip-path (polygon de 16 vértices) e transform (scale/translate);
-//  - requestAnimationFrame deduplica escrita; scroll listener passive;
-//  - vértices recalculados no resize; will-change/contain:paint no CSS;
-//  - prefers-reduced-motion → estado final direto.
-//
-// Coordenadas do clip-path são locais ao box do elemento. O transform
-// (translate + scale, origin center) move/encolhe o resultado; o translate
-// é a distância entre o centro original da imagem e o centro do destino.
-//
-// Uso (via ScrollMorphPortrait.astro):
-//   <figure data-scroll-morph data-target="#sobre" data-final-scale="0.35"
-//           data-final-radius="44">
-//     <img ... />
-//   </figure>
-
 interface MorphTarget {
   root: HTMLElement;
   img: HTMLElement;
@@ -42,8 +25,6 @@ function num(el: HTMLElement, key: string, fallback: number): number {
   return Number.isFinite(value) ? value : fallback;
 }
 
-// Diâmetro final do círculo: lê o CSS var --morph-final-size (responsivo,
-// definido no :root) e cai para o data-final-size quando ausente.
 function readFinalSize(el: HTMLElement): number {
   const raw = getComputedStyle(el).getPropertyValue('--morph-final-size').trim();
   if (raw) {
@@ -53,9 +34,6 @@ function readFinalSize(el: HTMLElement): number {
   return num(el, 'finalSize', 0);
 }
 
-// Curva de suavização aplicada ao progresso p ∈ [0,1]. "expo-out" acelera no
-// início e desacelera no fim (mesma sensação do --ease-expo-out do site);
-// "none"/"linear" mantém o percurso linear. O fim (p=1) nunca muda.
 function ease(p: number, easing: string): number {
   switch (easing) {
     case 'none':
@@ -67,10 +45,6 @@ function ease(p: number, easing: string): number {
   }
 }
 
-// Progresso 0..1 entre o topo (hero) e a seção de destino.
-// Usa posições absolutas (documento) armazenadas em measure() — imunes ao
-// scroll — e compara com o scrollY atual. p=0 no topo; p=1 quando a seção
-// de destino atinge ~30% da altura da viewport.
 function computeProgress(t: MorphTarget): number {
   const innerH = window.innerHeight;
   const imgTop = t.rect.top;
@@ -81,18 +55,6 @@ function computeProgress(t: MorphTarget): number {
   return Math.min(1, Math.max(0, p));
 }
 
-// Gera os pontos do polígono interpolados entre o retângulo e o círculo.
-// 64 vértices: cantos + pontos por borda no retângulo; no círculo, os mesmos
-// 64 pontos sobre a circunferência centrada no box local do elemento.
-//
-// Cada borda do retângulo mapeia para o arco de círculo do MESMO lado:
-//  - topo → arco superior (ângulo de 135° a 225°, em coords de tela);
-//  - direita → arco direito (225° a 315°);
-//  - base → arco inferior (315° a 45°);
-//  - esquerda → arco esquerdo (45° a 135°).
-// Assim o morph arredonda os cantos gradualmente (como border-radius) em vez
-// de "girar" o retângulo em torno do círculo. Com 64 pontos o círculo final
-// é visualmente perfeito.
 function polygonFor(t: MorphTarget, p: number): string {
   const w = t.rect.width;
   const h = t.rect.height;
@@ -122,8 +84,6 @@ function polygonFor(t: MorphTarget, p: number): string {
       y0 = h * (1 - k);
     }
 
-    // Ângulo do arco no círculo correspondente à borda. Coordenadas de tela
-    // (y cresce para baixo): 0°=direita, 90°=base, 180°=esquerda, 270°=topo.
     const baseAngle = [225, 315, 45, 135][edge];
     const angle = ((baseAngle + k * 90) * Math.PI) / 180;
     const x1 = cx + Math.cos(angle) * r;
@@ -136,11 +96,6 @@ function polygonFor(t: MorphTarget, p: number): string {
   return `polygon(${points.join(', ')})`;
 }
 
-// Transform: do tamanho original (scale 1) até o círculo final. O fator de
-// escala final é finalSize/min(w,h) (diâmetro fixo em px, consistente entre
-// telas) quando finalSize > 0; caso contrário usa finalScale. translate
-// desloca o centro da imagem até a posição alvo na seção de destino (fração
-// finalX/finalY do retângulo alvo); scale encolhe.
 function transformFor(t: MorphTarget, p: number): string {
   const minDim = Math.min(t.rect.width, t.rect.height);
   const sFinal = t.finalSize > 0 ? t.finalSize / Math.max(1, minDim) : t.finalScale;
@@ -150,7 +105,6 @@ function transformFor(t: MorphTarget, p: number): string {
   const srcCy = t.rect.top + t.rect.height / 2;
   let dstCx = t.targetRect.left + t.targetRect.width * t.finalX;
   let dstCy = t.targetRect.top + t.targetRect.height * t.finalY;
-  // Mantém o círculo dentro da área de conteúdo (nunca corta as bordas).
   if (t.finalSize > 0) {
     dstCx = Math.min(Math.max(dstCx, t.targetRect.left + rFinal), t.targetRect.right - rFinal);
     dstCy = Math.min(Math.max(dstCy, t.targetRect.top + rFinal), t.targetRect.bottom - rFinal);
@@ -179,11 +133,6 @@ function schedule() {
   rafId = requestAnimationFrame(frame);
 }
 
-// Rect de layout (box puro), ignorando transform e clip-path — tanto os
-// aplicados pelo morph no <img> quanto os de animação (ex.: translateY do
-// Reveal, que fica num ancestral). Neutraliza transforms inline/CSS do
-// elemento e dos ancestrais, mede e restaura tudo no mesmo frame: síncrono,
-// sem paint visível nem transição disparada entre a troca.
 function layoutRect(el: HTMLElement): DOMRect {
   const affected: Array<{
     el: HTMLElement;
@@ -223,8 +172,6 @@ function measure(t: MorphTarget) {
   t.rect = new DOMRect(r.left + sx, r.top + sy, r.width, r.height);
   const tr = layoutRect(t.target);
   t.targetRect = new DOMRect(tr.left + sx, tr.top + sy, tr.width, tr.height);
-  // O diâmetro final é responsivo (--morph-final-size): recomputa no resize
-  // para acompanhar o breakpoint atual sem re-bind.
   t.finalSize = readFinalSize(t.root);
 }
 

@@ -1,23 +1,3 @@
-// TargetSimbol — mira decorativa com spin estilo roleta de revólver.
-//
-// Triggers do spin (1600ms, 10 voltas, ease-expo-out — começa rápido e
-// desacelera até parar):
-//   - entrada na viewport (IntersectionObserver; re-entrada gira de novo)
-//   - pointerenter no próprio símbolo
-//   - pointerenter no pai englobante (.group ou <a>) — group-hover sem CSS,
-//     reaproveita o mesmo spin JS (mesma duração/curva/voltas)
-//   - pointerdown (click/tap — feedback de link no mobile, onde o TargetHover
-//     não existe) no símbolo e no pai
-// Re-triggers são ignorados enquanto o spin está em andamento.
-//
-// Performance: Web Animations API (element.animate) com transform rotate —
-// animação no compositor (GPU), zero rAF manual, zero reflow. Uma única
-// instância por página = custo desprezível.
-//
-// prefers-reduced-motion: nenhuma animação (estático).
-//
-// Debug hook p/ e2e: data-spins no wrapper incrementa a cada spin iniciado.
-
 interface SpinState {
   wrapper: HTMLElement;
   svg: SVGSVGElement;
@@ -30,7 +10,7 @@ const bound = new WeakSet<HTMLElement>();
 
 const SPIN_DURATION = 1600;
 const SPIN_TURNS = 10;
-const SPIN_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'; // --ease-expo-out
+const SPIN_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)';
 
 function reducedMotion(): boolean {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
@@ -50,7 +30,6 @@ function spin(state: SpinState) {
   anim.onfinish = () => {
     state.spinning = false;
   };
-  // Fallback: se a animação for cancelada externamente, libera o flag.
   anim.oncancel = () => {
     state.spinning = false;
   };
@@ -67,8 +46,6 @@ function bind(wrapper: HTMLElement) {
   wrapper.addEventListener('pointerenter', () => spin(state));
   wrapper.addEventListener('pointerdown', () => spin(state));
 
-  // Group-hover: mesmo spin quando o pai (.group ou <a> que engloba
-  // o símbolo) recebe hover. Mantém a animação idêntica do wrapper.
   const host =
     wrapper.closest<HTMLElement>('.group') ??
     wrapper.closest<HTMLElement>('a');
@@ -82,7 +59,6 @@ function bind(wrapper: HTMLElement) {
 }
 
 function init() {
-  // Reduz o custo em reduced-motion: sem observer/eventos (nunca anima).
   if (reducedMotion()) return;
   if (!io) {
     io = new IntersectionObserver(
@@ -110,5 +86,4 @@ document.addEventListener('astro:page-load', init);
 document.addEventListener('astro:after-swap', init);
 init();
 
-// Marca o arquivo como módulo ES (evita colisão no escopo global do tsc).
 export {};

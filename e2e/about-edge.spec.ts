@@ -24,15 +24,12 @@ test.describe('about edge reveal', () => {
     const section = await sobre(page);
     const links = section.locator('nav a.cursor-target');
     expect(await links.count()).toBe(5);
-    // nenhum reveal nos sociais
     expect(
       await section.locator('nav a[data-edge-reveal]').count(),
     ).toBe(0);
     expect(
       await section.locator('nav [data-reveal-layer]').count(),
     ).toBe(0);
-    // comportamento original: corners presentes (sem timing de hover —
-    // o hover em si já é coberto pelos specs about-section/target-hover)
     const link = links.first();
     await expect(link.locator('.target-hover-corner')).toHaveCount(4);
   });
@@ -83,7 +80,6 @@ test.describe('about edge reveal', () => {
     const row = rows.first();
     await row.hover();
     await expect(row).toHaveClass(/is-open/, { timeout: 2_000 });
-    // divisória em todas, exceto na última
     const borders = await rows.evaluateAll((els) =>
       els.map((el) => window.getComputedStyle(el).borderBottomWidth),
     );
@@ -96,7 +92,6 @@ test.describe('about edge reveal', () => {
   }) => {
     await gotoHome(page);
     await sobre(page);
-    // sem border no header 01, sem divide vertical, sem border na trajetória
     const header = page.locator('#sobre-content > header').first();
     await expect(header).toHaveCSS('border-bottom-width', '0px');
     const dados = page.locator('#sobre-content section[data-col="dados"]');
@@ -113,7 +108,6 @@ test.describe('about edge reveal', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await gotoHome(page);
     await sobre(page);
-    // divide-y aplica border-bottom em todos exceto o último filho
     const perfil = page.locator('#sobre-content section[data-col="perfil"]');
     const bottom = await perfil.evaluate(
       (el: HTMLElement) => window.getComputedStyle(el).borderBottomWidth,
@@ -135,7 +129,6 @@ test.describe('about edge reveal', () => {
         .first();
       const color = (loc: typeof value) =>
         loc.evaluate((el: HTMLElement) => window.getComputedStyle(el).color);
-      // valor do perfil == role da trajetória (foreground nos dois temas)
       expect(await color(value)).toBe(await color(role));
     }
   });
@@ -154,8 +147,6 @@ test.describe('about edge reveal', () => {
           .evaluate(
             (el: HTMLElement) => window.getComputedStyle(el).color,
           );
-      // "ROLE" (com edge-ink) == "REDES SOCIAIS" (sem): o edge-ink não
-      // pode apagar o muted — regressão de cascata unlayered vs layered
       expect(
         await color('[data-col="dados"] div[data-profile-row] > span'),
       ).toBe(await color('#sobre-content footer > span'));

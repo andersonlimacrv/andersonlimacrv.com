@@ -1,13 +1,4 @@
 ---
-/**
- * TargetHover — Componente vazio/façade
- * 
- * A lógica foi movida para:
- * - src/styles/target-hover.css (estilos)
- * - src/lib/target-hover.ts (script)
- * 
- * Importar e inicializar no BaseLayout.astro
- */
 export interface Props {
   targetSelector?: string;
   hoverDuration?: number;
@@ -18,8 +9,5 @@ export interface Props {
   offset?: number;
 }
 
-// Props não são mais usadas aqui (mantém compatibilidade)
 Astro.props;
 ---
-
-<!-- Componente vazio — lógica está em BaseLayout.astro -->

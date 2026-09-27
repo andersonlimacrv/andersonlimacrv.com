@@ -45,14 +45,12 @@ test.describe('nav na ordem das seções numeradas', () => {
 
 test.describe('TargetSimbol auxiliar (feedback de toque)', () => {
   test('simbol aux visível em 390px e oculto em 1280px', async ({ page }) => {
-    // mobile
     await page.setViewportSize({ width: 390, height: 844 });
     await gotoHome(page, '/');
     const footer = page.locator('footer').last();
     const simbol = footer.locator('[data-target-simbol]');
     await expect(simbol).toBeVisible();
     await expect(simbol).toHaveCSS('width', '25px');
-    // desktop
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.reload({ waitUntil: 'networkidle' });
     await expect(footer.locator('[data-target-simbol]')).toBeHidden();
@@ -66,19 +64,16 @@ test.describe('TargetSimbol auxiliar (feedback de toque)', () => {
     const link = page.locator('footer').last().locator('a[href="#top"]');
     const simbol = link.locator('[data-target-simbol]');
     await link.scrollIntoViewIfNeeded();
-    // spin de entrada (IO) termina antes do tap (~1.6s)
     await page.waitForTimeout(1800);
     const before = await simbol.evaluate((el) =>
       Number(el.getAttribute('data-spins') ?? '0'),
     );
-    // pointerdown bubbling: mesmo caminho do tap mobile (target-simbol.ts)
     await simbol.dispatchEvent('pointerdown');
     await page.waitForTimeout(250);
     const after = await simbol.evaluate((el) =>
       Number(el.getAttribute('data-spins') ?? '0'),
     );
     expect(after).toBeGreaterThan(before);
-    // navegação não é bloqueada pelo spin (scroll-behavior: smooth → poll)
     await link.click();
     await expect
       .poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 })
@@ -95,7 +90,6 @@ test.describe('TargetSimbol auxiliar (feedback de toque)', () => {
       await expect(s).toBeVisible();
       await expect(s).toHaveAttribute('aria-hidden', 'true');
     }
-    // desktop: ocultos
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.reload({ waitUntil: 'networkidle' });
     await expect(share.locator('[data-target-simbol]').first()).toBeHidden();
@@ -113,7 +107,6 @@ test.describe('Leia também editorial', () => {
       const ol = aside.locator('ol');
       const rows = ol.locator('li');
       const count = await rows.count();
-      // getRelatedPosts: por tags (sem preenchimento) — 1..3 dinâmico
       expect(count).toBeGreaterThanOrEqual(1);
       expect(count).toBeLessThanOrEqual(3);
 
@@ -151,7 +144,6 @@ test.describe('Leia também editorial', () => {
         'linha acompanha TargetSimbol',
       ).toBe(true);
 
-      // data à direita ≥640px e oculta <640px
       const time = ol.locator('time').first();
       await page.setViewportSize({ width: 390, height: 844 });
       await page.reload({ waitUntil: 'networkidle' });
@@ -211,7 +203,6 @@ test.describe('separador unificado ·', () => {
     const trajText = (await trajectory.textContent()) ?? '';
     expect(trajText).toContain('·');
     expect(trajText).not.toContain('–');
-    // mainStack do About intercalado com Sep
     const stackSep = page
       .locator('section[data-col="dados"] p', { hasText: 'TypeScript' })
       .locator('span[aria-hidden="true"]');

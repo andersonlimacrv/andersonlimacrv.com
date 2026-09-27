@@ -2,9 +2,7 @@ const header = document.querySelector<HTMLElement>(
   '[data-astro-transition-persist="header"]',
 );
 
-// Inatividade (s) de mouse/scroll/teclado antes do header esconder.
 const IDLE_MS = 3000;
-// Só esconde após o usuário rolar além deste ponto — no topo, sempre visível.
 const HIDE_AFTER = 80;
 const reduced =
   typeof window !== 'undefined' &&
@@ -24,7 +22,6 @@ function showHeader() {
 
 function hideHeader() {
   if (!header || reduced || isOpen()) return;
-  // Popup de idiomas aberto: header não some junto (guard do disclosure).
   if (document.querySelector('[data-locale-switcher].is-open')) return;
   if (window.scrollY <= HIDE_AFTER) return;
   header.classList.add('is-hidden');
@@ -40,7 +37,6 @@ function cancelHide() {
   idleTimer = undefined;
 }
 
-// Qualquer atividade do usuário traz o header de volta e reinicia o timer.
 function onActivity() {
   showHeader();
   scheduleHide();
@@ -93,7 +89,6 @@ function openMenu() {
   setToggleState(true);
   setMenuHeight();
   animateLinks(true);
-  // Menu aberto: mantém o header visível.
   showHeader();
   cancelHide();
 }
@@ -136,8 +131,6 @@ function handleAnchorClick(event: Event) {
   history.replaceState(null, '', `${targetPath === '/' ? '' : targetPath}/#${hash}`);
 }
 
-// Imports do módulo são re-executados a cada page-load (o header persiste via
-// view transition) — listeners de DOM são amarrados apenas uma vez por header.
 function bind() {
   if (!header || header.dataset.bound === 'true') return;
   header.dataset.bound = 'true';
@@ -153,14 +146,11 @@ function bind() {
   onActivity();
 }
 
-// View Transitions: o header persiste entre páginas — fecha o menu e reavalia
-// o estado de visibilidade ao navegar (inclusive troca de idioma).
 document.addEventListener('astro:page-load', () => {
   closeMenu();
   onActivity();
 });
 
-// Redimensionamento: ao cruzar para desktop, garante que o menu feche.
 window.addEventListener('resize', () => {
   if (window.matchMedia('(min-width: 768px)').matches) closeMenu();
   else setMenuHeight();
@@ -168,6 +158,4 @@ window.addEventListener('resize', () => {
 
 bind();
 
-// Marca o arquivo como módulo ES (evita colisão de nomes no escopo global
-// do tsc com outros scripts sem import/export, ex.: language-switcher.ts).
 export {};

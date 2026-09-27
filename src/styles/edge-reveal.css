@@ -1,10 +1,3 @@
-/* EdgeReveal — hover direcional produtivo (port da demo da lab).
-   Só o FUNDO desliza a partir da borda mais próxima (WAAPI em `translate`,
-   motor em src/lib/edge-reveal.ts); o texto (`.edge-ink`) fica parado e
-   troca para a cor de contraste via token quando aberto — sem blend, para
-   preservar hierarquias de cor (ex.: muted da trajetória) nos dois temas.
-   Sem utilitários de fonte e sem tokens novos (audits limpos). */
-
 [data-edge-reveal] {
   position: relative;
   overflow: hidden;
@@ -23,10 +16,6 @@
 .edge-ink {
   position: relative;
   z-index: 1;
-  /* SEM `color` aqui de propósito: este arquivo é unlayered e qualquer cor
-     venceria os utilitários `text-*` do Tailwind (layered), apagando
-     hierarquias muted no repouso. A cor vem das classes do markup; só o
-     estado aberto força `primary-foreground` (também unlayered). */
   transition: color 0.18s ease-out;
 }
 
