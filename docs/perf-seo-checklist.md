@@ -9,7 +9,8 @@ com o baseline salvo em `docs/audit-baseline.json`.
 ```sh
 npm run build          # build de produção
 npm run check          # diagnóstico Astro (0 erros)
-npm run test:e2e       # 132 testes Playwright (desktop/mobile, blueprint, scrollbar, fonte de dados; 7 falhas pré-existentes no main)
+npm run test:e2e       # 197 testes Playwright (desktop/mobile; verdes; flakes
+                       # ocasionais de timing sob carga 8-workers, verdes isolado)
 node scripts/audit.mjs # build + métricas + comparação vs baseline
 ```
 
@@ -34,8 +35,19 @@ node scripts/audit.mjs # build + métricas + comparação vs baseline
       `/pt/#contato`); clique em âncora na própria página rola sem transição
       (respeita `prefers-reduced-motion`).
 - [x] As 4 seções numeradas (01 Sobre, 02 Projetos, 03 Blog, 04 Contato) com
-      `SectionHeading` + KineticGrid; slot com `mt-8` padrão; blocos internos
-      do About com `py-6 sm:py-8` uniformes.
+      `SectionHeading` + KineticGrid; `py-20 sm:py-24`, slot com `mt-12`;
+      gap óptico título→texto uniforme (e2e `section-spacing`); subtítulo
+      localizado em Projetos; blocos internos do About com `py-6 sm:py-8`
+      uniformes.
+- [x] Projetos como FlowingMenu (marquee vanilla WAAPI+rAF, thumb local 16:9,
+      pausa total fora da viewport, `prefers-reduced-motion` estático; ~4,5 KB
+      de JS só onde usado); EdgeReveal em trajetória/perfil (overlay por token,
+      sem blend); playground `/lab` removido após validação.
+- [x] CTAs do hero em metades iguais (`flex-1`); contraste `foreground` nos
+      secundários; tipografia 100% via registro `TYPE` (`flowingTitle` p/ menu).
+- [x] Contato: links encolhidos ao texto, copiar com largura fixa (`w-32`),
+      assuntos em `flex-grow` sem quebra (`nowrap`), divisórias removidas
+      (Sobre header/vertical/trajetória, Contato desktop+mobile).
 - [x] Nav do header na ordem das seções (Sobre, Projetos, Blog, Contato);
       TargetSimbol auxiliar de toque (`md:hidden`) em links mono uppercase
       (voltar ao topo, voltar ao blog, share, relacionadas); "Leia também"
@@ -46,16 +58,17 @@ node scripts/audit.mjs # build + métricas + comparação vs baseline
 
 | Métrica | Baseline | Atual | Δ |
 | --- | --- | --- | --- |
-| Arquivos dist/ | 42 | 41 | −1 |
-| Peso raw | 640.9 KB | 919.0 KB | +278.1 KB |
-| Peso gzip | 411.1 KB | 436.9 KB | +25.8 KB |
+| Arquivos dist/ | 42 | 43 | +1 |
+| Peso raw | 640.9 KB | 1.02 MB | +~404 KB (marquee SSR repetido; comprime bem) |
+| Peso gzip | 411.1 KB | 459.4 KB | +48.3 KB |
 | Fontes | 13 | 6 | −7 |
 | CSS externo (linhas global.css) | 706 | 687 | −19 |
 | `group-link`/`group-arrow` (regras) | 2 | 0 | −2 |
 | SVGs inline de link | 6 | 0 | −6 |
 | Instâncias `<TargetHover>` | 1 (About) | 1 (global) | — |
 | `npm run check` | 20 erros (escopo global) | 0 erros | −20 |
-| Testes Playwright | 86 | 132 | +46 |
+| Testes Playwright | 86 | 197 | +111 |
+| Títulos >65 chars | — | 2 posts (68/70, pré-existente) | observar |
 
 ## SEO on-page
 

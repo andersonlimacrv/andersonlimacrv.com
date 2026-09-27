@@ -1,10 +1,12 @@
-# Auditoria CSS — 2026-09-02T14:49:28.717Z
+# Auditoria CSS — 2026-09-27T22:15:26.811Z
 
 Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 
 | Classe | Status | Nota |
 | --- | --- | --- |
 | .cursor-target | usada |  |
+| .cursor-target-filled | usada |  |
+| .edge-ink | usada |  |
 | .is-hidden | usada |  |
 | .is-open | usada |  |
 | .is-target-hovering | usada |  |
@@ -34,4 +36,4 @@ Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 | .woff2 | usada |  |
 | @utility transition-micro | usada | undefined |
 
-**Resumo:** 29 itens — 25 usadas, 0 utilitárias, 4 hooks, 0 css-only, 0 mortas, 0 tokens sem uso.
+**Resumo:** 31 itens — 27 usadas, 0 utilitárias, 4 hooks, 0 css-only, 0 mortas, 0 tokens sem uso.
