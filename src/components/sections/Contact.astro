@@ -1,5 +1,4 @@
 ---
-import Reveal from '../ui/Reveal.astro';
 import { TYPE } from '../ui/typography';
 import SectionHeading from '../ui/SectionHeading.astro';
 import TargetSimbol from '../ui/TargetSimbol.astro';
@@ -52,14 +51,14 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
     id="contato-content"
     class="flex flex-col lg:flex-row"
   >
-    <Reveal class="flex min-w-0 flex-1 flex-col gap-6 py-6 sm:py-8 lg:basis-[50%] lg:pr-8">
-      <h3 class={`${TYPE.titleH2} uppercase`}>{c.title}</h3>
-      <p class={`${TYPE.body} max-w-xl text-muted-foreground`}>
+    <div class="flex min-w-0 flex-1 flex-col gap-6 py-6 sm:py-8 lg:basis-[50%] lg:pr-8" data-reveal-group>
+      <h3 class={`${TYPE.titleH2} uppercase`} data-reveal>{c.title}</h3>
+      <p class={`${TYPE.body} max-w-xl text-muted-foreground`} data-reveal>
         {c.description}
       </p>
-      <ul class="flex flex-col divide-y divide-border border-y border-border">
+      <ul class="flex flex-col divide-y divide-border border-y border-border" data-reveal-group>
         {channels.map((ch) => (
-          <li class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-3">
+          <li data-reveal class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-3">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{ch.label}</span>
             <a
               href={ch.href}
@@ -82,9 +81,9 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
           </li>
         ))}
       </ul>
-    </Reveal>
+    </div>
 
-    <Reveal delay={80} class="flex min-w-0 flex-1 flex-col py-6 sm:py-8 lg:basis-[50%] lg:pl-8">
+    <div class="flex min-w-0 flex-1 flex-col py-6 sm:py-8 lg:basis-[50%] lg:pl-8" data-reveal-group>
       <form
         id="contact-form"
         action={`mailto:${socialLinks.email}`}
@@ -96,7 +95,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
         data-err-max={c.errMax}
         class="flex min-w-0 flex-col border border-border"
       >
-        <div class="flex items-center justify-between gap-4 border-b border-border px-4 py-3 sm:px-6">
+        <div class="flex items-center justify-between gap-4 border-b border-border px-4 py-3 sm:px-6" data-reveal>
           <span class={`${TYPE.label} text-muted-foreground`}>{c.formHead}</span>
           <span
             id="contact-counter"
@@ -108,8 +107,8 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
           </span>
         </div>
 
-        <div class="flex flex-col gap-5 p-4 sm:p-6">
-          <div class="grid gap-5 sm:grid-cols-2">
+        <div class="flex flex-col gap-5 p-4 sm:p-6" data-reveal-group>
+          <div class="grid gap-5 sm:grid-cols-2" data-reveal>
             <div class="min-w-0">
               <label for="contact-name" class={`${TYPE.label} text-muted-foreground`}>
                 {c.nameLabel}
@@ -146,7 +145,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
             </div>
           </div>
 
-          <fieldset>
+          <fieldset data-reveal>
             <legend class={`${TYPE.label} text-muted-foreground`}>{c.subjectLabel}</legend>
             <div class="mt-2 flex flex-wrap gap-2">
               {c.subjects.map((subject, i) => (
@@ -169,7 +168,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
             <p id="contact-subject-error" aria-live="polite" class={errorClass}></p>
           </fieldset>
 
-          <div class="min-w-0">
+          <div class="min-w-0" data-reveal>
             <label for="contact-message" class={`${TYPE.label} text-muted-foreground`}>
               {c.messageLabel}
             </label>
@@ -185,7 +184,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
             <p id="contact-message-error" aria-live="polite" class={errorClass}></p>
           </div>
 
-          <div class="flex flex-col gap-3 sm:flex-row">
+          <div class="flex flex-col gap-3 sm:flex-row" data-reveal>
             <button
               type="submit"
               class={`inline-flex min-h-11 flex-1 cursor-target cursor-target-filled items-center justify-center border border-primary bg-primary px-4 py-2.5 ${TYPE.label} text-primary-foreground transition-micro hover:opacity-90`}
@@ -204,7 +203,7 @@ const errorClass = `${TYPE.body} mt-1.5 hidden text-destructive`;
           </div>
         </div>
       </form>
-    </Reveal>
+    </div>
   </div>
 </SectionHeading>
 

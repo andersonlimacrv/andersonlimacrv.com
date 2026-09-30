@@ -140,17 +140,18 @@ const superpower = getAbout("Superpower");
           </Reveal>
         </div>
 
-        <Reveal delay={60}>
+        <div>
           <footer class="flex flex-col gap-3">
             <span class={`${TYPE.label} text-muted-foreground/60`}>{t.aboutContactTitle}</span>
 
-            <nav class="flex flex-col" aria-label={t.aboutContactTitle}>
+            <nav class="flex flex-col" aria-label={t.aboutContactTitle} data-reveal-group>
               {socials.map((social) => (
                 <a
                   href={social.href}
                   {...(social.external
                     ? { target: '_blank', rel: 'noopener noreferrer' }
                     : {})}
+                  data-reveal
                   class={`
                     ${TYPE.label}
                     text-center
@@ -167,12 +168,12 @@ const superpower = getAbout("Superpower");
               ))}
             </nav>
           </footer>
-        </Reveal>
+        </div>
       </section>
 
       <section data-col="dados" class="flex min-w-0 flex-1 flex-col lg:basis-[50%] lg:pl-8">
-        <div class="flex flex-col">
-         <div data-profile-row data-edge-reveal class="border-b border-border px-4 py-3 last:border-b-0">
+        <div class="flex flex-col" data-reveal-group>
+         <div data-profile-row data-edge-reveal data-reveal class="border-b border-border px-4 py-3 last:border-b-0">
             <span class={`${TYPE.label} edge-ink text-muted-foreground/60`}>{t.aboutRoleTitle}</span>
             <p class={`${TYPE.body} edge-ink mt-2 text-foreground`}>
               {profile.hero.title.split(' · ').map((stack, i) => (
@@ -184,7 +185,7 @@ const superpower = getAbout("Superpower");
             </p>
             <span data-reveal-layer aria-hidden="true"></span>
           </div>
-           <div data-profile-row data-edge-reveal class="border-b border-border px-4 py-3 last:border-b-0">
+           <div data-profile-row data-edge-reveal data-reveal class="border-b border-border px-4 py-3 last:border-b-0">
             <span class={`${TYPE.label} edge-ink text-muted-foreground/60`}>{t.aboutMainStackTitle}</span>
             <p class={`${TYPE.body} edge-ink mt-2 text-foreground`}>
               {profile.hero.mainStack.split(' · ').map((stack, i) => (
@@ -198,7 +199,7 @@ const superpower = getAbout("Superpower");
            </div>
 
           {focus && (
-            <div data-profile-row data-edge-reveal class="border-b border-border px-4 py-3 last:border-b-0">
+            <div data-profile-row data-edge-reveal data-reveal class="border-b border-border px-4 py-3 last:border-b-0">
               <span class={`${TYPE.label} edge-ink text-muted-foreground/60`}>{t.aboutFocusTitle}</span>
               <p class={`${TYPE.body} edge-ink mt-2 text-foreground`}>
                 {focus}
@@ -208,7 +209,7 @@ const superpower = getAbout("Superpower");
           )}
 
           {experience && (
-            <div data-profile-row data-edge-reveal class="border-b border-border px-4 py-3 last:border-b-0">
+            <div data-profile-row data-edge-reveal data-reveal class="border-b border-border px-4 py-3 last:border-b-0">
               <span class={`${TYPE.label} edge-ink text-muted-foreground/60`}>{t.aboutExperienceTitle}</span>
               <p class={`${TYPE.body} edge-ink mt-2 text-foreground`}>
                 {experience}
@@ -218,7 +219,7 @@ const superpower = getAbout("Superpower");
           )}
 
           {expertise && (
-            <div data-profile-row data-edge-reveal class="border-b border-border px-4 py-3 last:border-b-0">
+            <div data-profile-row data-edge-reveal data-reveal class="border-b border-border px-4 py-3 last:border-b-0">
               <span class={`${TYPE.label} edge-ink text-muted-foreground/60`}>{t.aboutExpertiseTitle}</span>
               <p class={`${TYPE.body} edge-ink mt-2 text-foreground`}>
                 {expertise}
@@ -228,7 +229,7 @@ const superpower = getAbout("Superpower");
           )}
 
           {superpower && (
-            <div data-profile-row data-edge-reveal class="border-b border-border px-4 py-3 last:border-b-0">
+            <div data-profile-row data-edge-reveal data-reveal class="border-b border-border px-4 py-3 last:border-b-0">
               <span class={`${TYPE.label} edge-ink text-muted-foreground/60`}>{t.aboutSuperpowerTitle}</span>
               <p class={`${TYPE.body} edge-ink mt-2 text-foreground`}>
                 {superpower}
@@ -237,7 +238,7 @@ const superpower = getAbout("Superpower");
             </div>
           )}
 
-          <div data-profile-row data-edge-reveal class="border-b border-border px-4 py-3 last:border-b-0">
+          <div data-profile-row data-edge-reveal data-reveal class="border-b border-border px-4 py-3 last:border-b-0">
             <span class={`${TYPE.label} edge-ink text-muted-foreground/60`}>{t.aboutLocationTitle}</span>
             <p class={`${TYPE.body} edge-ink mt-2 text-foreground`}>
               {profile.hero.location}

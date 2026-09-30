@@ -1,6 +1,5 @@
 ---
 import { getImage } from 'astro:assets';
-import Reveal from '../ui/Reveal.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import FlowingMenu from '../ui/FlowingMenu.astro';
 import { TYPE } from '../ui/typography';
@@ -32,8 +31,8 @@ const thumb169 = await getImage({
   id="projetos"
   eyebrow={t.sections.projects.eyebrow}
 >
-  <p class={`max-w-2xl pt-6 ${TYPE.label} text-muted-foreground`}>{t.sections.projects.subtitle}</p>
-  <Reveal class="mt-8">
+  <p class={`max-w-2xl pt-6 ${TYPE.label} text-muted-foreground`} data-reveal>{t.sections.projects.subtitle}</p>
+  <div class="mt-8">
     <FlowingMenu
       navLabel={t.sections.projects.title}
       variant="full"
@@ -45,7 +44,7 @@ const thumb169 = await getImage({
         description: project.description,
         tags: project.tags,
         external: true,
-      }))}
+      }      ))}
     />
-  </Reveal>
+  </div>
 </SectionHeading>

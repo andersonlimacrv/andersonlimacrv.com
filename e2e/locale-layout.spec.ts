@@ -70,7 +70,7 @@ test.describe('estabilidade entre idiomas', () => {
     expect(Math.abs(after - before)).toBeLessThanOrEqual(TOLERANCE_PX);
   });
 
-  test('hero é exibido sem animação de entrada (inclusive após troca de idioma)', async ({
+  test('hero com entrada escalonada (transitions, sem CSS animations)', async ({
     page,
   }) => {
     for (const { path } of LOCALES) {
@@ -83,12 +83,21 @@ test.describe('estabilidade entre idiomas', () => {
           .locator(`${selector}`)
           .first()
           .evaluate((el) => getComputedStyle(el).animationName);
-        expect(animation, `sem animação em ${selector} (${path})`).toBe('none');
+        expect(animation, `sem CSS animation em ${selector} (${path})`).toBe(
+          'none',
+        );
       }
-      const opacity = await hero
-        .locator('h1.hero-name')
-        .evaluate((el) => getComputedStyle(el).opacity);
-      expect(opacity).toBe('1');
+      const items = hero.locator('[data-reveal-group] > [data-reveal]');
+      expect(await items.count()).toBe(4);
+      await expect
+        .poll(
+          async () =>
+            items.evaluateAll((els) =>
+              els.every((el) => getComputedStyle(el).opacity === '1'),
+            ),
+          { timeout: 15000 },
+        )
+        .toBe(true);
     }
 
     await page.locator('.site-locale-toggle').click();

@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import '../styles/target-hover.css';
 import '../styles/edge-reveal.css';
+import '../styles/tech-text.css';
 import { getImage } from 'astro:assets';
 import { TYPE } from '../components/ui/typography';
 import { ClientRouter } from 'astro:transitions';
@@ -107,10 +108,6 @@ const ogImageMeta = image === portraitOg.src
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    {/* Preload das woff2 críticas: manrope-latin (corpo) e fraunces-latin
-        (serif para blockquote/hero-display). As URLs com hash casam com os
-        @font-face em global.css (ambos apontam para o mesmo chunk em
-        dist/_astro/). */}
     <link rel="preload" as="font" type="font/woff2" crossorigin href={manropeLatinUrl} />
     <link rel="preload" as="font" type="font/woff2" crossorigin href={frauncesLatinUrl} />
 
@@ -153,6 +150,7 @@ const ogImageMeta = image === portraitOg.src
     <script>
       import { initTargetHover } from '../lib/target-hover.ts';
       import '../lib/edge-reveal.ts';
+      import '../components/ui/reveal.ts';
 
       initTargetHover({
         targetSelector: '.cursor-target',

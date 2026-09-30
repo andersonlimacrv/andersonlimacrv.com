@@ -1,5 +1,4 @@
 ---
-import Reveal from '../ui/Reveal.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import PostCard from '../ui/PostCard.astro';
 import TargetSimbol from '../ui/TargetSimbol.astro';
@@ -24,19 +23,17 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
   id="blog"
   eyebrow={t.sections.blog.eyebrow}
 >
-  <Reveal>
-    {posts.length > 0 ? (
-      <div class="flex flex-col divide-y divide-border">
-        {posts.slice(0, 3).map((post) => (
-          <PostCard post={post} locale={locale} />
-        ))}
-      </div>
-    ) : (
-      <p class="text-muted-foreground">
-        {t.blogComingSoon}
-      </p>
-    )}
-  </Reveal>
+  {posts.length > 0 ? (
+    <div class="flex flex-col divide-y divide-border" data-reveal-group>
+      {posts.slice(0, 3).map((post) => (
+        <PostCard post={post} locale={locale} />
+      ))}
+    </div>
+  ) : (
+    <p class="text-muted-foreground">
+      {t.blogComingSoon}
+    </p>
+  )}
   <div class="mt-8">
     <a
       href={`${baseUrl}/blog`}

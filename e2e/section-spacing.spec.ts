@@ -11,6 +11,49 @@ async function gotoHome(page: Page, path = '/') {
 
 const SECTIONS = ['sobre', 'projetos', 'blog', 'contato'];
 
+async function settled(page: Page) {
+  const snapshot = () =>
+    page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-reveal]'))
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          const cs = getComputedStyle(el);
+          return [r.x, r.y, r.width, r.height, cs.opacity].join(',');
+        })
+        .join('|'),
+    );
+  let prev = await snapshot();
+  await expect
+    .poll(
+      async () => {
+        await page.waitForTimeout(300);
+        const cur = await snapshot();
+        const same = cur === prev;
+        prev = cur;
+        return same;
+      },
+      { timeout: 15000 },
+    )
+    .toBe(true);
+}
+
+async function revealAndSettle(page: Page, target: string) {
+  const el = page.locator(target).first();
+  await el.scrollIntoViewIfNeeded();
+  await expect
+    .poll(
+      async () =>
+        el.evaluate((node: HTMLElement) =>
+          node.matches('[data-reveal]')
+            ? node.classList.contains('is-visible')
+            : true,
+        ),
+      { timeout: 10000 },
+    )
+    .toBe(true);
+  await settled(page);
+}
+
 test.describe('section spacing', () => {
   test('padding vertical padrão: 80 mobile, 96 desktop', async ({
     page,
@@ -29,13 +72,28 @@ test.describe('section spacing', () => {
     }
   });
 
+  test('hero: respiro superior maior em telas grandes (lg:pt-32)', async ({
+    page,
+  }) => {
+    for (const [width, expected] of [
+      [390, '32px'],
+      [1280, '128px'],
+    ] as const) {
+      await page.setViewportSize({ width, height: 844 });
+      await gotoHome(page, '/');
+      await expect(page.locator('section#hero')).toHaveCSS(
+        'padding-top',
+        expected,
+      );
+    }
+  });
+
   test('gap título→conteúdo de 48px nas sections', async ({ page }) => {
     for (const path of ['/', '/es/']) {
       await gotoHome(page, path);
       for (const id of SECTIONS) {
         const section = page.locator(`section#${id}`);
-        await section.scrollIntoViewIfNeeded();
-        await page.waitForTimeout(800);
+        await revealAndSettle(page, `section#${id} div[data-reveal]`);
         const grid = section.locator('[data-kinetic-grid]');
         const content = section.locator(':scope > div > div.mt-12');
         const gb = (await grid.boundingBox())!;
@@ -49,6 +107,7 @@ test.describe('section spacing', () => {
   test('gap óptico título-texto→corpo-texto uniforme entre sections', async ({
     page,
   }) => {
+    test.setTimeout(120_000);
     const FIRST_TEXT: Record<string, string> = {
       sobre: '#sobre-content header span',
       projetos: '#projetos div.mt-12 > p',
@@ -61,9 +120,9 @@ test.describe('section spacing', () => {
         await gotoHome(page, path);
         const gaps: number[] = [];
         for (const id of SECTIONS) {
+          await revealAndSettle(page, `section#${id} div[data-reveal]`);
+          await revealAndSettle(page, FIRST_TEXT[id]);
           const section = page.locator(`section#${id}`);
-          await section.scrollIntoViewIfNeeded();
-          await page.waitForTimeout(800);
           const gap = await section.evaluate(
             (sec: HTMLElement, sel: string) => {
               const firstText = (el: Element | null): Text | null => {
@@ -120,6 +179,9 @@ test.describe('section spacing', () => {
 
   test('hero: CTAs 40px abaixo do subtítulo', async ({ page }) => {
     await gotoHome(page);
+    // entrada escalonada (0,7s + delay): revela e assenta antes de medir
+    await revealAndSettle(page, '#hero p');
+    await revealAndSettle(page, '#hero div.mt-10');
     const hero = page.locator('#hero');
     const sub = hero.locator('p').nth(1);
     const ctas = hero.locator('div.mt-10');

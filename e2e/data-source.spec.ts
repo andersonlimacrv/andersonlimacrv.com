@@ -32,7 +32,9 @@ test.describe('fonte única de dados', () => {
     page,
   }) => {
     await gotoHome(page);
-    await expect(page.locator('h1.hero-name')).toHaveText('Anderson Carvalho');
+    await expect(page.locator('h1.hero-name span.sr-only')).toHaveText(
+      'Anderson Carvalho',
+    );
     await expect(page.getByRole('contentinfo')).toContainText('Anderson Carvalho');
 
     const jsonLd = await page

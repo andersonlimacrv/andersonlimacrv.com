@@ -56,10 +56,10 @@ function formatPeriodShort(period: string): string {
 <div class="flex flex-col gap-8 sm:gap-10">
   <section aria-labelledby="trajectory-work-title">
     <h3 id="trajectory-work-title" class={`${TYPE.label} text-muted-foreground/60 mb-3`}>{t.aboutBadgeWork}</h3>
-    <ul aria-label={t.aboutBadgeWork} class="flex flex-col">
+    <ul aria-label={t.aboutBadgeWork} class="flex flex-col" data-reveal-group>
       {
         workRows.map((row) => (
-          <li data-edge-reveal class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border px-4 py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
+          <li data-edge-reveal data-reveal class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border px-4 py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
             <span class="min-w-0 flex-1 truncate">
               <span class={`${TYPE.body} edge-ink text-foreground`}>
                 {row.role}
@@ -83,10 +83,10 @@ function formatPeriodShort(period: string): string {
   </section>
   <section aria-labelledby="trajectory-edu-title">
     <h3 id="trajectory-edu-title" class={`${TYPE.label} text-muted-foreground/60 mb-3`}>{t.aboutBadgeEducation}</h3>
-    <ul aria-label={t.aboutBadgeEducation} class="flex flex-col">
+    <ul aria-label={t.aboutBadgeEducation} class="flex flex-col" data-reveal-group>
       {
         eduRows.map((row) => (
-          <li data-edge-reveal class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border px-4 py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
+          <li data-edge-reveal data-reveal class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 border-b border-border px-4 py-3.5 last:border-b-0 transition-micro hover:border-foreground/50">
             <span class="min-w-0 flex-1 truncate">
               <span class={`${TYPE.body} edge-ink text-foreground`}>
                 {row.role}

@@ -1,0 +1,39 @@
+---
+interface Props {
+  text: string;
+  fontWeight?: number;
+  letterSpacing?: number;
+  class?: string;
+  revealMode?: string;
+  speed?: number;
+  specks?: number;
+}
+
+const {
+  text,
+  fontWeight = 800,
+  letterSpacing = -0.03,
+  class: className = '',
+  revealMode = 'letter',
+  speed = 1,
+  specks = 15,
+} = Astro.props as Props;
+---
+
+<div
+  class:list={['tech-text', className]}
+  data-tech-text
+  data-text={text}
+  data-font-weight={fontWeight}
+  data-letter-spacing={letterSpacing}
+  data-reveal-mode={revealMode}
+  data-speed={speed}
+  data-specks={specks}
+  aria-hidden="true"
+>
+  <canvas class="tech-text-canvas" aria-hidden="true"></canvas>
+</div>
+
+<script>
+  import './tech-text';
+</script>

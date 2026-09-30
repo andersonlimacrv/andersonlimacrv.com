@@ -23,16 +23,26 @@ async function revealState(page: Page) {
 }
 
 test.describe('reveal — transições de entrada das seções', () => {
-  test('home: seções abaixo da dobra começam ocultas e aparecem ao scroll (guard: nenhuma presa em opacity 0)', async ({
+  test('home: abaixo da dobra começa oculto e aparece ao scroll (acima revela no load)', async ({
     page,
   }) => {
     await gotoHome(page);
     await page.waitForTimeout(500);
 
-    const before = await revealState(page);
-    expect(before.present).toBe(true);
-    expect(before.els.length).toBeGreaterThanOrEqual(5);
-    expect(before.els.every((e) => e.opacity === 0)).toBe(true);
+    const state = await revealState(page);
+    expect(state.present).toBe(true);
+    expect(state.els.length).toBeGreaterThanOrEqual(10);
+    const belowFoldHidden = await page.evaluate(() => {
+      const vh = window.innerHeight;
+      return Array.from(document.querySelectorAll('[data-reveal]'))
+        .filter(
+          (el) =>
+            el.getBoundingClientRect().top > vh &&
+            !el.closest('section#hero'),
+        )
+        .every((el) => Number(getComputedStyle(el).opacity) === 0);
+    });
+    expect(belowFoldHidden).toBe(true);
 
     const height = await page.evaluate(() => document.body.scrollHeight);
     const steps = Math.max(4, Math.ceil(height / 500));
@@ -41,11 +51,31 @@ test.describe('reveal — transições de entrada das seções', () => {
       await page.waitForTimeout(250);
     }
     await page.evaluate((h) => window.scrollTo(0, h), height);
-    await page.waitForTimeout(500);
+    // stagger (até 480ms) + 0,7s: fim é por poll, nunca por wait fixo
+    await expect
+      .poll(
+        async () =>
+          revealState(page).then(
+            (s) => s.els.every((e) => e.opacity === 1) && s.els.every((e) => e.visible),
+          ),
+        { timeout: 15000 },
+      )
+      .toBe(true);
+  });
 
-    const after = await revealState(page);
-    expect(after.els.every((e) => e.opacity === 1)).toBe(true);
-    expect(after.els.every((e) => e.visible)).toBe(true);
+  test('stagger: itens do grupo entram em ordem com delays 0–240ms', async ({
+    page,
+  }) => {
+    await gotoHome(page);
+    const delays = await page.evaluate(() => {
+      const links = Array.from(
+        document.querySelectorAll(
+          '#sobre-content nav[data-reveal-group] a[data-reveal]',
+        ),
+      );
+      return links.map((el) => getComputedStyle(el).transitionDelay);
+    });
+    expect(delays).toEqual(['0s', '0.06s', '0.12s', '0.18s', '0.24s']);
   });
 
   test('ClientRouter: round-trip home → /blog → home re-arma o reveal (present reaplicado e nenhuma seção presa oculta)', async ({
@@ -80,7 +110,7 @@ test.describe('reveal — transições de entrada das seções', () => {
       .poll(
         () =>
           revealState(page).then((s) => s.els.every((e) => e.opacity === 1)),
-        { timeout: 5000 },
+        { timeout: 10000 },
       )
       .toBe(true);
   });
@@ -92,11 +122,14 @@ test.describe('reveal — transições de entrada das seções', () => {
     const before = await revealState(page);
     expect(before.present).toBe(true);
     expect(before.els.length).toBeGreaterThanOrEqual(1);
-
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await page.waitForTimeout(500);
-    const after = await revealState(page);
-    expect(after.els.every((e) => e.opacity === 1)).toBe(true);
+    await expect
+      .poll(
+        async () =>
+          revealState(page).then((s) => s.els.every((e) => e.opacity === 1)),
+        { timeout: 15000 },
+      )
+      .toBe(true);
   });
 
   test('reduced-motion: tudo visível imediatamente, sem depender de scroll', async ({

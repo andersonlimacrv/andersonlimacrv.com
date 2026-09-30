@@ -1,0 +1,32 @@
+.tech-text {
+  position: absolute;
+  inset: 0;
+  touch-action: pan-y;
+  user-select: none;
+  visibility: hidden;
+}
+
+.tech-text.is-live {
+  visibility: visible;
+}
+
+.tech-text-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tech-text-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.tech-text-fallback {
+  visibility: visible;
+}
+
+.is-tech-live .tech-text-fallback {
+  visibility: hidden;
+}

@@ -61,12 +61,13 @@ const SSR_PARTS = 4;
   data-flowing-menu
   data-speed={speed}
 >
-  <nav aria-label={navLabel}>
+  <nav aria-label={navLabel} data-reveal-group>
     {
       items.map((item, i) => (
         <div
           class:list={['menu-item', i === 0 && 'is-first']}
           data-flowing-item
+          data-reveal
           data-label={item.label}
           data-images={displayImages.map((t) => t.src).join(',')}
           data-sizes={displayImages.map((t) => `${t.w}x${t.h}`).join(',')}
@@ -95,9 +96,6 @@ const SSR_PARTS = 4;
                   ))}
                 </span>
               )}
-              {/* Mira à direita SOMENTE na variante full (A): a minimal (B)
-                  é a demo original sem affordance extra. Sem `cursor-target`
-                  de propósito — nada de corners aqui. */}
               {variant === 'full' && (
                 <TargetSimbol size={25} class="menu-link-simbol" />
               )}
@@ -107,8 +105,6 @@ const SSR_PARTS = 4;
             <div class="marquee-inner">
               {Array.from({ length: SSR_PARTS }).map(() => (
                 <div class="marquee-part">
-                  {/* Sem hook de teste aqui: `.menu-link-label` é só o título
-                      estático (seletores e2e contam 1 por item). */}
                   <span class={TYPE.flowingTitle}>{item.label}</span>
                   {displayImages.map((t) => (
                     <img

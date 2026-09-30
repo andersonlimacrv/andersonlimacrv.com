@@ -1,4 +1,4 @@
-# Auditoria CSS — 2026-09-27T22:15:26.811Z
+# Auditoria CSS — 2026-09-29T23:52:46.149Z
 
 Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 
@@ -8,8 +8,10 @@ Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 | .cursor-target-filled | usada |  |
 | .edge-ink | usada |  |
 | .is-hidden | usada |  |
+| .is-live | usada |  |
 | .is-open | usada |  |
 | .is-target-hovering | usada |  |
+| .is-tech-live | usada |  |
 | .is-visible | usada |  |
 | .post-content | usada |  |
 | .reveal-present | usada |  |
@@ -33,7 +35,11 @@ Regras customizadas em `src/styles/` cruzadas com o uso real em `src/`.
 | .target-hover-corner--br | hook | nome montado em runtime por target-hover.ts |
 | .target-hover-corner--tl | hook | nome montado em runtime por target-hover.ts |
 | .target-hover-corner--tr | hook | nome montado em runtime por target-hover.ts |
+| .tech-text | usada |  |
+| .tech-text-canvas | usada |  |
+| .tech-text-fallback | usada |  |
+| .tech-text-overlay | usada |  |
 | .woff2 | usada |  |
 | @utility transition-micro | usada | undefined |
 
-**Resumo:** 31 itens — 27 usadas, 0 utilitárias, 4 hooks, 0 css-only, 0 mortas, 0 tokens sem uso.
+**Resumo:** 37 itens — 33 usadas, 0 utilitárias, 4 hooks, 0 css-only, 0 mortas, 0 tokens sem uso.

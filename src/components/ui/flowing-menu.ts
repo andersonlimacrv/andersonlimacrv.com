@@ -82,7 +82,45 @@ function enhanceRoot(root: HTMLElement): () => void {
     enhanceItem(itemEl, speed, () => rootVisible && !destroyed),
   );
   const cleanups = handles.map((h) => h.destroy);
-  const wakes = handles.map((h) => h.wake);
+  const frames = handles.map((h) => h.frame);
+
+  let rootRaf = 0;
+  let rootRunning = false;
+  let rootLast = 0;
+
+  function rootTick(t: number) {
+    rootRaf = 0;
+    if (destroyed) {
+      rootRunning = false;
+      return;
+    }
+    if (!rootLast) rootLast = t;
+    const dt = Math.min(0.05, (t - rootLast) / 1000);
+    rootLast = t;
+    let any = false;
+    for (const frame of frames) {
+      if (frame(t, dt)) any = true;
+    }
+    if (!any) {
+      rootRunning = false;
+      return;
+    }
+    rootRunning = true;
+    rootRaf = requestAnimationFrame(rootTick);
+  }
+
+  function startRoot() {
+    if (destroyed || rootRunning || prefersReducedMotion()) return;
+    rootRunning = true;
+    rootLast = 0;
+    rootRaf = requestAnimationFrame(rootTick);
+  }
+
+  function stopRoot() {
+    rootRunning = false;
+    if (rootRaf) cancelAnimationFrame(rootRaf);
+    rootRaf = 0;
+  }
 
   const io =
     'IntersectionObserver' in window
@@ -91,9 +129,7 @@ function enhanceRoot(root: HTMLElement): () => void {
             for (const entry of entries) {
               if (entry.target !== root) continue;
               const vis = entry.isIntersecting;
-              if (vis && !rootVisible) {
-                for (const wake of wakes) wake();
-              }
+              if (vis && !rootVisible) startRoot();
               rootVisible = vis;
             }
           },
@@ -101,9 +137,11 @@ function enhanceRoot(root: HTMLElement): () => void {
         )
       : null;
   io?.observe(root);
+  startRoot();
 
   return () => {
     destroyed = true;
+    stopRoot();
     io?.disconnect();
     for (const fn of cleanups) {
       try {
@@ -118,12 +156,12 @@ function enhanceItem(
   itemEl: HTMLElement,
   speed: number,
   isActive: () => boolean,
-): { destroy: () => void; wake: () => void } {
+): { destroy: () => void; frame: (t: number, dt: number) => boolean } {
   const link = itemEl.querySelector<HTMLElement>('.menu-link');
   const marquee = itemEl.querySelector<HTMLElement>('.marquee');
   const inner = itemEl.querySelector<HTMLElement>('.marquee-inner');
   if (!link || !marquee || !inner) {
-    return { destroy: () => undefined, wake: () => undefined };
+    return { destroy: () => undefined, frame: () => false };
   }
 
   const label = itemEl.dataset.label ?? link.textContent ?? '';
@@ -157,10 +195,7 @@ function enhanceItem(
 
   let revealAnims: Animation[] = [];
   let finishTimer = 0;
-  let rafId = 0;
-  let running = false;
   let offsetX = 0;
-  let lastT = 0;
   let partWidth = 0;
   let repetitions = MIN_REPETITIONS;
   let isOpen = false;
@@ -217,34 +252,16 @@ function enhanceItem(
     }
   };
 
-  const tick = (t: number) => {
-    if (destroyed) return;
-    rafId = 0;
-    if (!isActive()) {
-      running = false;
-      return;
-    }
-    running = true;
-    if (!lastT) lastT = t;
-    const dt = Math.min(0.05, (t - lastT) / 1000);
-    lastT = t;
-    if (isActive() && !document.hidden && partWidth > 0 && !prefersReducedMotion()) {
+  const frame = (_t: number, dt: number): boolean => {
+    if (destroyed) return false;
+    if (!isActive()) return false;
+    if (!document.hidden && partWidth > 0 && !prefersReducedMotion()) {
       const velocity = partWidth / speed;
       offsetX -= velocity * dt;
       if (offsetX <= -partWidth) offsetX += partWidth;
       inner.style.transform = `translateX(${offsetX}px)`;
     }
-    rafId = requestAnimationFrame(tick);
-  };
-  const startLoop = () => {
-    if (destroyed || running || prefersReducedMotion()) return;
-    lastT = 0;
-    rafId = requestAnimationFrame(tick);
-  };
-  const stopLoop = () => {
-    running = false;
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = 0;
+    return true;
   };
 
   const show = (edge: Edge) => {
@@ -353,10 +370,9 @@ function enhanceItem(
     if (!destroyed) calculateRepetitions();
   }).catch(() => undefined);
   calculateRepetitions();
-  startLoop();
 
   return {
-    wake: () => startLoop(),
+    frame,
     destroy: () => {
       destroyed = true;
       window.clearTimeout(retry1);
@@ -369,7 +385,6 @@ function enhanceItem(
       link.removeEventListener('focus', onFocus);
       link.removeEventListener('blur', onBlur);
       link.removeEventListener('click', onClick);
-      stopLoop();
       cancelReveal();
       clearFinishTimer();
     },

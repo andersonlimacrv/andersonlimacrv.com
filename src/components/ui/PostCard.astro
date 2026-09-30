@@ -15,7 +15,7 @@ const baseUrl = locale === defaultLocale ? '' : `/${locale}`;
 const href = `${baseUrl}/blog/${getPostSlug(post)}`;
 ---
 
-<article>
+<article data-reveal>
   <a
     href={href}
     class="cursor-target group transition-micro grid min-h-11 grid-cols-1 gap-x-10 gap-y-3 py-6 sm:grid-cols-[1fr_auto] sm:items-start sm:py-8"
